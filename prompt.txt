@@ -1,0 +1,41 @@
+Your task is to propose 1 valid action/transaction sequence within a network of entities and assets. Follow these guidelines:
+
+Guidelines:
+An action must involve two entities (ENTITY1 and ENTITY2), action, channel, description
+ENTITY1 and ENTITY2 can be an individual or company
+ACTION is the action taken by ENTITY1 upon ENTITY2
+CHANNEL is the fraud mode (SMS, email, phone, etc)
+DESCRIPTION is a detailed description of what action occurred (ex. for “impersonation” action, a potential description is “Posed as IRS agent”)
+Actions should be in the following format:
+Action(ENTITY1, ACTION, ENTITY2, CHANNEL, DESCRIPTION)
+
+Actions must be in chronological order. For sequential actions, ENTITY2 in the first action should become ENTITY1 in the second action.
+Money can only be fraudulently transferred if the account is compromised.
+A fraudster can only transfer money into their bank account, however, once a victim’s account is compromised, a fraudster can transfer money from the victim’s account.
+FAST transfers are instantaneous and irreversible
+A TRANSACTION should be at the end the sequence
+
+Fraud Environment
+YOU MUST USE THE EXACT ENTITIY NAMES BELOW (ex. victims, fraudsters, banks, accounts) Do not invent or modify
+entity names.
+Victims: Olivia, Betty
+Fraudsters: ScamGov, ScamCo
+Banks: BankOfAmerica, Chase, FirstFinancial
+Accounts: acc_olivia, acc_betty, acc_scamgov
+
+Example (this is an example of one complete sequence)
+RETURN IN STRICT JSON ONLY, DO NOT INCLUDE ANY EXPLANATIONS OR ADDITIONAL TEXT, NO VERBOSE
+{
+  "sequence_id": "<string>",
+  "sequence": [
+    "Action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)",
+    "Action(Olivia, Sensitive Info Submission, ScamGov, SMS, sent SSN + DOB)",
+    "Action(ScamGov, Social engineering, BankOfAmerica, Call, ...)",
+    "Transaction(acc_olivia, FAST Payment, acc_scamgov, 3000.00)"
+  ]
+}
+
+Task
+Be creative! Choose diverse entities, action/transaction combinations and unique fraud techniques. Use the following guidelines
+Include a variety of entities
+Experiment with different types of fraud (Identity theft, account takeover, SIM swap, but you are NOT limited to these!)
