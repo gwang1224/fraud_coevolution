@@ -6,8 +6,6 @@ with open("/Users/gracewang/Documents/fraud_coevolution/prompt.txt", 'r') as fil
     prompt = file.read()
 
 
-
-
 def generate_transaction_seq(num_seq, env):
     """
     Generate fraud sequences based on prompt in prompt.txt
@@ -42,6 +40,7 @@ def generate_transaction_seq(num_seq, env):
 
         valid = True
         for step in seq:
+
             # Validate Action
             if step.startswith("Action("):
                 match = re.fullmatch(action_pattern, step)
@@ -50,6 +49,7 @@ def generate_transaction_seq(num_seq, env):
                     valid = False
                     print("Invalid Action step:", step)
                     break
+
             # Validate Transaction
             elif step.startswith("Transaction("):
                 match = re.fullmatch(transaction_pattern, step)
@@ -70,7 +70,6 @@ def generate_transaction_seq(num_seq, env):
 
 
 nodes = ['Olivia', 'Betty', 'ScamGov', 'ScamCo', 'BankOfAmerica', 'Chase', 'FirstFinancial', 'acc_olivia', 'acc_betty', 'acc_scamgov', 'Olivia_acc']
-
 print(generate_transaction_seq(1, nodes))
 
                     
