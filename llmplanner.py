@@ -2,16 +2,15 @@ import requests
 import re
 import json
 
-
 class LLMPlanner():
-    
+
     def __init__(self):
         with open("/Users/gracewang/Documents/fraud_coevolution/prompt.txt", 'r') as file:
             self.prompt = file.read()
         self.env = ['olivia', 'betty', 'scamgov', 'scamco', 
                     'bankofamerica', 'chase', 'firstfinancial', 
-                    'acc_olivia', 'acc_betty', 'acc_scamgov']
-    
+                    'acc_olivia', 'acc_betty', 'acc_scamgov', 'acc_scamco']
+        
     def generate_sequence(self, model):
         """
         Generate fraud sequences based on prompt in prompt.txt
@@ -31,72 +30,127 @@ class LLMPlanner():
                     'stream': False
                 }
             )
-            #print("Generating seq")
-            res =  response.json()['response'].lower()
-            print(res)
+            res = json.loads(response.json()['response'].lower())
         except Exception as e:
             print("Error parsing LLM response:", e)
             return None
         return res
     
-    def validate(self, res):
+    def validate(self, output):
         """
-        Validates fraud patterns based on regex. Additionally enforces that
-        the last step in the sequence must be a Transaction(...) step.
+        Validates fraud patterns based on regex.
+        Criteria:
+            - matches action and transaction regex sequences
+            - last sequence should be a transaction seq
+
+        Return:
+            valid- whether or not the seqence is valid
+            rof- reason of failure
+                type: type of input
+                action: error with action sequence
+                transaction: error with transaction sequence
+                end: end seq is not transaction
+
         """
-        action_pattern = r"action\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*(.+?)\s*\)"
-        transaction_pattern = r"transaction\(\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*,\s*(\d+(?:\.\d{2})?)\s*\)"
-action\(\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*\)$
-        try:
-            parsed = json.loads(res)
-        except Exception as e:
-            print("Invalid JSON format:", e)
-            return False
-
-        seq = parsed.get('sequence', [])
-        # print(seq)
-
         valid = True
+        rof = None
 
-        for step in seq:
-            # use lowercase when checking the prefix to be robust to case
-            step_l = step.lower()
-            if step_l.startswith("action("):
-                match = re.fullmatch(action_pattern, step, re.IGNORECASE)
-                if not (match and match.group(1).strip().lower() in self.env and match.group(3).strip().lower() in self.env):
-                    valid = False
-                    print("Invalid Action step:", step)
-                    break
-            elif step_l.startswith("transaction("):
-                match = re.fullmatch(transaction_pattern, step, re.IGNORECASE)
-                if not (match and match.group(1).strip().lower() in self.env and match.group(3).strip().lower() in self.env):
-                    valid = False
-                    print("Invalid Transaction step:", step)
-                    break
-            else:
-                valid = False
-                print("Unrecognized step type:", step)
-                break
+        action_pat = r"^action\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*\)$"
+        transact_pat = r"transaction\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*(\d+(?:\.\d{2})?)\s*\)"
 
-        # Enforce that the last step must be a Transaction(...)
+        # Validates input as dict
+        if not isinstance(output, dict):
+            print("input is not a dictionary: not valid")
+            rof = "type"
+            valid = False
+
+        # Validates 'sequence' exists and is a list
+        seqs = output.get('sequence')
+        if not isinstance(seqs, list):
+            print("sequence is not a list: not valid")
+            rof = "type"
+            valid = False
+        
+        for seq in seqs:
+            # Checks action step
+            if seq.startswith("action("):
+                match = re.fullmatch(action_pat, seq)
+                if not (match and match.group(1).strip() in self.env and match.group(3).strip() in self.env):
+                    valid = False
+                    rof = "action"
+                    print("Invalid action step: ", seq)
+                    break
+            if seq.startswith("transaction("):
+                match = re.fullmatch(transact_pat, seq)
+                if not (match and match.group(1).strip() in self.env and match.group(3).strip() in self.env):
+                    valid = False
+                    rof = "transaction"
+                    print("Invalid transaction step: ", seq)
+                    break
+
+        # Enforces that last step must be transaction step
+        # Last step should indicate money was fraudulently transfered
         if valid:
-            if not seq:
-                print("Sequence is empty.")
-                return False
-            last_step = seq[-1]
-            if not last_step.lower().startswith("transaction("):
-                print("Last step is not a Transaction:", last_step)
-                return False
+            last_step = seqs[-1]
+            if not last_step.startswith("transaction("):
+                rof = "end"
+                print("Last step is not a transaction: ", last_step)
+                valid = False
+            
+        return valid, rof
 
-        return valid
+
+
     
 
 def main():
+    # --------------- Testing ------------------
     test = LLMPlanner()
     model = "chevalblanc/gpt-4o-mini"
     response = test.generate_sequence(model)
     print(response)
-    print(test.validate(response))
+    print(type(response))
+    valid, reason = test.validate(response)
+    print(valid, reason)
+
+    # --------------- Testing validate ------------------
+    # Shouldn't work
+    ex1 = """
+    {
+    "sequence_id": "1",
+    "sequence": [
+        "action(scamco, phishing email, olivia, email, scamco urgent: verify your account)",
+        "action(olivia, sensitive info submission, scamco, click, clicked on link to verify account)",
+        "action(scamco, social engineering, scamgov, call, ...)",
+        "action(olivia, sensitive info submission, scamgov, phone, sent ssn + dob)",
+        "action(scamco, account takeover, olivia, call, scammed olivia out of login details)",
+        "transaction(scamco, money transfer, olivia's bankaccount (acc_olivia), 5000.00)"
+    ]}
+    """
+    seq1 = json.loads(ex1)
+    # print(seq1)
+
+    ex2 = """
+    {
+    "sequence_id": "1",
+    "sequence": [
+        "action(scamco, phishing email, olivia, email, scamco urgent: verify your account)",
+        "action(olivia, sensitive info submission, scamco, click, clicked on link to verify account)",
+        "action(scamco, social engineering, scamgov, call, ...)",
+        "action(olivia, sensitive info submission, scamgov, phone, sent ssn + dob)",
+        "action(scamco, account takeover, olivia, call, scammed olivia out of login details)",
+        "transaction(scamco, money transfer, acc_olivia, 500.00)"
+    ]}
+    """
+    seq2 = json.loads(ex2)
+    # print(seq2)
+
+    # print(test.validate(seq1))
+    # print(test.validate(seq2))
+
+
+
+
 
 if __name__ == "__main__":
     main()
