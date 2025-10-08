@@ -22,40 +22,61 @@ import pandas as pd
 import llmplanner as gen
 
 # Models to test
-models = ['chevalblanc/gpt-4o-mini', 'llama3.2', 'mistral']
+models = ['chevalblanc/gpt-4o-mini']
 
-samples = 10
+samples = 5
 results = []
-gen_model = gen.LLMPlanner()
+gen_agent = gen.LLMPlanner()
 
 
 for model in models:
     valid_count = 0
-    avg_len = 0
+    total_len = 0
+
+    #stats
+    input_type = 0
+    er_action = 0
+    er_trans = 0
+    er_end_seq = 0
 
     for i in range(samples):
-
         # Gen sequence
         print(f"\nGenerating sequence {i}...")
-        response = gen_model.generate_sequence(model)
+        response = gen_agent.generate_sequence(model)
+        print(response)
 
-        # Validate sequence
-        if gen_model.validate(response):
-            valid_count += 1
-            print("Passed.")
+        if response is None:
+            input_type += 1
+        else:
+            valid, rof = gen_agent.validate(response)
+            if valid == False:
+                if rof == "input":
+                    input_type += 1
+                elif rof == "action":
+                    er_action += 1
+                elif rof == "transaction":
+                    er_trans += 1
+                elif rof == "end":
+                    er_end_seq += 1
+            else:
+                valid_count += 1
+                print("Passed :)") 
 
-            # Sequence length
-            length = len(response['sequence'])
-            avg_len += length
+                # Note Sequence length
+                total_len += len(response['sequence'])
 
     if valid_count > 0:
-        avg_len = avg_len/valid_count
+        avg_len = total_len/valid_count
 
     results.append({
         'Model': model,
         'Valid Sequences': valid_count,
         'Total Samples': samples,
-        'Avg Steps': avg_len
+        'Avg Steps': avg_len,
+        'Error: Input type': input_type,
+        'Error: Action': er_action,
+        'Error: Transaction': er_trans,
+        'Error: End sequence': er_end_seq
     })
 
 df = pd.DataFrame(results)

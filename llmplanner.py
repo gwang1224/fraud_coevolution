@@ -30,7 +30,30 @@ class LLMPlanner():
                     'stream': False
                 }
             )
-            res = json.loads(response.json()['response'].lower())
+            try:
+                raw = response.json().get('response', '').strip()
+                if not raw:
+                    print("Empty LLM response.")
+                    return None
+
+                # Extract the first JSON block if extra data exists
+                import re
+                match = re.search(r'\{[\s\S]*?\}', raw)
+                if not match:
+                    print("No valid JSON found in LLM output.")
+                    print("Raw output:", raw)
+                    return None
+
+                json_text = match.group(0).strip()
+                try:
+                    res = json.loads(json_text.lower())
+                except json.JSONDecodeError as e:
+                    print("Error parsing extracted JSON:", e)
+                    print("Raw JSON text:\n", json_text)
+                    return None
+            except Exception as e:
+                print("Error parsing LLM response:", e)
+                return None
         except Exception as e:
             print("Error parsing LLM response:", e)
             return None
@@ -52,6 +75,9 @@ class LLMPlanner():
                 end: end seq is not transaction
 
         """
+        if not output or not isinstance(output, dict):
+            print("input is not a dictionary: not valid")
+            return False, "type"
         valid = True
         rof = None
 
@@ -65,11 +91,14 @@ class LLMPlanner():
             valid = False
 
         # Validates 'sequence' exists and is a list
-        seqs = output.get('sequence')
-        if not isinstance(seqs, list):
+        try:
+            seqs = output.get('sequence')
+            if not isinstance(seqs, list):
+                raise AttributeError
+        except AttributeError:
             print("sequence is not a list: not valid")
             rof = "type"
-            valid = False
+            return False
         
         for seq in seqs:
             # Checks action step

@@ -1,4 +1,2 @@
-Model,Valid Sequences,Total Samples,Avg Steps
-chevalblanc/gpt-4o-mini,0,2,0
-llama3.2,0,2,0
-mistral,0,2,0
+Model,Valid Sequences,Total Samples,Avg Steps,Error: Input type,Error: Action,Error: Transaction,Error: End sequence
+chevalblanc/gpt-4o-mini,1,5,4.0,1,2,0,1
