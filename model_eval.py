@@ -1,30 +1,48 @@
 """
-Model evaluation script
+Model Evaluation Script
 
-Purpose
-- Determine which large language model is best for generating fast payment sequences
-- Generates statistics based on
-    (1) # of valid sequences
-    (2)
+Description:
+-------------
+Evaluates multiple LLMs for their ability to generate valid FAST payment fraud sequences
+using the LLMPlanner class from llmplanner.py. It runs multiple samples for each model,
+validates the output, and logs performance statistics.
 
-Current models
-- 'chevalblanc/gpt-4o-mini'
+Evaluation Metrics:
+-------------------
+(1) Valid Sequences - number of sequences that pass regex/entity validation.
+(2) Average Steps - average number of steps per valid sequence.
+(3) Error Counts - number of failures for each category:
+      - Input type errors (invalid JSON / malformed output)
+      - Action errors (invalid Action() steps)
+      - Transaction errors (invalid Transaction() steps)
+      - End sequence errors (sequence not ending with Transaction)
 
-Usage
+Current Models:
+---------------
+- chevalblanc/gpt-4o-mini
+- llama3.2
+- mistral
+- gemma3:4b
 
-Outputs
-   
-Notes
+Outputs:
+--------
+- Prints progress and model statistics to console.
+- Saves summary table to "model_eval_results.csv" in the working directory.
 
+Usage:
+------
+Run this script after ensuring llmplanner.py is functional.
+Example:
+    $ python model_eval.py
 """
 
 import pandas as pd
 import llmplanner as gen
 
 # Models to test
-models = ['chevalblanc/gpt-4o-mini']
+models = ['chevalblanc/gpt-4o-mini', 'llama3.2', 'mistral','gemma3:4b']
 
-samples = 5
+samples = 100
 results = []
 gen_agent = gen.LLMPlanner()
 
@@ -67,6 +85,8 @@ for model in models:
 
     if valid_count > 0:
         avg_len = total_len/valid_count
+    else:
+        avg_len = 0
 
     results.append({
         'Model': model,

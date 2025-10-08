@@ -1,2 +1,5 @@
 Model,Valid Sequences,Total Samples,Avg Steps,Error: Input type,Error: Action,Error: Transaction,Error: End sequence
-chevalblanc/gpt-4o-mini,1,5,4.0,1,2,0,1
+chevalblanc/gpt-4o-mini,17,100,5.882352941176471,26,25,15,17
+llama3.2,36,100,6.027777777777778,5,49,8,2
+mistral,32,100,7.3125,0,55,4,9
+gemma3:4b,31,100,5.516129032258065,0,69,0,0
