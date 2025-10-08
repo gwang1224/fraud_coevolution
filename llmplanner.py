@@ -2,59 +2,74 @@ import requests
 import re
 import json
 
-with open("/Users/gracewang/Documents/fraud_coevolution/prompt.txt", 'r') as file:
-    prompt = file.read()
 
+class LLMPlanner():
+    
+    def __init__(self):
+        with open("/Users/gracewang/Documents/fraud_coevolution/prompt.txt", 'r') as file:
+            self.prompt = file.read()
+        self.env = ['olivia', 'betty', 'scamgov', 'scamco', 
+                    'bankofamerica', 'chase', 'firstfinancial', 
+                    'acc_olivia', 'acc_betty', 'acc_scamgov']
+    
+    def generate_sequence(self, model):
+        """
+        Generate fraud sequences based on prompt in prompt.txt
 
-def generate_transaction_seq(num_seq, env):
-    """
-    Generate fraud sequences based on prompt in prompt.txt
+        Args:
+            model: model name to use for generation
 
-    Args:
-        num_seq: number of sequences to be generated
-        env: entities in the model environment (to check sequence validity)
-
-    Returns:
-        list of fraud sequences in json format
-    """
-    results = []
-
-    action_pattern = r"Action\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*(.+?)\s*\)"
-    transaction_pattern = r"Transaction\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*(\d+(?:\.\d{2})?)\s*\)"
-
-    while len(results) < num_seq:
+        Returns:
+            response text (raw JSON string from model)
+        """
         try:
             response = requests.post(
                 'http://localhost:11434/api/generate',
                 json={
-                    'model': 'chevalblanc/gpt-4o-mini',
-                    'prompt': prompt,
+                    'model': model,
+                    'prompt': self.prompt,
                     'stream': False
                 }
             )
-            res = response.json()['response']
-            seq = json.loads(res).get('sequence', [])
+            #print("Generating seq")
+            res =  response.json()['response'].lower()
+            print(res)
         except Exception as e:
             print("Error parsing LLM response:", e)
-            continue
+            return None
+        return res
+    
+    def validate(self, res):
+        """
+        Validates fraud patterns based on regex. Additionally enforces that
+        the last step in the sequence must be a Transaction(...) step.
+        """
+        action_pattern = r"action\(\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*([^,]+?)\s*,\s*(.+?)\s*\)"
+        transaction_pattern = r"transaction\(\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*,\s*(\d+(?:\.\d{2})?)\s*\)"
+action\(\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*\)$
+        try:
+            parsed = json.loads(res)
+        except Exception as e:
+            print("Invalid JSON format:", e)
+            return False
+
+        seq = parsed.get('sequence', [])
+        # print(seq)
 
         valid = True
-        for step in seq:
 
-            # Validate Action
-            if step.startswith("Action("):
-                match = re.fullmatch(action_pattern, step)
-                # Both the 1st and 3rd group must be in env
-                if not (match and match.group(1) in env and match.group(3) in env):
+        for step in seq:
+            # use lowercase when checking the prefix to be robust to case
+            step_l = step.lower()
+            if step_l.startswith("action("):
+                match = re.fullmatch(action_pattern, step, re.IGNORECASE)
+                if not (match and match.group(1).strip().lower() in self.env and match.group(3).strip().lower() in self.env):
                     valid = False
                     print("Invalid Action step:", step)
                     break
-
-            # Validate Transaction
-            elif step.startswith("Transaction("):
-                match = re.fullmatch(transaction_pattern, step)
-                # Both the 1st and 3rd group must be in env
-                if not (match and match.group(1) in env and match.group(3) in env):
+            elif step_l.startswith("transaction("):
+                match = re.fullmatch(transaction_pattern, step, re.IGNORECASE)
+                if not (match and match.group(1).strip().lower() in self.env and match.group(3).strip().lower() in self.env):
                     valid = False
                     print("Invalid Transaction step:", step)
                     break
@@ -63,17 +78,25 @@ def generate_transaction_seq(num_seq, env):
                 print("Unrecognized step type:", step)
                 break
 
+        # Enforce that the last step must be a Transaction(...)
         if valid:
-            results.append(seq)
+            if not seq:
+                print("Sequence is empty.")
+                return False
+            last_step = seq[-1]
+            if not last_step.lower().startswith("transaction("):
+                print("Last step is not a Transaction:", last_step)
+                return False
 
-    return results
-
-
-nodes = ['Olivia', 'Betty', 'ScamGov', 'ScamCo', 'BankOfAmerica', 'Chase', 'FirstFinancial', 'acc_olivia', 'acc_betty', 'acc_scamgov', 'Olivia_acc']
-print(generate_transaction_seq(1, nodes))
-
-                    
-            
-
-
+        return valid
     
+
+def main():
+    test = LLMPlanner()
+    model = "chevalblanc/gpt-4o-mini"
+    response = test.generate_sequence(model)
+    print(response)
+    print(test.validate(response))
+
+if __name__ == "__main__":
+    main()

@@ -16,15 +16,15 @@ FAST transfers are instantaneous and irreversible
 A TRANSACTION should be at the end the sequence
 
 Fraud Environment
-YOU MUST USE THE EXACT ENTITIY NAMES BELOW WITH THE SAME CAPITALIZATION (ex. victims, fraudsters, banks, accounts) Do not invent or modify
+YOU MUST USE THE EXACT ENTITIY NAMES BELOW WITH THE SAME CAPITALIZATION. Do not invent or modify
 entity names.
-Victims: Olivia, Betty
-Fraudsters: ScamGov, ScamCo
-Banks: BankOfAmerica, Chase, FirstFinancial
-Accounts: acc_olivia, acc_betty, acc_scamgov
+You may use "Olivia", "Betty" as entities for victims
+You may use "ScamGov", ScamCo" as entities for fraudsters
+You may use "BankOfAmerica", "Chase", "FirstFinancial" as entities for banks
+You may use "acc_olivia", "acc_betty", "acc_scamgov" as entities for accounts
 
 Example (this is an example of one complete sequence)
-RETURN IN STRICT JSON ONLY, DO NOT INCLUDE ANY EXPLANATIONS OR ADDITIONAL TEXT, NO VERBOSE
+RETURN IN STRICT JSON ONLY with sequence_id and sequence, DO NOT INCLUDE ANY EXPLANATIONS OR ADDITIONAL TEXT, NO VERBOSE, ONLY PROVIDE ONE SEQUENCE
 {
   "sequence_id": "<string>",
   "sequence": [
