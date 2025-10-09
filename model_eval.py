@@ -38,6 +38,7 @@ Example:
 
 import pandas as pd
 import llmplanner as gen
+import time
 
 # Models to test
 models = ['chevalblanc/gpt-4o-mini', 'llama3.2', 'mistral','gemma3:4b']
@@ -48,6 +49,7 @@ gen_agent = gen.LLMPlanner()
 
 
 for model in models:
+    print("----------", model, "----------")
     valid_count = 0
     total_len = 0
 
@@ -56,6 +58,8 @@ for model in models:
     er_action = 0
     er_trans = 0
     er_end_seq = 0
+
+    start_time = time.time()
 
     for i in range(samples):
         # Gen sequence
@@ -82,6 +86,9 @@ for model in models:
 
                 # Note Sequence length
                 total_len += len(response['sequence'])
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
 
     if valid_count > 0:
         avg_len = total_len/valid_count
@@ -96,7 +103,8 @@ for model in models:
         'Error: Input type': input_type,
         'Error: Action': er_action,
         'Error: Transaction': er_trans,
-        'Error: End sequence': er_end_seq
+        'Error: End sequence': er_end_seq,
+        'Elapsed time': elapsed_time
     })
 
 df = pd.DataFrame(results)
