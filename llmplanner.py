@@ -5,7 +5,7 @@ import json
 class LLMPlanner():
 
     def __init__(self):
-        with open("/Users/gracewang/Documents/fraud_coevolution/prompt.txt", 'r') as file:
+        with open("/Users/gracewang/Documents/fraud_coevolution/prompt2.txt", 'r') as file:
             self.prompt = file.read()
         self.env = ['olivia', 'betty', 'scamgov', 'scamco', 
                     'bankofamerica', 'chase', 'firstfinancial', 
@@ -146,7 +146,6 @@ def main():
     # Shouldn't work
     ex1 = """
     {
-    "sequence_id": "1",
     "sequence": [
         "action(scamco, phishing email, olivia, email, scamco urgent: verify your account)",
         "action(olivia, sensitive info submission, scamco, click, clicked on link to verify account)",
@@ -161,7 +160,6 @@ def main():
 
     ex2 = """
     {
-    "sequence_id": "1",
     "sequence": [
         "action(scamco, phishing email, olivia, email, scamco urgent: verify your account)",
         "action(olivia, sensitive info submission, scamco, click, clicked on link to verify account)",

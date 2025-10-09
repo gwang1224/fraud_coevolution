@@ -1,0 +1,106 @@
+YOUR TASK
+
+- Propose 1 valid action/transaction sequence within a network of entities and assets.
+
+- Follow these guidelines:
+
+
+GUIDELINES
+
+- An action must involve two entities (ENTITY1 and ENTITY2), action, channel, description.
+
+- ENTITY1 and ENTITY2 can be an individual or company.
+
+- ACTION is the action taken by ENTITY1 upon ENTITY2.
+
+- CHANNEL is the fraud mode (SMS, email, phone, etc).
+
+- DESCRIPTION is a detailed description of what action occurred (ex. for “impersonation” action, a potential description is “Posed as IRS agent”).
+
+- An Action must have **exactly five comma-separated fields** inside the parentheses:
+
+  Action(ENTITY1, ACTION, ENTITY2, CHANNEL, DESCRIPTION)
+
+- A Transaction must have exactly four comma-separated fields:
+
+  Transaction(ACCOUNT_FROM, FAST Payment, ACCOUNT_TO, AMOUNT)
+
+- Actions must be in chronological order.
+
+- For sequential actions, ENTITY2 in the first action should become ENTITY1 in the second action.
+
+- Money can only be fraudulently transferred if the account is compromised.
+
+- A fraudster can only transfer money into their bank account, however, once a victim’s account is compromised, a fraudster can transfer money from the victim’s account.
+
+- FAST transfers are instantaneous and irreversible.
+
+- A TRANSACTION should be at the end of the sequence.
+
+
+FRAUD ENVIRONMENT
+
+- YOU MUST USE THE EXACT ENTITY NAMES BELOW WITH THE SAME CAPITALIZATION. Do not invent or modify entity names.
+
+- If you want to reference someone's bank account, DO NOT say "Olivia's bank account", instead use the entities, such as "acc_olivia".
+
+- You may use:
+
+  - "Olivia", "Betty" as entities for victims.
+
+  - "ScamGov", "ScamCo" as entities for fraudsters.
+
+  - "BankOfAmerica", "Chase", "FirstFinancial" as entities for banks.
+
+  - "acc_olivia", "acc_betty", "acc_scamgov" as entities for accounts.
+
+
+EXAMPLE
+
+(This is an example of ONE complete sequence)
+
+Return a **single JSON dictionary** with the following structure, no verbose:
+
+{
+  "sequence": [
+    "action(...)", 
+    ...
+    "transaction(...)"
+  ]
+}
+
+Do not include any text before or after the JSON. Return only the raw JSON dictionary.
+
+Here is an example:
+
+{
+  "sequence": [
+    "action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)",
+    "action(Olivia, Sensitive Info Submission, ScamGov, SMS, sent SSN + DOB)",
+    "action(ScamGov, Social engineering, BankOfAmerica, Call, ...)",
+    "transaction(acc_olivia, FAST Payment, acc_scamgov, 3000.00)"
+  ]
+}
+
+
+TASK
+
+- Be creative!
+
+- The entities should tell a story.
+
+- Choose diverse entities, action/transaction combinations and unique fraud techniques.
+
+- Use the following guidelines.
+
+- Include a variety of entities.
+
+- Experiment with different types of fraud (Identity theft, account takeover, SIM swap, but you are NOT limited to these!)
+
+- Do NOT include:
+
+  - Explanations, comments, or notes.
+
+  - Extra fields in Action or Transaction.
+
+  - Non-matching entity names (use only names in the environment list).
