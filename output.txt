@@ -1,140 +1,0 @@
-Script started on Wed Oct  8 20:32:19 2025
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h[?2004l
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h//Users/gracewang/miniconda3/envs/and/bin/python /Users/gracewang [K//Documents/fraud_coevolution/model_eval.py[?2004l
-
-Generating sequence 0...
-Error parsing extracted JSON: Expecting ',' delimiter: line 10 column 6 (char 242)
-Raw JSON text:
- {
-"sequence_id": "1",
-"sequence": [
-    {
-        "action": "Stealing Identity", 
-        "entity1": "Betty", 
-        "entity2": "ScamCo", 
-        "channel": "", 
-        "description": "Betty's identity was stolen by ScamCo"
-    }
-None
-
-Generating sequence 1...
-No valid JSON found in LLM output.
-Raw output: Action(Betty, Identity Theft, Olivia, Call, Stole her identity)
-Action(Olivia, Sensitive Info Submission, ScamCo, SMS, sent SSN + DOB)
-Action(ScamCo, Account Takeover, FirstFinancial, Phone, Transferred money into Betty's account)
-
-Transaction(acc_scamco, FAST Payment, acc_firstfinancial, 5000.00)
-None
-
-Generating sequence 2...
-{'sequence_id': '<string>', 'sequence': ['action(scamco, phishing email, olivia, email, scam url sent)', 'action(olivia, sensitive info submission, scamco, web form, entered credit card number and expiry date)', 'action(scamco, account takeover, firstfinancial, call, pretended to be bank representative and gained access to account)', 'transaction(acc_scamco, fast payment, acc_firstfinancial, 500.00)']}
-Invalid transaction step:  transaction(acc_scamco, fast payment, acc_firstfinancial, 500.00)
-
-Generating sequence 3...
-^CTraceback (most recent call last):
-  File "/Users/gracewang/Documents/fraud_coevolution/model_eval.py", line 63, in <module>
-    response = gen_agent.generate_sequence(model)
-  File "/Users/gracewang/Documents/fraud_coevolution/llmplanner.py", line 25, in generate_sequence
-    response = requests.post(
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/requests/api.py", line 115, in post
-    return request("post", url, data=data, json=json, **kwargs)
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/requests/api.py", line 59, in request
-    return session.request(method=method, url=url, **kwargs)
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
-    resp = self.send(prep, **send_kwargs)
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
-    r = adapter.send(request, **kwargs)
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/requests/adapters.py", line 667, in send
-    resp = conn.urlopen(
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/urllib3/connectionpool.py", line 787, in urlopen
-    response = self._make_request(
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/urllib3/connectionpool.py", line 534, in _make_request
-    response = conn.getresponse()
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/site-packages/urllib3/connection.py", line 565, in getresponse
-    httplib_response = super().getresponse()
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/http/client.py", line 1375, in getresponse
-    response.begin()
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/http/client.py", line 318, in begin
-    version, status, reason = self._read_status()
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/http/client.py", line 279, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-  File "/Users/gracewang/miniconda3/envs/and/lib/python3.10/socket.py", line 717, in readinto
-    return self._sock.recv_into(b)
-KeyboardInterrupt
-
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h[?2004l
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h//Users/gracewang/miniconda3/envs/and/bin/python /Users/gracewang [K//Documents/fraud_coevolution/llmplanner.py[?2004l
-{'sequence_id': '<string>', 'sequence': ['action(scamco, social engineering, acc_betty, email, offer fake investment opportunity)', 'action(acc_betty, sensitive info submission, scamco, phone call, ...)', "action(scamco, account takeover, firstfinancial, call, pretend to be betty's friend and convince her to give access to her bank account)", 'action(acc_scamco, money transfer, acc_firstfinancial, 1000.00)', 'action(acc_scamco, sensitive info submission, scamgov, email, ...)', "action(scamgov, identity theft, firstfinancial, call, pretend to be betty's friend and convince her to give access to her bank account)", 'transaction(acc_firstfinancial, fast payment, acc_scamgov, 5000.00)']}
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h[?2004l
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h//Users/gracewang/miniconda3/envs/and/bin/python /Users/gracewang [K//Documents/fraud_coevolution/llmplanner.py[?2004l
-No valid JSON found in LLM output.
-Raw output: Action(Acc_olivia, Impersonation, ScamCo, Call, Posed as IT specialist)
-Action(Olivia, Sensitive Info Submission, Acc_scamco, SMS, sent login credentials)
-Transaction(Acc_scamco, FAST Payment, BankOfAmerica, 500.00)
-
-Action(Acc_scamco, Account Takeover, Olivia, Phone, Sent email with login link)
-Action(Olivia, Social Engineering, ScamCo, Email, Clicked on fake login page)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 2500.00)
-
-Action(ScamCo, SIM Swap Attack, Olivia's Carrier, Phone Call, Requested phone number change)
-Action(Olivia, SIM Swap Attack, ScamCo, Email, Provided verification code via text message)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 1500.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's Bank of America account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 100.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's Chase account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 800.00)
-
-Action(ScamCo, Social Engineering Trickery, Olivia's Bank of America account, Phone Call, Hacked access to online banking)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake login page and entered credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 500.00)
-
-Action(ScamCo, Identity Theft Confirmation, Olivia's Bank of America account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 300.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's First Financial account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 200.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's Bank of America account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 150.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's Chase account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 100.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's First Financial account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 50.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's Bank of America account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 10.00)
-
-Action(ScamCo, Account Takeover Confirmation, Olivia's Chase account, Phone Call, Verified new number ownership)
-Action(Olivia, Phishing Attack, ScamCo, Email, Clicked on fake confirmation email and provided additional login credentials)
-Transaction(Acc_scamco, FAST Payment, Acc_olivia, 1.00)
-
-ACTION
-Action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)
-None
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h[?2004l
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h//Users/gracewang/miniconda3/envs/and/bin/python /Users/gracewang [K//Documents/fraud_coevolution/llmplanner.py[?2004l
-{'sequence': ['action(scamgov, impersonation, olivia, call, posed as irs agent)', 'action(olivia, sensitive info submission, scamgov, sms, sent ssn + dob)', 'action(scamgov, social engineering, chase, email, offer fake stimulus payment)', 'transaction(acc_olivia, fast payment, acc_scamgov, 500.00)', 'action(olivia, bank account takeover, scamco, call, provide login credentials)', 'action(scamco, unauthorized transaction, firstfinancial, online banking, transfer $10,000 to a fake account)', 'transaction(acc_scamgov, fast payment, acc_olivia, 500.00)']}
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h[?2004l
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h//Users/gracewang/miniconda3/envs/and/bin/python /Users/gracewang [K//Documents/fraud_coevolution/llmplanner.py[?2004l
-Invalid transaction step:  transaction(scamco, money transfer, olivia's bankaccount (acc_olivia), 5000.00)
-(False, 'transaction')
-(True, None)
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h[?2004l
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h//Users/gracewang/miniconda3/envs/and/bin/python /Users/gracewang [K//Documents/fraud_coevolution/llmplanner.py[?2004l
-{'sequence': ['action(scamco, phishing, olivia, email, received fake job offer)', 'action(olivia, sensitive info submission, scamco, call, accepted terms)', 'action(scamco, social engineering, bankofamerica, phone, asked to verify information)', 'transaction(acc_olivia, fast payment, acc_scamco, 5000.00)', 'action(olivia, account takeover, scamgov, call, asked for help with account issues)', 'action(scamgov, impersonation, olivia, email, sent fake legal notice)', 'action(olivia, sensitive info submission, scamgov, phone, provided personal information)', 'transaction(acc_scamgov, fast payment, acc_olivia, 3000.00)', "action(scamco, sim swap attack, olivia's carrier, text, sent fake account take over notice)", 'action(olivia, account takeover, scamco, phone, asked for help with identity theft)', 'transaction(acc_scamco, fast payment, acc_olivia, 2000.00)']}
-<class 'dict'>
-Invalid action step:  action(scamco, sim swap attack, olivia's carrier, text, sent fake account take over notice)
-False action
-[1m[7m%[27m[1m[0m                                                                                                                          [0m[27m[24m[J(base) gracewang@Graces-MacBook-Pro-2 fraud_coevolution % [K[?2004h
