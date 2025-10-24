@@ -7,11 +7,8 @@ class LLMPlanner():
     def __init__(self):
         with open("/Users/gracewang/Documents/fraud_coevolution/prompts/prompt2.txt", 'r') as file:
             self.prompt = file.read()
-        self.env = ['olivia', 'betty', 'scamgov', 'scamco', 
-                    'bankofamerica', 'chase', 'firstfinancial', 
-                    'acc_olivia', 'acc_betty', 'acc_scamgov', 'acc_scamco']
-        
-    def generate_sequence(self, model):
+
+    def generate_sequence(self):
         """
         Generate fraud sequences based on prompt in prompt.txt
 
@@ -25,7 +22,7 @@ class LLMPlanner():
             response = requests.post(
                 'http://localhost:11434/api/generate',
                 json={
-                    'model': model,
+                    'model': "llama3.2",
                     'prompt': self.prompt,
                     'stream': False
                 }
@@ -60,12 +57,10 @@ class LLMPlanner():
         return res
 
 
-    
 
 def main():
     test = LLMPlanner()
-    model = "llama3.2"
-    response = test.generate_sequence(model)
+    response = test.generate_sequence()
     print(response)
 
 

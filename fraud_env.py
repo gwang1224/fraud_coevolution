@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import networkx as nx
 
 class FraudEnv():
@@ -56,6 +57,16 @@ class FraudEnv():
 
     def __str__(self):
         return f"FraudEnv with {self.G.number_of_nodes()} nodes and {self.G.number_of_edges()} edges."
+    
+    def draw_graph(self):
+        pos = nx.spring_layout(self.G, k = 0.5)
+        plt.figure(figsize=(8, 6))
+        nx.draw_networkx_nodes(self.G, pos, node_color='lightblue', node_size=800)
+        nx.draw_networkx_labels(self.G, pos, font_size=9)
+        nx.draw_networkx_edges(self.G, pos, arrows=True, arrowstyle='-|>', arrowsize=20)
+        nx.draw_networkx_edge_labels(self.G, pos, edge_labels={(u, v): d.get('rel', '') for u, v, d in self.G.edges(data=True)}, font_size = 9)
+        plt.axis('off')
+        plt.show()
 
 
 # Testing
@@ -89,3 +100,4 @@ if __name__ == "__main__":
     print(env1.get_nodes())
     print(env1.get_edges())
     print(env1)
+    env1.draw_graph()
