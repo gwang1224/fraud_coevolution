@@ -50,7 +50,10 @@ class FraudEnv():
 
     def get_graph(self):
         return self.G
-
+    
+    # MAYBE IMPLEMENT LATER
+    # def get_acc_balances(self):
+    
     def reset(self):
         self.G.clear()
         print("Graph has been reset.")
@@ -61,7 +64,7 @@ class FraudEnv():
     def draw_graph(self):
         pos = nx.spring_layout(self.G, k = 0.5)
         plt.figure(figsize=(8, 6))
-        nx.draw_networkx_nodes(self.G, pos, node_color='lightblue', node_size=800)
+        nx.draw_networkx_nodes(self.G, pos, node_color='lightblue', node_size=700)
         nx.draw_networkx_labels(self.G, pos, font_size=9)
         nx.draw_networkx_edges(self.G, pos, arrows=True, arrowstyle='-|>', arrowsize=20)
         nx.draw_networkx_edge_labels(self.G, pos, edge_labels={(u, v): d.get('rel', '') for u, v, d in self.G.edges(data=True)}, font_size = 9)
@@ -83,8 +86,8 @@ if __name__ == "__main__":
     env1.add_node_with_attribute("Betty", "individual", {"role": "victim"})
 
     # Add fraudsters
-    env1.add_node_with_attribute("ScamGov", "fraudster", {"role": "fraudco", "status": "active", "description": "Impersonates gov for SID"})
-    env1.add_node_with_attribute("ScamCo", "fraudster", {"role": "fraudco", "status": "active", "description": "Impersonates gov for SID"})
+    env1.add_node_with_attribute("ScamGov", "fraudster", {"role": "fraudco", "description": "Impersonates gov for SID"})
+    env1.add_node_with_attribute("ScamCo", "fraudster", {"role": "fraudco", "description": "Impersonates gov for SID"})
 
     # Add accounts (using valid banks)
     env1.add_node_with_attribute("acc_olivia", "account", {"owner": "Olivia", "bank": "BankOfAmerica", "balance": 60000.00})
@@ -101,3 +104,5 @@ if __name__ == "__main__":
     print(env1.get_edges())
     print(env1)
     env1.draw_graph()
+
+    

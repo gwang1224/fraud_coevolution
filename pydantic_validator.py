@@ -45,35 +45,41 @@ class SequenceModel(BaseModel):
                 if src not in existing_entities or dst not in existing_entities:
                     raise ValueError(f"Unknown account in transaction: {s}")
 
-                try:
-                    amount = float(amount_str)
-                except ValueError:
-                    raise ValueError(f"Invalid amount: {amount_str}")
+                # CHECKS WHETHER ACCOUNT HAS BALANCE IS SUFFICIENT
+                # maybe implement later
+                # try:
+                #     amount = float(amount_str)
+                # except ValueError:
+                #     raise ValueError(f"Invalid amount: {amount_str}")
 
-                # (rule 4) Update and check balances
-                balances[src] = balances.get(src, 0.0) - amount
-                balances[dst] = balances.get(dst, 0.0) + amount
+                # # (rule 4) Update and check balances
+                # balances[src] = balances.get(src, 0.0) - amount
+                # balances[dst] = balances.get(dst, 0.0) + amount
 
-                if balances[src] < 0:
-                    raise ValueError(f"Negative balance detected for {src}: {balances[src]}")
+                # if balances[src] < 0:
+                #     raise ValueError(f"Negative balance detected for {src}: {balances[src]}")
 
         return seq
     
 
-env_entities = {"ScamGov", "Olivia", "BankOfAmerica", "acc_olivia", "acc_scamgov"}
-env_balances = {"acc_olivia": 5000.0, "acc_scamgov": 0.0}
+def main():
+    env_entities = {"ScamGov", "Olivia", "BankOfAmerica", "acc_olivia", "acc_scamgov"}
+    env_balances = {"acc_olivia": 5000.0, "acc_scamgov": 0.0}
 
-test = {
-  "sequence": [
-    "action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)",
-    "action(Olivia, Sensitive Info Submission, ScamGov, SMS, sent SSN + DOB)",
-    "action(ScamGov, Social engineering, BankOfAmerica, Call, a;lskdfj)",
-    "transaction(acc_olivia, FAST Payment, acc_scamgov, 5000.00)"
-  ]
-}
+    test = {
+    "sequence": [
+        "action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)",
+        "action(Olivia, Sensitive Info Submission, ScamGov, SMS, sent SSN + DOB)",
+        "action(ScamGov, Social engineering, BankOfAmerica, Call, a;lskdfj)",
+        "transaction(acc_olivia, FAST Payment, acc_scamgov, 5000.00)"
+    ]
+    }
 
-try:
-    T = SequenceModel.model_validate(test, context={"entities": env_entities, "balances": env_balances})
-    print("✅ Validation passed")
-except Exception as e:
-    print("❌ Validation failed:", e)
+    try:
+        T = SequenceModel.model_validate(test, context={"entities": env_entities, "balances": env_balances})
+        print("✅ Validation passed")
+    except Exception as e:
+        print("❌ Validation failed:", e)
+
+if __name__ == "__main__":
+    main()
