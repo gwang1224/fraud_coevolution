@@ -66,17 +66,10 @@ def main():
     env_entities = {"ScamGov", "Olivia", "BankOfAmerica", "acc_olivia", "acc_scamgov"}
     env_balances = {"acc_olivia": 5000.0, "acc_scamgov": 0.0}
 
-    test = {
-    "sequence": [
-        "action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)",
-        "action(Olivia, Sensitive Info Submission, ScamGov, SMS, sent SSN + DOB)",
-        "action(ScamGov, Social engineering, BankOfAmerica, Call, a;lskdfj)",
-        "transaction(acc_olivia, FAST Payment, acc_scamgov, 5000.00)"
-    ]
-    }
+    test = {'sequence': ['action(scamgov, social engineering, acc_sally, call, sent phishing link)', 'action(acc_sally, sensitive info submission, scamgov, sms, sent ssn + dob)', 'action(acc_sally, account takeover, firstfinancial, call, gained access to account)', 'action(firstfinancial, account compromise, acc_sally, call, triggered fraudulent transactions)', 'action(scamgov, sim swap, acc_grace, sms, switched phone number)', 'action(acc_grace, number porting issue, scamgov, call, inability to receive calls)', 'action(acc_grace, identity theft, scamco, call, stolen identity used for fraud)', 'transaction(acc_grace, fast payment, acc_scamgov, 10000.00)']}
 
     try:
-        T = SequenceModel.model_validate(test, context={"entities": env_entities, "balances": env_balances})
+        T = SequenceModel.model_validate(test, context={"entities": env_entities})
         print("✅ Validation passed")
     except Exception as e:
         print("❌ Validation failed:", e)

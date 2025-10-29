@@ -8,16 +8,18 @@ class FraudEnv():
 
         self.NODE_TEMPLATES = {
             "individual": {
-                "role": None,
+                "role": "individual",
             },
             "fraudster": {
-                "role": None,
+                "role": "fraudster",
                 "status": "active",
                 "description": None,
             },
             "bank": {
+                "role": "bank",
             },
             "account": {
+                "role": "account",
                 "owner": None,
                 "bank": None,
                 "balance": 0.0,
@@ -43,13 +45,26 @@ class FraudEnv():
         print(f"Added ownership relationship between {node_id1} -> {node_id2}")
 
     def get_nodes(self):
-        return list(self.G.nodes(data=True))
+        return list(self.G.nodes)
 
     def get_edges(self):
         return list(self.G.edges(data=True))
 
     def get_graph(self):
         return self.G
+    
+    def get_individuals(self):
+        return [node for node, data in self.G.nodes(data=True) if data.get('role') == 'individual']
+    
+    def get_fraudsters(self):
+        return [node for node, data in self.G.nodes(data=True) if data.get('role') == "fraudster"]
+    
+    def get_banks(self):
+        return [node for node, data in self.G.nodes(data=True) if data.get('role') == "bank"]
+    
+    def get_acc(self):
+        return [node for node, data in self.G.nodes(data=True) if data.get('role') == "account"]
+
     
     def update_balance(self, acc_from, acc_to, amount):
         self.G.nodes[acc_from]["balance"] -= amount
@@ -87,12 +102,12 @@ if __name__ == "__main__":
     env1.add_node_with_attribute("FirstFinancial", "bank")
 
     # Add individuals
-    env1.add_node_with_attribute("Olivia", "individual", {"role": "victim"})
-    env1.add_node_with_attribute("Betty", "individual", {"role": "victim"})
+    env1.add_node_with_attribute("Olivia", "individual")
+    env1.add_node_with_attribute("Betty", "individual")
 
     # Add fraudsters
-    env1.add_node_with_attribute("ScamGov", "fraudster", {"role": "fraudco", "description": "Impersonates gov for SID"})
-    env1.add_node_with_attribute("ScamCo", "fraudster", {"role": "fraudco", "description": "Impersonates gov for SID"})
+    env1.add_node_with_attribute("ScamGov", "fraudster", {"description": "Impersonates gov for SID"})
+    env1.add_node_with_attribute("ScamCo", "fraudster", {"description": "Impersonates gov for SID"})
 
     # Add accounts (using valid banks)
     env1.add_node_with_attribute("acc_olivia", "account", {"owner": "Olivia", "bank": "BankOfAmerica", "balance": 60000.00})
@@ -109,5 +124,3 @@ if __name__ == "__main__":
     print(env1.get_edges())
     print(env1)
     env1.draw_graph()
-
-    
