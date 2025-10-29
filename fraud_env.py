@@ -51,6 +51,11 @@ class FraudEnv():
     def get_graph(self):
         return self.G
     
+    def update_balance(self, acc_from, acc_to, amount):
+        self.G.nodes[acc_from]["balance"] -= amount
+        self.G.nodes[acc_to]["balance"] += amount
+
+    
     # MAYBE IMPLEMENT LATER
     # def get_acc_balances(self):
     
@@ -63,9 +68,9 @@ class FraudEnv():
     
     def draw_graph(self):
         pos = nx.spring_layout(self.G, k = 0.5)
-        plt.figure(figsize=(8, 6))
-        nx.draw_networkx_nodes(self.G, pos, node_color='lightblue', node_size=700)
-        nx.draw_networkx_labels(self.G, pos, font_size=9)
+        plt.figure(figsize=(9, 7))
+        nx.draw_networkx_nodes(self.G, pos, node_color='lightblue', node_size=1000)
+        nx.draw_networkx_labels(self.G, pos, font_size=15)
         nx.draw_networkx_edges(self.G, pos, arrows=True, arrowstyle='-|>', arrowsize=20)
         nx.draw_networkx_edge_labels(self.G, pos, edge_labels={(u, v): d.get('rel', '') for u, v, d in self.G.edges(data=True)}, font_size = 9)
         plt.axis('off')
