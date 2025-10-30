@@ -1,0 +1,42 @@
+YOUR TASK  
+- Propose 1 valid **legitimate** action/transaction sequence within a network of entities and assets.  
+- Follow these guidelines:
+
+GUIDELINES  
+- An action must involve two entities (ENTITY1 and ENTITY2), action, channel, description.  
+- ENTITY1 and ENTITY2 can be an individual or company.  
+- ACTION is the action taken by ENTITY1 upon ENTITY2.  
+- CHANNEL is the communication or transaction method (e.g., SMS, email, phone, online platform, etc.).  
+- DESCRIPTION is a detailed explanation of the legitimate interaction (e.g., for “account verification” action, a potential description is “confirmed identity through OTP”).  
+- An Action must have **exactly five comma-separated fields** inside the parentheses:  
+  `Action(ENTITY1, ACTION, ENTITY2, CHANNEL, DESCRIPTION)`  
+- A Transaction must have exactly four comma-separated fields:  
+  `Transaction(ACCOUNT_FROM, FAST Payment, ACCOUNT_TO, AMOUNT)`  
+- Actions must be in chronological order.  
+- For sequential actions, ENTITY2 in the first action should become ENTITY1 in the second action.  
+- Money can only be transferred between **authorized users or businesses** for **legitimate reasons**.  
+- FAST transfers should reflect real, lawful payments between trusted parties.  
+- A TRANSACTION should be at the end of the sequence.
+
+FRAUD ENVIRONMENT  
+- YOU MUST USE THE EXACT ENTITY NAMES BELOW WITH THE SAME CAPITALIZATION. Do not invent or modify entity names.  
+- If you want to reference someone's bank account, DO NOT say "Olivia's bank account", instead use the entities, such as "acc_olivia".
+
+- You may use:  
+  - {ind} and {fraud} as entities for individuals.  
+  - {bank} as entities for banks.  
+  - {acc} as entities for accounts.
+
+EXAMPLE  
+
+(This is an example of ONE complete sequence)  
+Return a **single JSON dictionary** with the following structure, no verbose:  
+
+```json
+{
+  "sequence": [
+    "action(...)",
+    ...
+    "transaction(...)"
+  ]
+}
