@@ -85,7 +85,7 @@ class FraudEnv():
         pos = nx.spring_layout(self.G, k = 0.5)
         plt.figure(figsize=(9, 7))
         nx.draw_networkx_nodes(self.G, pos, node_color='lightblue', node_size=1000)
-        nx.draw_networkx_labels(self.G, pos, font_size=15)
+        nx.draw_networkx_labels(self.G, pos, font_size=5)
         nx.draw_networkx_edges(self.G, pos, arrows=True, arrowstyle='-|>', arrowsize=20)
         nx.draw_networkx_edge_labels(self.G, pos, edge_labels={(u, v): d.get('rel', '') for u, v, d in self.G.edges(data=True)}, font_size = 9)
         plt.axis('off')
