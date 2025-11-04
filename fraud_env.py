@@ -3,17 +3,12 @@ import networkx as nx
 
 class FraudEnv():
     def __init__(self):
-        # init graph
         self.G = nx.DiGraph()
 
         self.NODE_TEMPLATES = {
-            "individual": {
-                "role": "individual",
-            },
-            "fraudster": {
-                "role": "fraudster",
-                "status": "active",
-                "description": None,
+            "participant": {
+                "role": None, # Either individual or fraudster
+                "isFraudster": None, #True or False
             },
             "bank": {
                 "role": "bank",
@@ -29,9 +24,31 @@ class FraudEnv():
         }
     
     def add_node_with_attribute(self, node_id, node_type, custom_attrs=None):
+        """
+        Adds a node to the fraud environment graph using predefined templates.
+
+        Args:
+        node_id (str): 
+            Unique identifier for the node (e.g., "Alice", "acc_alice", "Chase").
+        node_type (str): 
+            Type of node to add (must exist in `NODE_TEMPLATES`, e.g., "participant", "bank", "account").
+        custom_attrs (dict, optional): 
+            Dictionary of custom attributes to update the default template values 
+
+        Raises:
+            ValueError: 
+                If the specified `node_type` is not found in `NODE_TEMPLATES`, 
+                or if any key in `custom_attrs` does not exist in the template.
+
+        Returns:
+            None  
+        """
+        # Must add node with template
         if node_type not in self.NODE_TEMPLATES:
             raise ValueError(f"Unknown node type: '{node_type}'")
+        
         attr = self.NODE_TEMPLATES[node_type].copy()
+
         if custom_attrs:
             invalid_attr = [i for i in custom_attrs if i not in attr]
             if invalid_attr:
@@ -40,9 +57,19 @@ class FraudEnv():
         self.G.add_node(node_id, **attr)
         print(f"Successfully added node {node_id} as a {node_type} node.")
 
+        try:
+            if node_type == "account":
+                owner = custom_attrs["owner"]
+                bank = custom_attrs["bank"]
+                self.G.add_edge(owner, node_id, rel="owns")
+                self.G.add_edge(bank, node_id, rel="hosts")
+                print(f"   ↳ Added edges: {owner} → {node_id} and {bank} → {node_id}")
+        except Exception as e:
+            Exception("Add ownership and bank node.")
+
     def add_ownership_edge(self, node_id1, node_id2):
-        self.G.add_edge(node_id1, node_id2, rel="owns")
-        print(f"Added ownership relationship between {node_id1} -> {node_id2}")
+            self.G.add_edge(node_id1, node_id2, rel="owns")
+            print(f"Added ownership relationship between {node_id1} -> {node_id2}")
 
     def get_nodes(self):
         return list(self.G.nodes)
@@ -102,12 +129,12 @@ if __name__ == "__main__":
     env1.add_node_with_attribute("FirstFinancial", "bank")
 
     # Add individuals
-    env1.add_node_with_attribute("Olivia", "individual")
-    env1.add_node_with_attribute("Betty", "individual")
+    env1.add_node_with_attribute("Olivia", "participant", {"role": "individual"})
+    env1.add_node_with_attribute("Betty", "participant", {"role": "individual"})
 
     # Add fraudsters
-    env1.add_node_with_attribute("ScamGov", "fraudster", {"description": "Impersonates gov for SID"})
-    env1.add_node_with_attribute("ScamCo", "fraudster", {"description": "Impersonates gov for SID"})
+    env1.add_node_with_attribute("ScamGov", "participant", {"role": "fraudster"})
+    env1.add_node_with_attribute("ScamCo", "participant", {"role": "fraudster"})
 
     # Add accounts (using valid banks)
     env1.add_node_with_attribute("acc_olivia", "account", {"owner": "Olivia", "bank": "BankOfAmerica", "balance": 60000.00})
