@@ -140,11 +140,19 @@ class LLMPlanner():
         - {bank} as entities for banks.  
         - {acc} as entities for accounts.
 
-        EXAMPLE:
+        EXAMPLE 1:
         {{
         "sequence": [
             "action(Olivia, payment, BankOfAmerica, app, paid electricity bill)",
             "transaction(acc_olivia, fast payment, acc_utility, 200.00)"
+        ]
+        }}
+
+        EXAMPLE 2:
+        {{
+        "sequence": [
+            "action(Olivia, payment, Grace, mobile phone, payment to friend)",
+            "transaction(acc_olivia, fast payment, acc_grace, 200.00)"
         ]
         }}
 
