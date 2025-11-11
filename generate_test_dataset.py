@@ -47,7 +47,7 @@ def add_fraudsters(env):
 
 def generate_sequences(env, planner, data_len=100, num_fraud_seq=20):
     fraud_ind = random.sample(range(0, data_len), num_fraud_seq)
-    with open("sequences.json", "w") as f:
+    with open("sequences2.json", "w") as f:
         for i in range(data_len):
             print(i)
             label = "fraud" if i in fraud_ind else "legit"

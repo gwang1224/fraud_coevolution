@@ -43,8 +43,7 @@ class LLMPlanner():
         - A TRANSACTION should be at the end of the sequence.
 
         FRAUD ENVIRONMENT
-        - YOU MUST USE THE EXACT ENTITY NAMES BELOW WITH THE SAME CAPITALIZATION. Do not invent or modify entity names.
-        - If you want to reference someone's bank account, DO NOT say "Olivia's bank account", instead use the entities, such as "acc_olivia".
+        - You must use the exact entity names. Do not invent or modify entity names.
 
         - You may use:
 
@@ -282,7 +281,7 @@ def main():
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    print(planner.generate_sequence("legit"))
+    # print(planner.generate_sequence("legit"))
     print(planner.generate_sequence("fraud"))
 
 
