@@ -2,6 +2,7 @@ import requests
 import re
 import json
 import fraud_env
+import pydantic_validator as pv
 
 
 class LLMPlanner():
@@ -59,12 +60,14 @@ class LLMPlanner():
         EXAMPLE
         (This is an example of ONE complete sequence)
         Take inspiration from this, do NOT copy it, be original
-        {{"sequence": [
-            "action(ScamGov, Impersonation, Olivia, Call, Posed as IRS agent)",
-            "action(Olivia, Sensitive Info Submission, ScamGov, SMS, sent SSN + DOB)",
-            "action(ScamGov, Social engineering, BankOfAmerica, Call, ...)",
-            "transaction(acc_olivia, FAST Payment, acc_scamgov, 3000.00)"
-        ]}}
+        {{
+        "sequence": [
+            "action(<entity1>, Impersonation, <entity2>, Call, Posed as IRS agent)",
+            "action(<entity2>, Sensitive Info Submission, <entity1>, SMS, sent SSN + DOB)",
+            "action(<entity1>, Social engineering, <bank1>, Call, ...)",
+            "transaction(<entity2 bank account>, FAST Payment, <entity1 bank account>, 3000.00)"
+        ]
+        }}
 
         Return a **single JSON dictionary** with the following structure, no verbose:
 
@@ -183,106 +186,173 @@ class LLMPlanner():
         
 
     def generate_sequence(self, type):
-        """
-        Generate fraud sequences based on prompt in prompt.txt
-
-        Args:
-            model: model name to use for generation
-        Returns:
-            response text (raw JSON string from model)
-        """
-
-        # Brace parser
         def extract_balanced_json(text):
             start = text.find('{')
             if start == -1:
                 return None
+
             open_braces = 0
+            open_brackets = 0
             for i in range(start, len(text)):
                 if text[i] == '{':
                     open_braces += 1
                 elif text[i] == '}':
                     open_braces -= 1
-                    if open_braces == 0:
-                        return text[start:i+1]
-            return None  # unbalanced
+                elif text[i] == '[':
+                    open_brackets += 1
+                elif text[i] == ']':
+                    open_brackets -= 1
 
-        if type == 'fraud':
-            p = self.fraud_prompt()
-        if type == 'legit':
-            p = self.legit_prompt()
-        
-        try:
-            response = requests.post(
-                'http://localhost:11434/api/generate',
-                json={
-                    'model': "llama3.2",
-                    'prompt': p,
-                    'stream': False
-                }
-            )
+                if open_braces == 0 and open_brackets == 0 and i > start:
+                    candidate = text[start:i+1]
+                    try:
+                        json.loads(candidate)
+                        return candidate
+                    except json.JSONDecodeError:
+                        continue
+
+            return None
+
+        base_prompt = self.fraud_prompt() if type == 'fraud' else self.legit_prompt()
+        current_prompt = base_prompt
+        valid_sequence = False
+        attempt_count = 0
+
+        while not valid_sequence:
+            attempt_count += 1
+            print("\n" + str(attempt_count))
+            print(current_prompt)
             try:
+                response = requests.post(
+                    'http://localhost:11434/api/generate',
+                    json={
+                        'model': "llama3.2",
+                        'prompt': current_prompt,
+                        'stream': False
+                    }
+                )
                 raw = response.json().get('response', '').strip()
                 if not raw:
                     print("Empty LLM response.")
-                    return None
+                    current_prompt += "\nNOTE: Last response was empty. Try again and ensure to respond with JSON only.\n"
+                    continue
 
-                # Extract the first JSON block if extra data exists
                 json_text = extract_balanced_json(raw)
                 if not json_text:
                     print("No valid or complete JSON found.")
                     print("Raw output:", raw)
-                    return None
+                    current_prompt += f"\nNOTE: Last output had no valid JSON. Only output a clean JSON dictionary.\nRaw output: {raw}\n"
+                    continue
+
                 try:
                     res = json.loads(json_text.lower())
                 except json.JSONDecodeError as e:
                     print("Error parsing extracted JSON:", e)
-                    print("Raw JSON text:\n", json_text)
-                    return None
+                    current_prompt += f"\nNOTE: JSON error occurred: {str(e)}\nInvalid JSON was: {json_text}\n"
+                    continue
+
+                if not self.syntax_validator(res):
+                    current_prompt += f"\nNOTE: Your sequence failed syntax validation. Please revise to follow the action and transaction format exactly.\nSequence: {res}\n"
+                    continue
+
+                reasoning = self.semantic_validator(res)
+                if reasoning:
+                    current_prompt += f"\nNOTE: Semantic validation failed. Review this reasoning and try again.\n{reasoning}\n"
+                    continue
+
+                valid_sequence = True
+                return res, attempt_count
+
             except Exception as e:
-                print("Error parsing LLM response:", e)
-                return None
-        except Exception as e:
-            print("Error parsing LLM response:", e)
-            return None
-        return res
+                print("❌ Unexpected error:", e)
+                current_prompt += f"\nNOTE: An unexpected error occurred while processing your sequence: {str(e)}\n"
+    
+
 
 ## GEPA optimizer
+    ## GEPA style optimizer
+    def semantic_validator(self, prompt):
+
+        validator_prompt = f"""
+        You are a fraud simulation environment validator. Your job is to determine whether a given sequence of actions and transactions is *logically valid*, based on realistic financial behavior and common sense.
+
+        Here is the input sequence:
+        {prompt}
+
+        Rules to follow:
+        1. Only participants (individuals or fraudsters) can perform actions.
+        2. Accounts and banks cannot perform actions directly.
+        3. SIM swaps must be done by a person (not an account), and must target a telco.
+        4. Transactions must not be initiated by fraudsters directly.
+        5. The sequence must make sense as a story — cause and effect should be coherent.
+
+        Instructions:
+        - On the first line, output exactly one word: "valid" or "invalid".
+        - On the following lines, provide a clear explanation of your reasoning.
+        - If invalid, explain why and suggest how to fix it.
+        - Use the following format strictly for parsing:
+        
+        <valid or invalid>
+        Reasoning:
+        <your detailed explanation here>
+        """
+
+        response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "llama3.2",  # Or your fine-tuned validator model
+            "prompt": validator_prompt,
+            "stream": False,
+            "options": {"temperature": 0}
+        }
+    )
+        label = response.json().get("response", "").strip().lower()
+        if label.startswith('valid'):
+            return None
+        else:
+            NEW_PROMPT = f"Here is the sequence you generated and why it's invalid: {prompt}"
+            return NEW_PROMPT + label
+
+    def syntax_validator(self, prompt):
+        try:
+            T = pv.SequenceModel.model_validate(prompt, context={"entities": self.env.get_nodes()})
+            return True
+        except Exception as e:
+            print("❌ Validation failed:", e)
+            return False
 
 def main():
 
     env = fraud_env.FraudEnv()
 
-    # Add banks
-    env.add_node_with_attribute("BankOfAmerica", "bank")
     env.add_node_with_attribute("bankofamerica", "bank")
     env.add_node_with_attribute("chase", "bank")
     env.add_node_with_attribute("firstfinancial", "bank")
 
-    # Add individuals
-    env.add_node_with_attribute("sally", "individual")
-    env.add_node_with_attribute("grace", "individual")
-    env.add_node_with_attribute("bill", "individual")
+    env.add_node_with_attribute("sally", "participant", {"role": "individual", "isFraudster": False})
+    env.add_node_with_attribute("acc_sally", "account", {"owner": "sally", "bank": "bankofamerica", "balance": 6000.00})
+    env.add_node_with_attribute("grace", "participant", {"role": "individual", "isFraudster": False})
+    env.add_node_with_attribute("acc_grace", "account", {"owner": "grace", "bank": "chase", "balance": 400000.00})
+    env.add_node_with_attribute("bill", "participant", {"role": "individual", "isFraudster": False})
+    env.add_node_with_attribute("acc_bill", "account", {"owner": "bill", "bank": "firstfinancial", "balance": 15000.00})
 
-    # Add fraudsters
-    env.add_node_with_attribute("scamgov", "fraudster", {"status": "active", "description": "Impersonates gov for SID"})
-    env.add_node_with_attribute("scamco", "fraudster", {"status": "active", "description": "Impersonates gov for SID"})
-
-    # Add accounts (using valid banks)
-    env.add_node_with_attribute("acc_sally", "account", {"owner": "sally", "bank": "BankOfAmerica", "balance": 6000.00})
-    env.add_node_with_attribute("acc_grace", "account", {"owner": "grace", "bank": "Chase", "balance": 400000.00})
-    env.add_node_with_attribute("acc_scamgov", "account", {"owner": "scamgov", "bank": "FirstFinancial", "balance": 0.00})
-
-    # Add ownership edges
-    env.add_ownership_edge("sally", "acc_sally")
-    env.add_ownership_edge("grace", "acc_grace")
-    env.add_ownership_edge("scamgov", "acc_scamgov")
-
+    env.add_node_with_attribute("ConEdison", "participant", {"role": "utility", "isFraudster": False})
+    env.add_node_with_attribute("acc_conedison", "account", {"owner": "ConEdison", "bank": "bankofamerica", "balance": 300000.00})
+    env.add_node_with_attribute("TMobile", "participant", {"role": "telecom", "isFraudster": False})
+    env.add_node_with_attribute("acc_tmobile", "account", {"owner": "TMobile", "bank": "chase", "balance": 500000.00})
+    
+    env.add_node_with_attribute("govco", "participant", {"role": "fraudster", "isFraudster": True})
+    env.add_node_with_attribute("acc_govco", "account", {"owner": "govco", "bank": "citibank", "balance": 0.00})
+    env.add_node_with_attribute("insuranceco", "participant", {"role": "fraudster", "isFraudster": True})
+    env.add_node_with_attribute("acc_insuranceco", "account", {"owner": "insuranceco", "bank": "bankofamerica", "balance": 0.00})
+    env.add_node_with_attribute("insurancenet", "participant", {"role": "fraudster", "isFraudster": True})
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
     # print(planner.generate_sequence("legit"))
     print(planner.generate_sequence("fraud"))
+    # print(planner.syntax_validator(sequence))
+
 
 
 if __name__ == "__main__":
