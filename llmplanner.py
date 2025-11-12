@@ -182,7 +182,6 @@ class LLMPlanner():
 
         return PROMPT_TEMPLATE.format(ind=i, bank=b, acc=a)
 
-
     def generate_sequence(self, prompt):
         response = requests.post(
             'http://localhost:11434/api/generate',
@@ -222,93 +221,7 @@ class LLMPlanner():
         return sequence
             
 
-        
-
-
-    # def generate_sequence(self, type):
-        # def extract_balanced_json(text):
-        #     start = text.find('{')
-        #     if start == -1:
-        #         return None
-
-        #     open_braces = 0
-        #     open_brackets = 0
-        #     for i in range(start, len(text)):
-        #         if text[i] == '{':
-        #             open_braces += 1
-        #         elif text[i] == '}':
-        #             open_braces -= 1
-        #         elif text[i] == '[':
-        #             open_brackets += 1
-        #         elif text[i] == ']':
-        #             open_brackets -= 1
-
-        #         if open_braces == 0 and open_brackets == 0 and i > start:
-        #             candidate = text[start:i+1]
-        #             try:
-        #                 json.loads(candidate)
-        #                 return candidate
-        #             except json.JSONDecodeError:
-        #                 continue
-
-        #     return None
-
-        # base_prompt = self.fraud_prompt() if type == 'fraud' else self.legit_prompt()
-        # current_prompt = base_prompt
-        # valid_sequence = False
-        # attempt_count = 0
-
-        # while not valid_sequence:
-        #     attempt_count += 1
-        #     print("\n" + str(attempt_count))
-        #     print(current_prompt)
-        #     try:
-        #         response = requests.post(
-        #             'http://localhost:11434/api/generate',
-        #             json={
-        #                 'model': "llama3.2",
-        #                 'prompt': current_prompt,
-        #                 'stream': False
-        #             }
-        #         )
-        #         raw = response.json().get('response', '').strip()
-        #         if not raw:
-        #             print("Empty LLM response.")
-        #             current_prompt += "\nNOTE: Last response was empty. Try again and ensure to respond with JSON only.\n"
-        #             continue
-
-        #         json_text = extract_balanced_json(raw)
-        #         if not json_text:
-        #             print("No valid or complete JSON found.")
-        #             print("Raw output:", raw)
-        #             current_prompt += f"\nNOTE: Last output had no valid JSON. Only output a clean JSON dictionary.\nRaw output: {raw}\n"
-        #             continue
-
-        #         try:
-        #             res = json.loads(json_text.lower())
-        #         except json.JSONDecodeError as e:
-        #             print("Error parsing extracted JSON:", e)
-        #             current_prompt += f"\nNOTE: JSON error occurred: {str(e)}\nInvalid JSON was: {json_text}\n"
-        #             continue
-
-        #         if not self.syntax_validator(res):
-        #             current_prompt += f"\nNOTE: Your sequence failed syntax validation. Please revise to follow the action and transaction format exactly.\nSequence: {res}\n"
-        #             continue
-
-        #         reasoning = self.semantic_validator(res)
-        #         if reasoning:
-        #             current_prompt += f"\nNOTE: Semantic validation failed. Review this reasoning and try again.\n{reasoning}\n"
-        #             continue
-
-        #         valid_sequence = True
-        #         return res, attempt_count
-
-        #     except Exception as e:
-        #         print("❌ Unexpected error:", e)
-        #         current_prompt += f"\nNOTE: An unexpected error occurred while processing your sequence: {str(e)}\n"
     
-
-
 ## GEPA optimizer
     ## GEPA style optimizer
     def semantic_validator(self, sequence):
