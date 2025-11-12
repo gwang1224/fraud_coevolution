@@ -2,7 +2,7 @@ import requests
 import re
 import json
 import fraud_env
-import pydantic_validator as pv
+import pydantic_syntax as pv
 
 
 class LLMPlanner():
@@ -183,108 +183,161 @@ class LLMPlanner():
         return PROMPT_TEMPLATE.format(ind=i, bank=b, acc=a)
 
 
+    def generate_sequence(self, prompt):
+        response = requests.post(
+            'http://localhost:11434/api/generate',
+            json={
+                'model': "llama3.2",
+                'prompt': prompt,
+                'stream': False
+            }
+        )
+        raw = response.json().get('response', '').strip()
+        return raw
+    
+    def generate_valid_fraud_seq(self):
+
+        prompt = self.fraud_prompt()
+
+        while True:
+            sequence = self.generate_sequence(prompt)
+            print(sequence)
+
+            # Try to parse JSON
+            try:
+                seq_as_dict = json.loads(sequence)
+            except Exception as e:
+                # Append feedback to prompt and retry
+                prompt += f"\nThe previous output was not valid JSON. Checking for missing trailing ] or }} Error: {e}\n"
+                continue
+
+            # Syntax check
+            syntax_res = self.syntax_validator(seq_as_dict)
+            if syntax_res is True:
+                return seq_as_dict
+            else:
+                # Append syntax error message to prompt and retry
+                prompt += f"\nYour previous sequence failed syntax validation: {syntax_res}\n"
+                continue
+        return sequence
+            
+
         
 
-    def generate_sequence(self, type):
-        def extract_balanced_json(text):
-            start = text.find('{')
-            if start == -1:
-                return None
 
-            open_braces = 0
-            open_brackets = 0
-            for i in range(start, len(text)):
-                if text[i] == '{':
-                    open_braces += 1
-                elif text[i] == '}':
-                    open_braces -= 1
-                elif text[i] == '[':
-                    open_brackets += 1
-                elif text[i] == ']':
-                    open_brackets -= 1
+    # def generate_sequence(self, type):
+        # def extract_balanced_json(text):
+        #     start = text.find('{')
+        #     if start == -1:
+        #         return None
 
-                if open_braces == 0 and open_brackets == 0 and i > start:
-                    candidate = text[start:i+1]
-                    try:
-                        json.loads(candidate)
-                        return candidate
-                    except json.JSONDecodeError:
-                        continue
+        #     open_braces = 0
+        #     open_brackets = 0
+        #     for i in range(start, len(text)):
+        #         if text[i] == '{':
+        #             open_braces += 1
+        #         elif text[i] == '}':
+        #             open_braces -= 1
+        #         elif text[i] == '[':
+        #             open_brackets += 1
+        #         elif text[i] == ']':
+        #             open_brackets -= 1
 
-            return None
+        #         if open_braces == 0 and open_brackets == 0 and i > start:
+        #             candidate = text[start:i+1]
+        #             try:
+        #                 json.loads(candidate)
+        #                 return candidate
+        #             except json.JSONDecodeError:
+        #                 continue
 
-        base_prompt = self.fraud_prompt() if type == 'fraud' else self.legit_prompt()
-        current_prompt = base_prompt
-        valid_sequence = False
-        attempt_count = 0
+        #     return None
 
-        while not valid_sequence:
-            attempt_count += 1
-            print("\n" + str(attempt_count))
-            print(current_prompt)
-            try:
-                response = requests.post(
-                    'http://localhost:11434/api/generate',
-                    json={
-                        'model': "llama3.2",
-                        'prompt': current_prompt,
-                        'stream': False
-                    }
-                )
-                raw = response.json().get('response', '').strip()
-                if not raw:
-                    print("Empty LLM response.")
-                    current_prompt += "\nNOTE: Last response was empty. Try again and ensure to respond with JSON only.\n"
-                    continue
+        # base_prompt = self.fraud_prompt() if type == 'fraud' else self.legit_prompt()
+        # current_prompt = base_prompt
+        # valid_sequence = False
+        # attempt_count = 0
 
-                json_text = extract_balanced_json(raw)
-                if not json_text:
-                    print("No valid or complete JSON found.")
-                    print("Raw output:", raw)
-                    current_prompt += f"\nNOTE: Last output had no valid JSON. Only output a clean JSON dictionary.\nRaw output: {raw}\n"
-                    continue
+        # while not valid_sequence:
+        #     attempt_count += 1
+        #     print("\n" + str(attempt_count))
+        #     print(current_prompt)
+        #     try:
+        #         response = requests.post(
+        #             'http://localhost:11434/api/generate',
+        #             json={
+        #                 'model': "llama3.2",
+        #                 'prompt': current_prompt,
+        #                 'stream': False
+        #             }
+        #         )
+        #         raw = response.json().get('response', '').strip()
+        #         if not raw:
+        #             print("Empty LLM response.")
+        #             current_prompt += "\nNOTE: Last response was empty. Try again and ensure to respond with JSON only.\n"
+        #             continue
 
-                try:
-                    res = json.loads(json_text.lower())
-                except json.JSONDecodeError as e:
-                    print("Error parsing extracted JSON:", e)
-                    current_prompt += f"\nNOTE: JSON error occurred: {str(e)}\nInvalid JSON was: {json_text}\n"
-                    continue
+        #         json_text = extract_balanced_json(raw)
+        #         if not json_text:
+        #             print("No valid or complete JSON found.")
+        #             print("Raw output:", raw)
+        #             current_prompt += f"\nNOTE: Last output had no valid JSON. Only output a clean JSON dictionary.\nRaw output: {raw}\n"
+        #             continue
 
-                if not self.syntax_validator(res):
-                    current_prompt += f"\nNOTE: Your sequence failed syntax validation. Please revise to follow the action and transaction format exactly.\nSequence: {res}\n"
-                    continue
+        #         try:
+        #             res = json.loads(json_text.lower())
+        #         except json.JSONDecodeError as e:
+        #             print("Error parsing extracted JSON:", e)
+        #             current_prompt += f"\nNOTE: JSON error occurred: {str(e)}\nInvalid JSON was: {json_text}\n"
+        #             continue
 
-                reasoning = self.semantic_validator(res)
-                if reasoning:
-                    current_prompt += f"\nNOTE: Semantic validation failed. Review this reasoning and try again.\n{reasoning}\n"
-                    continue
+        #         if not self.syntax_validator(res):
+        #             current_prompt += f"\nNOTE: Your sequence failed syntax validation. Please revise to follow the action and transaction format exactly.\nSequence: {res}\n"
+        #             continue
 
-                valid_sequence = True
-                return res, attempt_count
+        #         reasoning = self.semantic_validator(res)
+        #         if reasoning:
+        #             current_prompt += f"\nNOTE: Semantic validation failed. Review this reasoning and try again.\n{reasoning}\n"
+        #             continue
 
-            except Exception as e:
-                print("❌ Unexpected error:", e)
-                current_prompt += f"\nNOTE: An unexpected error occurred while processing your sequence: {str(e)}\n"
+        #         valid_sequence = True
+        #         return res, attempt_count
+
+        #     except Exception as e:
+        #         print("❌ Unexpected error:", e)
+        #         current_prompt += f"\nNOTE: An unexpected error occurred while processing your sequence: {str(e)}\n"
     
 
 
 ## GEPA optimizer
     ## GEPA style optimizer
-    def semantic_validator(self, prompt):
+    def semantic_validator(self, sequence):
 
-        validator_prompt = f"""
+        validator_prompt = """
         You are a fraud simulation environment validator. Your job is to determine whether a given sequence of actions and transactions is *logically valid*, based on realistic financial behavior and common sense.
 
         Here is the input sequence:
-        {prompt}
+        {sequence}
 
         Rules to follow:
-        1. Only participants (individuals or fraudsters) can perform actions.
-        2. Accounts and banks cannot perform actions directly.
-        3. SIM swaps must be done by a person (not an account), and must target a telco.
-        4. Transactions must not be initiated by fraudsters directly.
-        5. The sequence must make sense as a story — cause and effect should be coherent.
+        1. Only participants (individuals or fraudsters) can perform actions (ENTITY1). Fraudsters are participants and can perform actions.
+        2. Accounts and banks cannot *initiate* actions — they must NEVER appear as ENTITY1 — but they can appear as ENTITY2 (e.g., fraudsters calling a bank).
+        3. SIM swaps must be done by a participant (not an account) and must target a telecom.
+        4. The sequence must make sense as a story — cause and effect should be coherent.
+
+        Here is the format of the action/transaction sequences:
+        - An Action must have **exactly five comma-separated fields** inside the parentheses:
+        Action(ENTITY1, ACTION TAKEN BY ENTITY1 UPON ENTITY2, ENTITY2, CHANNEL, DESCRIPTION)
+        - A Transaction must have exactly four comma-separated fields:
+        Transaction(ACCOUNT_FROM, FAST Payment, ACCOUNT_TO, AMOUNT)
+
+        NOTE: Banks and accounts can only be ENTITY2, never ENTITY1. It is valid for a fraudster or individual to *target* a bank or account in an action — for example, a fraudster social engineering bankofamerica is valid.
+
+        Here are the entity labels:
+        - {ind} as entities for victims.
+        - {fraud} as entities for fraudsters (fraudsters are participants and CAN initiate actions; for example, govco is a fraudster and CAN perform actions).
+        - {bank} as entities for banks.
+        - {acc} as entities for accounts.
 
         Instructions:
         - On the first line, output exactly one word: "valid" or "invalid".
@@ -295,12 +348,22 @@ class LLMPlanner():
         <valid or invalid>
         Reasoning:
         <your detailed explanation here>
+
+        NOTE: Fraudsters such as {fraud} ARE allowed to perform actions. For example, govco is a fraudster and CAN initiate actions.
         """
+
+        i = ", ".join(self.env.get_individuals())
+        f = ", ".join(self.env.get_fraudsters())
+        b = ", ".join(self.env.get_banks())
+        a = ", ".join(self.env.get_acc())
+
+        validator_prompt = validator_prompt.format(sequence=sequence, ind=i, fraud=f, bank=b, acc=a)
+
 
         response = requests.post(
         "http://localhost:11434/api/generate",
         json={
-            "model": "llama3.2",  # Or your fine-tuned validator model
+            "model": "chevalblanc/gpt-4o-mini", 
             "prompt": validator_prompt,
             "stream": False,
             "options": {"temperature": 0}
@@ -310,16 +373,16 @@ class LLMPlanner():
         if label.startswith('valid'):
             return None
         else:
-            NEW_PROMPT = f"Here is the sequence you generated and why it's invalid: {prompt}"
+            NEW_PROMPT = f"Here is the sequence you generated and why it's invalid: {sequence}"
             return NEW_PROMPT + label
 
-    def syntax_validator(self, prompt):
+    def syntax_validator(self, sequence):
         try:
-            T = pv.SequenceModel.model_validate(prompt, context={"entities": self.env.get_nodes()})
+            T = pv.SequenceModel.model_validate(sequence, context={"entities": self.env.get_nodes()})
             return True
         except Exception as e:
             print("❌ Validation failed:", e)
-            return False
+            return e
 
 def main():
 
@@ -349,10 +412,32 @@ def main():
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    # print(planner.generate_sequence("legit"))
-    print(planner.generate_sequence("fraud"))
-    # print(planner.syntax_validator(sequence))
 
+    #---------------------------TESTING-------------------------------
+    ## Semantic Validator
+
+    ## Expected: NOT VALIDATED -> return new prompt
+#     print("\nExpected False: ")
+#     print(planner.syntax_validator(
+# {"sequence": [
+#             "action(govco, sally, Call, Posed as IRS agent)",
+#             "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
+#             "action(govco, Social engineering, bankofamerica, ..., ...)",
+#             "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
+#         ]}))
+
+#     ## Expected: VALIDATED -> return None
+#     print("\nExpected True: ")
+#     print(planner.syntax_validator(
+# {"sequence": [
+#             "action(govco, Impersonation, sally, Call, Posed as IRS agent)",
+#             "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
+#             "action(govco, Social engineering, bankofamerica, ..., ...)",
+#             "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
+#         ]}
+#     ))
+
+    print(planner.generate_valid_fraud_seq())
 
 
 if __name__ == "__main__":
