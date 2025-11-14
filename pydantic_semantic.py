@@ -441,3 +441,4 @@ if __name__ == "__main__":
         print("\nSequence:")
         for i, step in enumerate(test_case['data']['sequence']):
             print(f"  {i}. {step}")
+            

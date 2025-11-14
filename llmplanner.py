@@ -3,6 +3,7 @@ import re
 import json
 import fraud_env
 import pydantic_syntax as pv
+import pydantic_semantic as ps
 
 
 class LLMPlanner():
@@ -220,10 +221,32 @@ class LLMPlanner():
                 continue
         return sequence
             
+    def build_entity_registry(self):
+        ROLE_TO_ENTITYTYPE = {
+            "individual": ps.EntityType.INDIVIDUAL,
+            "fraudster": ps.EntityType.FRAUDSTER,
+            "bank": ps.EntityType.BANK,
+            "account": ps.EntityType.ACCOUNT,
+            "telecom": ps.EntityType.TELECOM,
+            "utility": ps.EntityType.ORGANIZATION,
+            "restaurant": ps.EntityType.ORGANIZATION,
+            "institution": ps.EntityType.ORGANIZATION,
+        }
+        registry = {}
 
+        for node, attrs in self.env.G.nodes(data=True):
+            print("\n")
+            print(node, attrs) #Testing
+
+            role = attrs.get("role")
+            etype = ROLE_TO_ENTITYTYPE.get(role)
+
+            registry[node] = ps.Entity(name=node, type=etype)
+
+        return registry
     
-## GEPA optimizer
-    ## GEPA style optimizer
+
+
     def semantic_validator(self, sequence):
 
         validator_prompt = """
@@ -318,7 +341,7 @@ def main():
     env.add_node_with_attribute("acc_tmobile", "account", {"owner": "TMobile", "bank": "chase", "balance": 500000.00})
     
     env.add_node_with_attribute("govco", "participant", {"role": "fraudster", "isFraudster": True})
-    env.add_node_with_attribute("acc_govco", "account", {"owner": "govco", "bank": "citibank", "balance": 0.00})
+    env.add_node_with_attribute("acc_govco", "account", {"owner": "govco", "bank": "chase", "balance": 0.00})
     env.add_node_with_attribute("insuranceco", "participant", {"role": "fraudster", "isFraudster": True})
     env.add_node_with_attribute("acc_insuranceco", "account", {"owner": "insuranceco", "bank": "bankofamerica", "balance": 0.00})
     env.add_node_with_attribute("insurancenet", "participant", {"role": "fraudster", "isFraudster": True})
@@ -350,7 +373,61 @@ def main():
 #         ]}
 #     ))
 
-    print(planner.generate_valid_fraud_seq())
+    # print(planner.build_entity_registry())
+
+    validator = ps.UniversalRulesValidator(planner.build_entity_registry())
+    test_cases = [
+        {
+            "name": "✅ VALID - Good fraud sequence",
+            "data": {
+                "sequence": [
+                    "action(govco, Impersonation, sally, Call, Posed as IRS agent)",
+                    "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
+                    "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
+                    "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
+                ]
+            }
+        },
+        {
+            "name": "❌ INVALID - Your bad example",
+            "data": {
+                "sequence": [
+                    "action(acc_sally, sim swap, acc_tmobile, call, requested number change)",
+                    "action(acc_tmobile, account takeover, acc_sally, sms, sent login credentials)",
+                    "action(acc_insuranceco, phishing, fishmaster, email, spoofed insurance company email)",
+                    "action(fishmaster, identity theft, acc_insuranceco, call, requested sensitive info)",
+                    "transaction(acc_insuranceco, fast payment, acc_fishmaster, 5000.00)"
+                ]
+            }
+        },
+        {
+            "name": "❌ INVALID - Transaction to person",
+            "data": {
+                "sequence": [
+                    "transaction(acc_sally, FAST Payment, fraudster, 1000.00)"
+                ]
+            }
+        },
+        {
+            "name": "✅ VALID - Novel LLM-generated action",
+            "data": {
+                "sequence": [
+                    "action(fraudster, spoofed caller ID attack, sally, phone, displayed fake bank number)",
+                    "action(sally, credential disclosure, fraudster, phone, revealed account PIN)",
+                    "transaction(acc_sally, wire transfer, acc_fraudster, 5000.00)"
+                ]
+            }
+        }
+    ]
+
+    for test_case in test_cases:
+        print(f"\n{test_case['name']}")
+        print("-" * 80)
+        
+        is_valid, errors = validator.validate_json(test_case['data'])
+        
+        print(f"\nValid: {is_valid}")
+        print(f"Errors: {errors}")
 
 
 if __name__ == "__main__":
