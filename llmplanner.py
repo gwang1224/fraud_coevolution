@@ -183,7 +183,7 @@ class LLMPlanner():
 
         return PROMPT_TEMPLATE.format(ind=i, bank=b, acc=a)
 
-    def generate_sequence(self, prompt):
+    def call_model(self, prompt):
         response = requests.post(
             'http://localhost:11434/api/generate',
             json={
@@ -194,32 +194,6 @@ class LLMPlanner():
         )
         raw = response.json().get('response', '').strip()
         return raw
-    
-    def generate_valid_fraud_seq(self):
-
-        prompt = self.fraud_prompt()
-
-        while True:
-            sequence = self.generate_sequence(prompt)
-            print(sequence)
-
-            # Try to parse JSON
-            try:
-                seq_as_dict = json.loads(sequence)
-            except Exception as e:
-                # Append feedback to prompt and retry
-                prompt += f"\nThe previous output was not valid JSON. Checking for missing trailing ] or }} Error: {e}\n"
-                continue
-
-            # Syntax check
-            syntax_res = self.syntax_validator(seq_as_dict)
-            if syntax_res is True:
-                return seq_as_dict
-            else:
-                # Append syntax error message to prompt and retry
-                prompt += f"\nYour previous sequence failed syntax validation: {syntax_res}\n"
-                continue
-        return sequence
             
     def build_entity_registry(self):
         ROLE_TO_ENTITYTYPE = {
@@ -235,8 +209,6 @@ class LLMPlanner():
         registry = {}
 
         for node, attrs in self.env.G.nodes(data=True):
-            print("\n")
-            print(node, attrs) #Testing
 
             role = attrs.get("role")
             etype = ROLE_TO_ENTITYTYPE.get(role)
@@ -245,80 +217,30 @@ class LLMPlanner():
 
         return registry
     
+    def generate_valid_fraud_seq(self):
 
+        validator = ps.UniversalRulesValidator(self.build_entity_registry())
 
-    def semantic_validator(self, sequence):
+        prompt = self.fraud_prompt()
 
-        validator_prompt = """
-        You are a fraud simulation environment validator. Your job is to determine whether a given sequence of actions and transactions is *logically valid*, based on realistic financial behavior and common sense.
+        valid_seq = True
 
-        Here is the input sequence:
-        {sequence}
+        while valid_seq:
+            output = self.call_model(prompt)
+            print(output)
 
-        Rules to follow:
-        1. Only participants (individuals or fraudsters) can perform actions (ENTITY1). Fraudsters are participants and can perform actions.
-        2. Accounts and banks cannot *initiate* actions — they must NEVER appear as ENTITY1 — but they can appear as ENTITY2 (e.g., fraudsters calling a bank).
-        3. SIM swaps must be done by a participant (not an account) and must target a telecom.
-        4. The sequence must make sense as a story — cause and effect should be coherent.
+            # Validate output is in json format
+            json_str = json.loads(output)
+                
 
-        Here is the format of the action/transaction sequences:
-        - An Action must have **exactly five comma-separated fields** inside the parentheses:
-        Action(ENTITY1, ACTION TAKEN BY ENTITY1 UPON ENTITY2, ENTITY2, CHANNEL, DESCRIPTION)
-        - A Transaction must have exactly four comma-separated fields:
-        Transaction(ACCOUNT_FROM, FAST Payment, ACCOUNT_TO, AMOUNT)
+            
+            print(type(output))
 
-        NOTE: Banks and accounts can only be ENTITY2, never ENTITY1. It is valid for a fraudster or individual to *target* a bank or account in an action — for example, a fraudster social engineering bankofamerica is valid.
-
-        Here are the entity labels:
-        - {ind} as entities for victims.
-        - {fraud} as entities for fraudsters (fraudsters are participants and CAN initiate actions; for example, govco is a fraudster and CAN perform actions).
-        - {bank} as entities for banks.
-        - {acc} as entities for accounts.
-
-        Instructions:
-        - On the first line, output exactly one word: "valid" or "invalid".
-        - On the following lines, provide a clear explanation of your reasoning.
-        - If invalid, explain why and suggest how to fix it.
-        - Use the following format strictly for parsing:
-        
-        <valid or invalid>
-        Reasoning:
-        <your detailed explanation here>
-
-        NOTE: Fraudsters such as {fraud} ARE allowed to perform actions. For example, govco is a fraudster and CAN initiate actions.
-        """
-
-        i = ", ".join(self.env.get_individuals())
-        f = ", ".join(self.env.get_fraudsters())
-        b = ", ".join(self.env.get_banks())
-        a = ", ".join(self.env.get_acc())
-
-        validator_prompt = validator_prompt.format(sequence=sequence, ind=i, fraud=f, bank=b, acc=a)
-
-
-        response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "chevalblanc/gpt-4o-mini", 
-            "prompt": validator_prompt,
-            "stream": False,
-            "options": {"temperature": 0}
-        }
-    )
-        label = response.json().get("response", "").strip().lower()
-        if label.startswith('valid'):
-            return None
-        else:
-            NEW_PROMPT = f"Here is the sequence you generated and why it's invalid: {sequence}"
-            return NEW_PROMPT + label
-
-    def syntax_validator(self, sequence):
-        try:
-            T = pv.SequenceModel.model_validate(sequence, context={"entities": self.env.get_nodes()})
-            return True
-        except Exception as e:
-            print("❌ Validation failed:", e)
-            return e
+            is_valid, errors = validator.validate_json(json_str)
+            print(is_valid)
+            print(errors)
+            
+            valid_seq = False
 
 def main():
 
@@ -348,87 +270,9 @@ def main():
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
+    planner.generate_valid_fraud_seq()
 
-    #---------------------------TESTING-------------------------------
-    ## Semantic Validator
-
-    ## Expected: NOT VALIDATED -> return new prompt
-#     print("\nExpected False: ")
-#     print(planner.syntax_validator(
-# {"sequence": [
-#             "action(govco, sally, Call, Posed as IRS agent)",
-#             "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
-#             "action(govco, Social engineering, bankofamerica, ..., ...)",
-#             "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
-#         ]}))
-
-#     ## Expected: VALIDATED -> return None
-#     print("\nExpected True: ")
-#     print(planner.syntax_validator(
-# {"sequence": [
-#             "action(govco, Impersonation, sally, Call, Posed as IRS agent)",
-#             "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
-#             "action(govco, Social engineering, bankofamerica, ..., ...)",
-#             "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
-#         ]}
-#     ))
-
-    # print(planner.build_entity_registry())
-
-    validator = ps.UniversalRulesValidator(planner.build_entity_registry())
-    test_cases = [
-        {
-            "name": "✅ VALID - Good fraud sequence",
-            "data": {
-                "sequence": [
-                    "action(govco, Impersonation, sally, Call, Posed as IRS agent)",
-                    "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
-                    "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
-                    "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
-                ]
-            }
-        },
-        {
-            "name": "❌ INVALID - Your bad example",
-            "data": {
-                "sequence": [
-                    "action(acc_sally, sim swap, acc_tmobile, call, requested number change)",
-                    "action(acc_tmobile, account takeover, acc_sally, sms, sent login credentials)",
-                    "action(acc_insuranceco, phishing, fishmaster, email, spoofed insurance company email)",
-                    "action(fishmaster, identity theft, acc_insuranceco, call, requested sensitive info)",
-                    "transaction(acc_insuranceco, fast payment, acc_fishmaster, 5000.00)"
-                ]
-            }
-        },
-        {
-            "name": "❌ INVALID - Transaction to person",
-            "data": {
-                "sequence": [
-                    "transaction(acc_sally, FAST Payment, fraudster, 1000.00)"
-                ]
-            }
-        },
-        {
-            "name": "✅ VALID - Novel LLM-generated action",
-            "data": {
-                "sequence": [
-                    "action(fraudster, spoofed caller ID attack, sally, phone, displayed fake bank number)",
-                    "action(sally, credential disclosure, fraudster, phone, revealed account PIN)",
-                    "transaction(acc_sally, wire transfer, acc_fraudster, 5000.00)"
-                ]
-            }
-        }
-    ]
-
-    for test_case in test_cases:
-        print(f"\n{test_case['name']}")
-        print("-" * 80)
-        
-        is_valid, errors = validator.validate_json(test_case['data'])
-        
-        print(f"\nValid: {is_valid}")
-        print(f"Errors: {errors}")
-
+    
 
 if __name__ == "__main__":
     main()

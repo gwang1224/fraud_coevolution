@@ -65,9 +65,7 @@ class UniversalRulesValidator:
     def __init__(self, entity_registry: Dict[str, Entity]):
         self.entity_registry = entity_registry
     
-    # ========================================================================
     # CAPABILITY DETECTION - What does this action require?
-    # ========================================================================
     
     def requires_human_agency(self, action_type: str, channel: str) -> bool:
         """
