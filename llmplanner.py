@@ -3,13 +3,15 @@ import re
 import json
 import fraud_env
 import pydantic_syntax as pv
-import pydantic_semantic as ps
+import pydantic_validator as ps
+
 
 
 class LLMPlanner():
 
     def __init__(self, env):
         self.env = env
+        self.ps_validator = ps.UniversalRulesValidator(self.build_entity_registry())
 
     def fraud_prompt(self):
         """
@@ -218,29 +220,70 @@ class LLMPlanner():
         return registry
     
     def generate_valid_fraud_seq(self):
-
-        validator = ps.UniversalRulesValidator(self.build_entity_registry())
-
         prompt = self.fraud_prompt()
 
-        valid_seq = True
+        valid_seq = False
 
-        while valid_seq:
-            output = self.call_model(prompt)
-            print(output)
+        while not valid_seq:
+            raw_output = self.call_model(prompt)
 
-            # Validate output is in json format
-            json_str = json.loads(output)
+            # Stage 1: Validate json format
+            
+            # Delete verbose before the sequence
+            raw_output = raw_output[raw_output.find('{'):]
+            # Check and fix end brackets
+            if raw_output.count('}') == 1:
+                raw_output = raw_output[:raw_output.find(']') + 1]
+            elif raw_output.count("]") == 1:
+                raw_output = raw_output[:raw_output.find(']')+1] + "}"
+            else:
+                raw_output += "]}"
+            
+            # Try loading as json
+            try:
+                json_seq = json.loads(raw_output)
+            except Exception as e:
+                continue
+
+
+            # Stage 2: Syntax validation
+            print(json_seq)
+
+            try:
+                T = pv.SequenceModel.model_validate(json_seq, context={"entities": self.env.get_nodes()})
+                print("Syntax validation passed ✅")
+            except Exception as e:
+                print("Syntax validation passed ❌")
+                print(e)
+                prompt += "\n" + str(e) + "\n"
+                continue
+
+            print(json_seq)
+
+            # Stage 3: Semantic validation
+            is_valid, errors = self.ps_validator.validate_json(json_seq['sequence'])
+            print("Semantic Check: " + str(is_valid))
+            if errors:
+                prompt += "\nPrevious output had semantic validation errors:\n" + "\n".join(errors) + "\n"
+                continue
+
+            valid_seq = True
+    
+
+
+
+            print(json_seq)
+
                 
 
             
-            print(type(output))
+            print(type(json_seq))
 
-            is_valid, errors = validator.validate_json(json_str)
-            print(is_valid)
-            print(errors)
+            # is_valid, errors = validator.validate_json(json_str)
+            # print(is_valid)
+            # print(errors)
             
-            valid_seq = False
+            # valid_seq = False
 
 def main():
 
