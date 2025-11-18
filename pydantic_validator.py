@@ -65,8 +65,6 @@ class UniversalRulesValidator:
     def __init__(self, entity_registry: Dict[str, Entity]):
         self.entity_registry = entity_registry
     
-    # CAPABILITY DETECTION - What does this action require?
-    
     def requires_human_agency(self, action_type: str, channel: str) -> bool:
         """
         Determine if action requires human decision-making and communication.
@@ -302,7 +300,7 @@ class UniversalRulesValidator:
         
         return 'invalid', {}
     
-    def validate_sequence(self, sequence: List[str]) -> Tuple[bool, List[str]]:
+    def validate_semantic(self, sequence: List[str]) -> Tuple[bool, List[str]]:
         """
         Validate entire sequence from JSON format.
         Returns: (is_valid, list_of_errors)
@@ -336,14 +334,35 @@ class UniversalRulesValidator:
         
         return len(errors) == 0, errors
     
-    def validate_json(self, json_data: dict) -> Tuple[bool, List[str]]:
+    def validate_syntax(self, sequence: List[str]) -> Tuple[bool, List[str]]:
         """
-        Validate sequence from JSON format: {"sequence": [...]}
+        Validates entire syntax of entire sequence
+        Returns: (is_valid, list of errors)
         """
-        if 'sequence' not in json_data:
-            return False, ["Missing 'sequence' key in JSON"]
+        errors = []
+
+        for i, step in enumerate(sequence):
+            step_type, parsed_data = self.parse_step(step)
+            
+            if step_type == 'invalid':
+                errors.append(f"Step {i}: Failed to parse step")
+                continue
+
+            if step_type == "action":
+                if parsed_data['subject'] not in self.entity_registry:
+                    errors.append(f"Step {i}: {parsed_data['subject']} is not a valid entity.")
+                if parsed_data['object'] not in self.entity_registry:
+                    errors.append(f"Step {i}: {parsed_data['object']} is not a valid entity.")
+
+            if step_type == "transaction":
+                if parsed_data['from_account'] not in self.entity_registry:
+                    errors.append(f"Step {i}: {parsed_data['from_account']} is not a valid entry.")
+                if parsed_data['to_account'] not in self.entity_registry:
+                    errors.append(f"Step {i}: {parsed_data['to_account']} is not a valid entry.")
+
         
-        return self.validate_sequence(json_data['sequence'])
+        return len(errors) == 0, errors
+
 
 
 # ============================================================================
@@ -378,7 +397,7 @@ if __name__ == "__main__":
             "name": "✅ VALID - Good fraud sequence",
             "data": {
                 "sequence": [
-                    "action(govco, Impersonation, sally, Call, Posed as IRS agent)",
+                    "action(govco, Impersonation, george, Call, Posed as IRS agent)",
                     "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
                     "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
                     "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
@@ -416,27 +435,31 @@ if __name__ == "__main__":
             }
         }
     ]
+
+    print("=" * 80)
+    print("SYNTAX RULES VALIDATION")
+    print("=" * 80)
+
+    for test_case in test_cases:
+        is_valid, errors = validator.validate_syntax(test_case['data']['sequence'])
+        print(f"Valid: {is_valid}")
+        if errors:
+            print("Errors:")
+            for error in errors:
+                print(f"  • {error}")
     
     print("=" * 80)
-    print("UNIVERSAL RULES VALIDATION - JSON FORMAT")
+    print("SEMANTIC RULES VALIDATION")
     print("=" * 80)
     
     for test_case in test_cases:
-        print(f"\n{test_case['name']}")
+        print(f"\nExpected: {test_case['name']}")
         print("-" * 80)
         
-        is_valid, errors = validator.validate_json(test_case['data'])
+        is_valid, errors = validator.validate_semantic(test_case['data']['sequence'])
         
         print(f"Valid: {is_valid}")
         if errors:
             print("Errors:")
             for error in errors:
                 print(f"  • {error}")
-        else:
-            print("  ✓ All universal rules passed")
-        
-        # Pretty print the sequence
-        print("\nSequence:")
-        for i, step in enumerate(test_case['data']['sequence']):
-            print(f"  {i}. {step}")
-            
