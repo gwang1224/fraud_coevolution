@@ -37,6 +37,12 @@ class Entity(BaseModel):
             EntityType.BANK, EntityType.ORGANIZATION, 
             EntityType.TELECOM, EntityType.GOVERNMENT, EntityType.MERCHANT
         }
+    
+    def is_victim(self) -> bool:
+        return self.type == EntityType.INDIVIDUAL
+    
+    def is_fraudster(self) -> bool:
+        return self.type == EntityType.FRAUDSTER
 
 
 class ParsedAction(BaseModel):
@@ -87,7 +93,8 @@ class UniversalRulesValidator:
         if any(kw in action_lower for kw in human_actions):
             return True
         
-        return False
+        return False        
+
     
     def is_information_submission(self, action_type: str) -> bool:
         """
@@ -144,6 +151,26 @@ class UniversalRulesValidator:
         ]
         
         return any(kw in action_lower for kw in technical_keywords)
+    
+    def is_fraud_behavior(self, action_type: str) -> bool:
+        """
+        Determines if the action is a fraudulent action
+        """
+        action_lower = action_type.lower()
+    
+        fraud_keywords = [
+        "impersonat", "pose", "pretend", "masquerad", "identity", "attack",
+        
+        "social engineer", "manipulat", "trick", "deceiv", "scam", "fraud", "phish", "bait", "convince", "persuad", "lure",
+
+        "takeover", "compromise", "breach", "hijack", "hack", "exploit", "unauthorized",
+        
+        "sim swap", "phone swap", "number port",
+
+        "fake", "invoice", "distress", "emergency", "urgent", "threat"
+        ]
+    
+        return any(kw in action_lower for kw in fraud_keywords)
     
     # ========================================================================
     # VALIDATION RULES
@@ -204,6 +231,14 @@ class UniversalRulesValidator:
                     f"For money transfers, use transaction() syntax."
                 )
         
+        # RULE 7: Only fraudsters can perform fraudulent actions on individuals
+        if self.is_fraud_behavior(action.action_type):
+            if not subject_entity.is_fraudster() and not object_entity.is_victim():
+                return False, (
+                    f"'{subject_entity.name}' is a {subject_entity.type.value} can not perform {action.action_type} on '{object_entity.name}', which is a {object_entity.type.value}. '"
+                    f"Generate a sequence with correct fraudster and victim entities."
+                )
+            
         # RULE 6: General check - accounts should rarely be action subjects
         # Allow technical actions but flag anything else
         if subject_entity.is_account():
@@ -256,21 +291,7 @@ class UniversalRulesValidator:
         if step.startswith('action('):
             # Extract components: action(subject, action_type, object, channel, details)
             inner = step[7:-1]  # Remove "action(" and ")"
-            parts = []
-            current = ""
-            paren_depth = 0
-            
-            for char in inner:
-                if char == ',' and paren_depth == 0:
-                    parts.append(current.strip())
-                    current = ""
-                else:
-                    if char == '(':
-                        paren_depth += 1
-                    elif char == ')':
-                        paren_depth -= 1
-                    current += char
-            parts.append(current.strip())
+            parts = [x.strip() for x in inner.split(",")]
             
             if len(parts) != 5:
                 return 'invalid', {}
@@ -393,60 +414,62 @@ if __name__ == "__main__":
     
     # Test cases in JSON format
     test_cases = [
+        # {
+        #     "name": "✅ VALID - Good fraud sequence",
+        #     "data": {
+        #         "sequence": [
+        #             "action(govco, Impersonation, george, Call, Posed as IRS agent)",
+        #             "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
+        #             "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
+        #             "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
+        #         ]
+        #     }
+        # },
+        # {
+        #     "name": "❌ INVALID - Your bad example",
+        #     "data": {
+        #         "sequence": [
+        #             "action(acc_sally, sim swap, acc_tmobile, call, requested number change)",
+        #             "action(acc_tmobile, account takeover, acc_sally, sms, sent login credentials)",
+        #             "action(acc_insuranceco, phishing, fishmaster, email, spoofed insurance company email)",
+        #             "action(fishmaster, identity theft, acc_insuranceco, call, requested sensitive info)",
+        #             "transaction(acc_insuranceco, fast payment, acc_fishmaster, 5000.00)"
+        #         ]
+        #     }
+        # },
         {
-            "name": "✅ VALID - Good fraud sequence",
+            "name": "❌ INVALID - Not a fraudster performing fraud",
             "data": {
-                "sequence": [
-                    "action(govco, Impersonation, george, Call, Posed as IRS agent)",
-                    "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
-                    "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
-                    "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
+                'sequence': ['action(sally, impersonation, govco, call, posed as utility company employee)', 
+                             'action(govco, sensitive info submission, sally, sms, sent fake utility bill with ssn)', 
+                             'action(sally, social engineering, bankofamerica, phone, requested account info)', 
+                             'transaction(acc_govco, fast payment, acc_sally, -3000.00)'
                 ]
             }
         },
-        {
-            "name": "❌ INVALID - Your bad example",
-            "data": {
-                "sequence": [
-                    "action(acc_sally, sim swap, acc_tmobile, call, requested number change)",
-                    "action(acc_tmobile, account takeover, acc_sally, sms, sent login credentials)",
-                    "action(acc_insuranceco, phishing, fishmaster, email, spoofed insurance company email)",
-                    "action(fishmaster, identity theft, acc_insuranceco, call, requested sensitive info)",
-                    "transaction(acc_insuranceco, fast payment, acc_fishmaster, 5000.00)"
-                ]
-            }
-        },
-        {
-            "name": "❌ INVALID - Transaction to person",
-            "data": {
-                "sequence": [
-                    "transaction(acc_sally, FAST Payment, fraudster, 1000.00)"
-                ]
-            }
-        },
-        {
-            "name": "✅ VALID - Novel LLM-generated action",
-            "data": {
-                "sequence": [
-                    "action(fraudster, spoofed caller ID attack, sally, phone, displayed fake bank number)",
-                    "action(sally, credential disclosure, fraudster, phone, revealed account PIN)",
-                    "transaction(acc_sally, wire transfer, acc_fraudster, 5000.00)"
-                ]
-            }
-        }
+        # {
+        #     "name": "✅ VALID - Novel LLM-generated action",
+        #     "data": {
+        #         "sequence": [
+        #             "action(fraudster, spoofed caller ID attack, sally, phone, displayed fake bank number)",
+        #             "action(sally, credential disclosure, fraudster, phone, revealed account PIN)",
+        #             "transaction(acc_sally, wire transfer, acc_fraudster, 5000.00)"
+        #         ]
+        #     }
+        # }
     ]
 
-    print("=" * 80)
-    print("SYNTAX RULES VALIDATION")
-    print("=" * 80)
+    # print("=" * 80)
+    # print("SYNTAX RULES VALIDATION")
+    # print("=" * 80)
 
-    for test_case in test_cases:
-        is_valid, errors = validator.validate_syntax(test_case['data']['sequence'])
-        print(f"Valid: {is_valid}")
-        if errors:
-            print("Errors:")
-            for error in errors:
-                print(f"  • {error}")
+    # for test_case in test_cases:
+    #     is_valid, errors = validator.validate_syntax(test_case['data']['sequence'])
+    #     print(f"Valid: {is_valid}")
+    #     if errors:
+    #         print("Errors:")
+    #         for error in errors:
+    #             print(f"  • {error}")
     
     print("=" * 80)
     print("SEMANTIC RULES VALIDATION")
