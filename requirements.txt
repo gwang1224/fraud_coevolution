@@ -3,3 +3,4 @@ matplotlib
 transformers
 torch
 pydantic
+json-repair

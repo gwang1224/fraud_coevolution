@@ -2,8 +2,8 @@ import requests
 import re
 import json
 import fraud_env
-import pydantic_syntax as pv
-import pydantic_validator as ps
+import pydantic_validator as pv
+from json_repair import repair_json
 
 
 
@@ -11,7 +11,7 @@ class LLMPlanner():
 
     def __init__(self, env):
         self.env = env
-        self.ps_validator = ps.UniversalRulesValidator(self.build_entity_registry())
+        self.pv = pv.UniversalRulesValidator(self.build_entity_registry())
 
     def fraud_prompt(self):
         """
@@ -49,15 +49,15 @@ class LLMPlanner():
         FRAUD ENVIRONMENT
         - You must use the exact entity names. Do not invent or modify entity names.
 
-        - You may use:
+        - You should ONLY USE:
 
-        - {ind} as entities for victims.
+        - ONLY USE {ind} as entities for victims.
 
-        - {fraud} as entities for fraudsters.
+        - ONLY USE {fraud} as entities for fraudsters.
 
-        - {bank} as entities for banks.
+        - ONLY USE {bank} as entities for banks.
 
-        - {acc} as entities for accounts.
+        - ONLY USE {acc} as entities for accounts.
 
 
         EXAMPLE
@@ -68,7 +68,7 @@ class LLMPlanner():
             "action(<entity1>, Impersonation, <entity2>, Call, Posed as IRS agent)",
             "action(<entity2>, Sensitive Info Submission, <entity1>, SMS, sent SSN + DOB)",
             "action(<entity1>, Social engineering, <bank1>, Call, ...)",
-            "transaction(<entity2 bank account>, FAST Payment, <entity1 bank account>, 3000.00)"
+            "transaction(<entity2>, FAST Payment, <entity1>, 3000.00)"
         ]
         }}
 
@@ -189,7 +189,7 @@ class LLMPlanner():
         response = requests.post(
             'http://localhost:11434/api/generate',
             json={
-                'model': "llama3.2",
+                'model': "mistral",
                 'prompt': prompt,
                 'stream': False
             }
@@ -199,14 +199,14 @@ class LLMPlanner():
             
     def build_entity_registry(self):
         ROLE_TO_ENTITYTYPE = {
-            "individual": ps.EntityType.INDIVIDUAL,
-            "fraudster": ps.EntityType.FRAUDSTER,
-            "bank": ps.EntityType.BANK,
-            "account": ps.EntityType.ACCOUNT,
-            "telecom": ps.EntityType.TELECOM,
-            "utility": ps.EntityType.ORGANIZATION,
-            "restaurant": ps.EntityType.ORGANIZATION,
-            "institution": ps.EntityType.ORGANIZATION,
+            "individual": pv.EntityType.INDIVIDUAL,
+            "fraudster": pv.EntityType.FRAUDSTER,
+            "bank": pv.EntityType.BANK,
+            "account": pv.EntityType.ACCOUNT,
+            "telecom": pv.EntityType.TELECOM,
+            "utility": pv.EntityType.ORGANIZATION,
+            "restaurant": pv.EntityType.ORGANIZATION,
+            "institution": pv.EntityType.ORGANIZATION,
         }
         registry = {}
 
@@ -215,76 +215,110 @@ class LLMPlanner():
             role = attrs.get("role")
             etype = ROLE_TO_ENTITYTYPE.get(role)
 
-            registry[node] = ps.Entity(name=node, type=etype)
+            registry[node] = pv.Entity(name=node, type=etype)
 
         return registry
     
-    def generate_valid_fraud_seq(self):
-        prompt = self.fraud_prompt()
+    def generate_valid_fraud_seq(self, max_attempts=15):
+        """
+        Generates a valid fraud sequence through GEPA-stype prompting the LLM
+        until both syntax and semantics are validated
+        """
 
+        prompt = self.fraud_prompt()
+        attempts = 0
         valid_seq = False
 
-        while not valid_seq:
-            raw_output = self.call_model(prompt)
+        while not valid_seq and attempts < max_attempts:
+            attempts += 1
+            raw = self.call_model(prompt)
 
-            # Stage 1: Validate json format
-            
-            # Delete verbose before the sequence
-            raw_output = raw_output[raw_output.find('{'):]
-            # Check and fix end brackets
-            if raw_output.count('}') == 1:
-                raw_output = raw_output[:raw_output.find(']') + 1]
-            elif raw_output.count("]") == 1:
-                raw_output = raw_output[:raw_output.find(']')+1] + "}"
-            else:
-                raw_output += "]}"
-            
-            # Try loading as json
-            try:
-                json_seq = json.loads(raw_output)
-            except Exception as e:
-                continue
-
-
-            # Stage 2: Syntax validation
-            print(json_seq)
+            # Stage 1: Validate JSON format
+            json_text = raw[raw.find("{"):]
+            json_text = repair_json(json_text).lower()
 
             try:
-                T = pv.SequenceModel.model_validate(json_seq, context={"entities": self.env.get_nodes()})
-                print("Syntax validation passed ✅")
+                sequence = json.loads(json_text)
             except Exception as e:
-                print("Syntax validation passed ❌")
-                print(e)
-                prompt += "\n" + str(e) + "\n"
+                error_msg = (
+                    f"\nThe JSON you produced was invalid and could not be parsed.\n"
+                    f"Error: {type(e).__name__}: {str(e)}\n"
+                    f"Here is the exact output you produced:\n{json_text}\n\n"
+                    "Fix the JSON formatting and return ONLY valid JSON."
+                )
+                print(error_msg)
+
+                prompt += error_msg
                 continue
 
-            print(json_seq)
+            # Detect broken / multiline / incomplete steps
+            broken = any(
+                not isinstance(step, str) or "(" not in step or ")" not in step
+                for step in sequence["sequence"]
+            )
 
-            # Stage 3: Semantic validation
-            is_valid, errors = self.ps_validator.validate_json(json_seq['sequence'])
-            print("Semantic Check: " + str(is_valid))
-            if errors:
-                prompt += "\nPrevious output had semantic validation errors:\n" + "\n".join(errors) + "\n"
+            if broken:
+                err_block = (
+                    "\nYour previous output was invalid because at least one action or transaction "
+                    "was split across multiple lines or is missing parentheses.\n"
+                    "Each step MUST be exactly one line of the form:\n"
+                    "action(...)\n"
+                    "transaction(...)\n"
+                    "Here is what you returned:\n"
+                    f"{json.dumps(sequence, indent=2)}\n"
+                    "Regenerate a NEW JSON dictionary following the rules."
+                )
+                print(err_block)
+                prompt += err_block
                 continue
 
+            # Check if 'sequence' is present
+            if 'sequence' not in sequence:
+                error_msg = (
+                    "\nYour JSON did not include a valid 'sequence' list.\n"
+                    f"You returned:\n{json_text}\n"
+                    "Return ONLY: {\"sequence\": [ ... ]}"
+                )
+                print(error_msg)
+                prompt += error_msg
+                continue
+
+            # Stage 2: SYNTAX CHECK
+            syntax_ok, syntax_errors = self.pv.validate_syntax(sequence['sequence'])
+            print("Syntax OK:", syntax_ok)
+
+            if not syntax_ok:
+                err_block = (
+                    "\nYour previous sequence had SYNTAX ERRORS:\n"
+                    + "\n".join(syntax_errors)
+                    + f"\nThis was the sequence you returned:\n{json.dumps(sequence, indent=2)}\n"
+                    "Fix the syntax and regenerate a new valid JSON dictionary."
+                )
+                print(err_block)
+                prompt += err_block
+                continue
+
+            # Stage 3: Semantic check
+            semantic_ok, semantic_errors = self.pv.validate_semantic(sequence['sequence'])
+            print("Semantic OK:", semantic_ok)
+
+            if not semantic_ok:
+                err_block = (
+                    "\nYour previous sequence had SEMANTIC ERRORS:\n"
+                    + "\n".join(semantic_errors)
+                    + f"\nThis was the sequence you returned:\n{json.dumps(sequence, indent=2)}\n"
+                    "Fix the logical errors and regenerate."
+                )
+                print(err_block)
+                prompt += err_block
+                continue
+            
             valid_seq = True
+            print(f"✓ VALID SEQUENCE FOUND after {attempts} attempts")
+            return sequence
+        
+        return None 
     
-
-
-
-            print(json_seq)
-
-                
-
-            
-            print(type(json_seq))
-
-            # is_valid, errors = validator.validate_json(json_str)
-            # print(is_valid)
-            # print(errors)
-            
-            # valid_seq = False
-
 def main():
 
     env = fraud_env.FraudEnv()
@@ -300,10 +334,10 @@ def main():
     env.add_node_with_attribute("bill", "participant", {"role": "individual", "isFraudster": False})
     env.add_node_with_attribute("acc_bill", "account", {"owner": "bill", "bank": "firstfinancial", "balance": 15000.00})
 
-    env.add_node_with_attribute("ConEdison", "participant", {"role": "utility", "isFraudster": False})
-    env.add_node_with_attribute("acc_conedison", "account", {"owner": "ConEdison", "bank": "bankofamerica", "balance": 300000.00})
-    env.add_node_with_attribute("TMobile", "participant", {"role": "telecom", "isFraudster": False})
-    env.add_node_with_attribute("acc_tmobile", "account", {"owner": "TMobile", "bank": "chase", "balance": 500000.00})
+    env.add_node_with_attribute("conedison", "participant", {"role": "utility", "isFraudster": False})
+    env.add_node_with_attribute("acc_conedison", "account", {"owner": "conedison", "bank": "bankofamerica", "balance": 300000.00})
+    env.add_node_with_attribute("tmobile", "participant", {"role": "telecom", "isFraudster": False})
+    env.add_node_with_attribute("acc_tmobile", "account", {"owner": "tmobile", "bank": "chase", "balance": 500000.00})
     
     env.add_node_with_attribute("govco", "participant", {"role": "fraudster", "isFraudster": True})
     env.add_node_with_attribute("acc_govco", "account", {"owner": "govco", "bank": "chase", "balance": 0.00})
@@ -313,7 +347,8 @@ def main():
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    planner.generate_valid_fraud_seq()
+    print(planner.generate_valid_fraud_seq())
+    # print(planner.fraud_prompt())
 
     
 
