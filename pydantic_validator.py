@@ -231,7 +231,7 @@ class UniversalRulesValidator:
                     f"For money transfers, use transaction() syntax."
                 )
         
-        # RULE 7: Only fraudsters can perform fraudulent actions on individuals
+        # RULE 6: Only fraudsters can perform fraudulent actions on individuals
         if self.is_fraud_behavior(action.action_type):
             if not subject_entity.is_fraudster() and not object_entity.is_victim():
                 return False, (
@@ -239,7 +239,13 @@ class UniversalRulesValidator:
                     f"Generate a sequence with correct fraudster and victim entities."
                 )
             
-        # RULE 6: General check - accounts should rarely be action subjects
+        # RULE 7: Subject and object cannot be the same entity
+        if subject_entity == object_entity:
+            return False, (
+                f"{subject_entity.name} can not perform {action.object} on itself."
+            )
+            
+        # RULE 8: General check - accounts should rarely be action subjects
         # Allow technical actions but flag anything else
         if subject_entity.is_account():
             if not self.is_technical_system_action(action.action_type):
@@ -329,7 +335,10 @@ class UniversalRulesValidator:
         errors = []
         
         for i, step in enumerate(sequence):
-            step_type, parsed_data = self.parse_step(step)
+            try:
+                step_type, parsed_data = self.parse_step(step)
+            except Exception as e:
+                errors.append(f"Sequence is not in the right format. Generate again.")
             
             if step_type == 'invalid':
                 errors.append(f"Step {i}: Failed to parse step")
@@ -363,7 +372,11 @@ class UniversalRulesValidator:
         errors = []
 
         for i, step in enumerate(sequence):
-            step_type, parsed_data = self.parse_step(step)
+            try:
+                step_type, parsed_data = self.parse_step(step)
+            except Exception as e:
+                errors.append(f"Sequence is not in the right format. Generate again.")
+
             
             if step_type == 'invalid':
                 errors.append(f"Step {i}: Failed to parse step")
@@ -394,6 +407,7 @@ if __name__ == "__main__":
     # Setup entity registry
     entity_registry = {
         "sally": Entity(name="sally", type=EntityType.INDIVIDUAL),
+        "grace": Entity(name="grace", type=EntityType.INDIVIDUAL),
         "fraudster": Entity(name="fraudster", type=EntityType.FRAUDSTER),
         "fishmaster": Entity(name="fishmaster", type=EntityType.FRAUDSTER),
         "govco": Entity(name="govco", type=EntityType.FRAUDSTER),
@@ -406,6 +420,7 @@ if __name__ == "__main__":
         "acc_fishmaster": Entity(name="acc_fishmaster", type=EntityType.ACCOUNT),
         "acc_govco": Entity(name="acc_govco", type=EntityType.ACCOUNT),
         "acc_bank": Entity(name="acc_bank", type=EntityType.ACCOUNT),
+        "acc_bank": Entity(name="acc_grace", type=EntityType.ACCOUNT),
         "acc_tmobile": Entity(name="acc_tmobile", type=EntityType.ACCOUNT),
         "acc_insuranceco": Entity(name="acc_insuranceco", type=EntityType.ACCOUNT),
     }
@@ -414,49 +429,62 @@ if __name__ == "__main__":
     
     # Test cases in JSON format
     test_cases = [
-        # {
-        #     "name": "✅ VALID - Good fraud sequence",
-        #     "data": {
-        #         "sequence": [
-        #             "action(govco, Impersonation, george, Call, Posed as IRS agent)",
-        #             "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
-        #             "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
-        #             "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
-        #         ]
-        #     }
-        # },
-        # {
-        #     "name": "❌ INVALID - Your bad example",
-        #     "data": {
-        #         "sequence": [
-        #             "action(acc_sally, sim swap, acc_tmobile, call, requested number change)",
-        #             "action(acc_tmobile, account takeover, acc_sally, sms, sent login credentials)",
-        #             "action(acc_insuranceco, phishing, fishmaster, email, spoofed insurance company email)",
-        #             "action(fishmaster, identity theft, acc_insuranceco, call, requested sensitive info)",
-        #             "transaction(acc_insuranceco, fast payment, acc_fishmaster, 5000.00)"
-        #         ]
-        #     }
-        # },
+        {
+            "name": "✅ VALID - Good fraud sequence",
+            "data": {
+                "sequence": [
+                    "action(govco, Impersonation, sally, Call, Posed as IRS agent)",
+                    "action(sally, Sensitive Info Submission, govco, SMS, sent SSN + DOB)",
+                    "action(govco, Social engineering, bankofamerica, Call, Requested account access)",
+                    "transaction(acc_sally, FAST Payment, acc_govco, 3000.00)"
+                ]
+            }
+        },
+        {
+            "name": "❌ INVALID - Your bad example",
+            "data": {
+                "sequence": [
+                    "action(acc_sally, sim swap, acc_tmobile, call, requested number change)",
+                    "action(acc_tmobile, account takeover, acc_sally, sms, sent login credentials)",
+                    "action(acc_insuranceco, phishing, fishmaster, email, spoofed insurance company email)",
+                    "action(fishmaster, identity theft, acc_insuranceco, call, requested sensitive info)",
+                    "transaction(acc_insuranceco, fast payment, acc_fishmaster, 5000.00)"
+                ]
+            }
+        },
         {
             "name": "❌ INVALID - Not a fraudster performing fraud",
             "data": {
                 'sequence': ['action(sally, impersonation, govco, call, posed as utility company employee)', 
-                             'action(govco, sensitive info submission, sally, sms, sent fake utility bill with ssn)', 
-                             'action(sally, social engineering, bankofamerica, phone, requested account info)', 
-                             'transaction(acc_govco, fast payment, acc_sally, -3000.00)'
+                                'action(govco, sensitive info submission, sally, sms, sent fake utility bill with ssn)', 
+                                'action(sally, social engineering, bankofamerica, phone, requested account info)', 
+                                'transaction(acc_govco, fast payment, acc_sally, -3000.00)'
                 ]
             }
         },
-        # {
-        #     "name": "✅ VALID - Novel LLM-generated action",
-        #     "data": {
-        #         "sequence": [
-        #             "action(fraudster, spoofed caller ID attack, sally, phone, displayed fake bank number)",
-        #             "action(sally, credential disclosure, fraudster, phone, revealed account PIN)",
-        #             "transaction(acc_sally, wire transfer, acc_fraudster, 5000.00)"
-        #         ]
-        #     }
-        # }
+        {
+            "name": "✅ VALID - Novel LLM-generated action",
+            "data": {
+                "sequence": [
+                    "action(fraudster, spoofed caller ID attack, sally, phone, displayed fake bank number)",
+                    "action(sally, credential disclosure, fraudster, phone, revealed account PIN)",
+                    "transaction(acc_sally, wire transfer, acc_fraudster, 5000.00)"
+                ]
+            }
+        },
+        {
+            "name": "❌ INVALID - same individual as entity1 and entity 2",
+            "data": {
+                "sequence": [
+                    "action(sally, identity theft, sally, email, stolen password using phishing)", 
+                    "action(govco, account takeover, sally, sms, reset password confirmation via text)", 
+                    "action(govco, sim swap, grace, phone, swapped sim card to gain access to 2fa)",
+                    "action(govco, impersonation, grace, call, posed as bank representative)", 
+                    "action(grace, sensitive info submission, govco, email, sent banking details for account takeover)", 
+                    "action(govco, account takeover, grace, online, successfully logged into grace's account)", 
+                    "transaction(acc_grace, fast payment, acc_govco, 5000.00)"]}
+
+            }
     ]
 
     # print("=" * 80)
@@ -470,7 +498,7 @@ if __name__ == "__main__":
     #         print("Errors:")
     #         for error in errors:
     #             print(f"  • {error}")
-    
+
     print("=" * 80)
     print("SEMANTIC RULES VALIDATION")
     print("=" * 80)

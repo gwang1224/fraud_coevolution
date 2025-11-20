@@ -251,6 +251,10 @@ class LLMPlanner():
                 prompt += error_msg
                 continue
 
+            if "sequence" not in sequence:
+                prompt += "\n Error. The JSON you produced did not contain 'sequence' key."
+                continue
+
             # Detect broken / multiline / incomplete steps
             broken = any(
                 not isinstance(step, str) or "(" not in step or ")" not in step
@@ -315,9 +319,9 @@ class LLMPlanner():
             
             valid_seq = True
             print(f"✓ VALID SEQUENCE FOUND after {attempts} attempts")
-            return sequence
+            return sequence, attempts
         
-        return None 
+        return None, attempts
     
 def main():
 
@@ -347,9 +351,9 @@ def main():
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    print(planner.generate_valid_fraud_seq())
-    # print(planner.fraud_prompt())
-
+    seq, attempts = planner.generate_valid_fraud_seq()
+    print("\nHere is the final generated sequence: " + json.dumps(seq))
+    print(str(attempts) + " attempts")
     
 
 if __name__ == "__main__":
