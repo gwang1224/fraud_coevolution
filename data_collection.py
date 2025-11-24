@@ -1,5 +1,5 @@
 """
-Data Collection llmplanner V2
+Data Collection llmplanner
 
 Evaluation Metrics:
 -------------------
@@ -15,22 +15,20 @@ Evaluation Metrics:
 Planner given 10 maximum attempts
 """
 
-import llmplanner
-import environment
+import llmplanner_v3
 import fraud_env
 import csv
 import json
 import time
 
-env1 = fraud_env.FraudEnv()
-env = environment.create_environment(env1)
-planner = llmplanner.LLMPlanner(env)
+env_generator = fraud_env.FraudEnv()
+env = env_generator.create_environment()
+planner = llmplanner_v3.LLMPlanner(env)
 
-num_seq = 50
+num_seq = 49
 
 for i in range(num_seq):
-    time.sleep(120)
-    print(f"Generating sequence {i} --------------------------------------------------------")
+    print(f"\n\n\nGenerating sequence {i} --------------------------------------------------------")
     start_time = time.time()
 
     sequence, attempts, syntax_errors, semantic_errors =  planner.generate_valid_fraud_seq(10)
@@ -38,17 +36,15 @@ for i in range(num_seq):
     end_time = time.time()
     elapsed_time = end_time - start_time
 
-    print(syntax_errors)
-    print(semantic_errors)
-
     syn_err_per = syntax_errors/attempts
     sem_err_per = semantic_errors/attempts
 
     data = [[json.dumps(sequence), attempts, elapsed_time, syn_err_per, sem_err_per]]
     print(data)
+    time.sleep(60)
 
 
-    with open('fraud_planner_v2.csv', 'a', newline='') as file:
+    with open('fraud_planner_v3.csv', 'a', newline='') as file:
         writer= csv.writer(file)
         writer.writerows(data)
         

@@ -341,7 +341,7 @@ class UniversalRulesValidator:
                 errors.append(f"Sequence is not in the right format. Generate again.")
             
             if step_type == 'invalid':
-                errors.append(f"Step {i}: Failed to parse step")
+                errors.append(f"Step {i}: Failed to parse step.")
                 continue
             
             if step_type == 'action':
@@ -377,9 +377,13 @@ class UniversalRulesValidator:
             except Exception as e:
                 errors.append(f"Sequence is not in the right format. Generate again.")
 
+            if i == len(sequence)-1:
+                if step_type != "transaction":
+                    errors.append(f"Step {i}: The last step must be a transaction")
+
             
             if step_type == 'invalid':
-                errors.append(f"Step {i}: Failed to parse step")
+                errors.append(f"Step {i}: Failed to parse step. There should be 5 fields for action and 4 fields for transaction. Here is the invalid step: {step}")
                 continue
 
             if step_type == "action":
@@ -393,7 +397,6 @@ class UniversalRulesValidator:
                     errors.append(f"Step {i}: {parsed_data['from_account']} is not a valid entry.")
                 if parsed_data['to_account'] not in self.entity_registry:
                     errors.append(f"Step {i}: {parsed_data['to_account']} is not a valid entry.")
-
         
         return len(errors) == 0, errors
 
@@ -503,26 +506,26 @@ if __name__ == "__main__":
     # print("SYNTAX RULES VALIDATION")
     # print("=" * 80)
 
-    # for test_case in test_cases:
-    #     is_valid, errors = validator.validate_syntax(test_case['data']['sequence'])
-    #     print(f"Valid: {is_valid}")
-    #     if errors:
-    #         print("Errors:")
-    #         for error in errors:
-    #             print(f"  • {error}")
-
-    print("=" * 80)
-    print("SEMANTIC RULES VALIDATION")
-    print("=" * 80)
-    
     for test_case in test_cases:
-        print(f"\nExpected: {test_case['name']}")
-        print("-" * 80)
-        
-        is_valid, errors = validator.validate_semantic(test_case['data']['sequence'])
-        
+        is_valid, errors = validator.validate_syntax(test_case['data']['sequence'])
         print(f"Valid: {is_valid}")
         if errors:
             print("Errors:")
             for error in errors:
                 print(f"  • {error}")
+
+    # print("=" * 80)
+    # print("SEMANTIC RULES VALIDATION")
+    # print("=" * 80)
+    
+    # for test_case in test_cases:
+    #     print(f"\nExpected: {test_case['name']}")
+    #     print("-" * 80)
+        
+    #     is_valid, errors = validator.validate_semantic(test_case['data']['sequence'])
+        
+    #     print(f"Valid: {is_valid}")
+    #     if errors:
+    #         print("Errors:")
+    #         for error in errors:
+    #             print(f"  • {error}")

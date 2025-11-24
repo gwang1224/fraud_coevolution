@@ -67,7 +67,7 @@ class LLMPlanner():
         - ENTITY1 must be a participant (victim or fraudster), NOT a bank or account.
         - ENTITY2 can be a bank, participant, or account.
         - CHANNEL is the fraud mode (exmples are not limited to SMS, email, phone, etc).
-        - DESCRIPTION is a  description of what action occurred (ex. for “impersonation” action, a potential description is “Posed as IRS agent”).
+        - DESCRIPTION is a  description of what action occurred.
         - Actions must flow logically (cause → effect → compromise → money stolen).
         - The **final step MUST be the transaction**.
         - Be creative
@@ -236,7 +236,6 @@ class LLMPlanner():
         num_semantic_errors = 0
 
         while not valid_seq and attempts < max_attempts:
-            print(f"\n\n\n{prompt}")
             attempts += 1
             raw = self.call_model(prompt)
 
