@@ -26,7 +26,7 @@ env1 = fraud_env.FraudEnv()
 env = environment.create_environment(env1)
 planner = llmplanner.LLMPlanner(env)
 
-num_seq = 36
+num_seq = 50
 
 for i in range(num_seq):
     time.sleep(120)
@@ -48,7 +48,7 @@ for i in range(num_seq):
     print(data)
 
 
-    with open('fraud_sequences_v2.csv', 'a', newline='') as file:
+    with open('fraud_planner_v2.csv', 'a', newline='') as file:
         writer= csv.writer(file)
         writer.writerows(data)
         
