@@ -229,6 +229,9 @@ class LLMPlanner():
         attempts = 0
         valid_seq = False
 
+        num_syntax_errors = 0
+        num_semantic_errors = 0
+
         while not valid_seq and attempts < max_attempts:
             attempts += 1
             raw = self.call_model(prompt)
@@ -246,6 +249,7 @@ class LLMPlanner():
                     f"Here is the exact output you produced:\n{json_text}\n\n"
                     "Fix the JSON formatting and return ONLY valid JSON."
                 )
+                num_syntax_errors += 1
                 print(error_msg)
 
                 prompt += error_msg
@@ -253,6 +257,7 @@ class LLMPlanner():
 
             if "sequence" not in sequence:
                 prompt += "\n Error. The JSON you produced did not contain 'sequence' key."
+                num_syntax_errors += 1
                 continue
 
             # Detect broken / multiline / incomplete steps
@@ -262,6 +267,7 @@ class LLMPlanner():
             )
 
             if broken:
+                num_syntax_errors += 1
                 err_block = (
                     "\nYour previous output was invalid because at least one action or transaction "
                     "was split across multiple lines or is missing parentheses.\n"
@@ -278,6 +284,7 @@ class LLMPlanner():
 
             # Check if 'sequence' is present
             if 'sequence' not in sequence:
+                num_syntax_errors += 1
                 error_msg = (
                     "\nYour JSON did not include a valid 'sequence' list.\n"
                     f"You returned:\n{json_text}\n"
@@ -292,6 +299,7 @@ class LLMPlanner():
             print("Syntax OK:", syntax_ok)
 
             if not syntax_ok:
+                num_syntax_errors += 1
                 err_block = (
                     "\nYour previous sequence had SYNTAX ERRORS:\n"
                     + "\n".join(syntax_errors)
@@ -307,6 +315,7 @@ class LLMPlanner():
             print("Semantic OK:", semantic_ok)
 
             if not semantic_ok:
+                num_semantic_errors += 1
                 err_block = (
                     "\nYour previous sequence had SEMANTIC ERRORS:\n"
                     + "\n".join(semantic_errors)
@@ -319,9 +328,9 @@ class LLMPlanner():
             
             valid_seq = True
             print(f"✓ VALID SEQUENCE FOUND after {attempts} attempts")
-            return sequence, attempts
+            return sequence, attempts, num_syntax_errors, num_semantic_errors
         
-        return None, attempts
+        return None, attempts, num_syntax_errors, num_semantic_errors
     
 def main():
 
@@ -351,9 +360,11 @@ def main():
 
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    seq, attempts = planner.generate_valid_fraud_seq()
+    seq, attempts, syn, sem = planner.generate_valid_fraud_seq()
     print("\nHere is the final generated sequence: " + json.dumps(seq))
     print(str(attempts) + " attempts")
+    print(syn)
+    print(sem)
     
 
 if __name__ == "__main__":
