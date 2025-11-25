@@ -9,9 +9,9 @@ env = env_generator.create_environment()
 planner = llmplanner.LLMPlanner(env)
 
 
-def generate_sequences(env, planner, data_len=17, num_fraud_seq=8):
+def generate_sequences(env, planner, data_len=16, num_fraud_seq=8):
     fraud_ind = random.sample(range(0, data_len), num_fraud_seq)
-    with open("coev_seq_v2.json", "a") as f:
+    with open("coev_seq_v3.json", "a") as f:
         for i in range(data_len):
             print(f"Sequence {i} ---------------------------------------------")
             label = "fraud" if i in fraud_ind else "legit"
@@ -19,8 +19,8 @@ def generate_sequences(env, planner, data_len=17, num_fraud_seq=8):
             seq = None
 
             while not seq:
-                if label == "fraud": seq, __, __, __ = planner.generate_valid_fraud_seq()
-                else: seq = planner.generate_valid_legit_seq()
+                if label == "fraud": seq, __, __, __ = planner.generate_valid_fraud_seq(5)
+                else: seq = planner.generate_valid_legit_seq(5)
 
             data = {
                 "id": i,

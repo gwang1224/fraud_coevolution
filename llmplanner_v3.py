@@ -428,7 +428,8 @@ def main():
     
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    print(planner.generate_valid_legit_seq())
+    # print(planner.generate_valid_legit_seq())
+    print(planner.call_model("hi"))
     
     
 
