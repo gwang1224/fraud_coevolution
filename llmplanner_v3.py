@@ -5,7 +5,7 @@ import fraud_env
 import pydantic_validator as pv
 from json_repair import repair_json
 import random
-
+import time
 
 
 class LLMPlanner():
@@ -222,7 +222,7 @@ class LLMPlanner():
 
         return registry
     
-    def generate_valid_fraud_seq(self, max_attempts=15):
+    def generate_valid_fraud_seq(self, max_attempts=15) -> dict:
         """
         Generates a valid fraud sequence through GEPA-stype prompting the LLM
         until both syntax and semantics are validated
@@ -335,6 +335,92 @@ class LLMPlanner():
         
         return None, attempts, num_syntax_errors, num_semantic_errors
     
+    def generate_valid_legit_seq(self, max_attempts=10) -> dict:
+        prompt = self.legit_prompt()
+        attempts = 0
+        valid_seq = False
+
+        while not valid_seq and attempts < max_attempts:
+            attempts += 1
+            raw = self.call_model(prompt)
+
+            # Stage 1: Validate JSON format
+            json_text = raw[raw.find("{"):]
+            json_text = repair_json(json_text).lower()
+
+            try:
+                sequence = json.loads(json_text)
+            except Exception as e:
+                error_msg = (
+                    f"\nThe JSON you produced was invalid and could not be parsed.\n"
+                    f"Error: {type(e).__name__}: {str(e)}\n"
+                    f"Here is the exact output you produced:\n{json_text}\n\n"
+                    "Fix the JSON formatting and return ONLY valid JSON."
+                )
+                print(error_msg)
+
+                prompt += error_msg
+                continue
+
+            if "sequence" not in sequence:
+                prompt += "\n Error. The JSON you produced did not contain 'sequence' key."
+                continue
+
+            # Detect broken / multiline / incomplete steps
+            broken = any(
+                not isinstance(step, str) or "(" not in step or ")" not in step
+                for step in sequence["sequence"]
+            )
+
+            if broken:
+                err_block = (
+                    "\nYour previous output was invalid because at least one action or transaction "
+                    "was split across multiple lines or is missing parentheses.\n"
+                    "Each step MUST be exactly one line of the form:\n"
+                    "action(...)\n"
+                    "transaction(...)\n"
+                    "Here is what you returned:\n"
+                    f"{json.dumps(sequence, indent=2)}\n"
+                    "Regenerate a NEW JSON dictionary following the rules."
+                )
+                print(err_block)
+                prompt += err_block
+                continue
+
+            # Check if 'sequence' is present
+            if 'sequence' not in sequence:
+                error_msg = (
+                    "\nYour JSON did not include a valid 'sequence' list.\n"
+                    f"You returned:\n{json_text}\n"
+                    "Return ONLY: {\"sequence\": [ ... ]}"
+                )
+                print(error_msg)
+                prompt += error_msg
+                continue
+
+            # Stage 2: SYNTAX CHECK
+            syntax_ok, syntax_errors = self.pv.validate_syntax(sequence['sequence'])
+            print("Syntax OK:", syntax_ok)
+
+            if not syntax_ok:
+                err_block = (
+                    "\nYour previous sequence had SYNTAX ERRORS:\n"
+                    + "\n".join(syntax_errors)
+                    + f"\nThis was the sequence you returned:\n{json.dumps(sequence, indent=2)}\n"
+                    "Fix the syntax and regenerate a new valid JSON dictionary."
+                )
+                print(err_block)
+                prompt += err_block
+                continue
+        
+            return sequence
+        return None
+        
+
+
+
+
+
 def main():
 
     env_generator = fraud_env.FraudEnv()
@@ -342,7 +428,7 @@ def main():
     
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    print(planner.generate_valid_fraud_seq())
+    print(planner.generate_valid_legit_seq())
     
     
 
