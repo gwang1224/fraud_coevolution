@@ -22,6 +22,5 @@ def classify_sequence(seq: str):
             }
         )
         res = response.json().get('response', '').strip().strip("'").lower()
-        print(res)
         if res in ["fraud", "legit"]:
             return res

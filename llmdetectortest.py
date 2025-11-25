@@ -12,13 +12,13 @@ false_pos = 0
 false_neg = 0
 total_seq = 0
 
-with open("sequences.json", "r") as f:
+with open("data/coev_seq_v2.json", "r") as f:
     for line in f:
 
         total_seq += 1
         print(f"On sequence {total_seq}...")
 
-        entry = json.loads(line)
+        entry = json.loads(line.strip())
         id = entry['id']
         sequence = entry['sequence']
         label = entry['label']
@@ -50,4 +50,4 @@ res.append({
 })
 df_res = pd.DataFrame(res)
 print(df_res)
-df_res.to_csv("data/llmdetector_full_res.csv")
+df_res.to_csv("data/detector_res_v2.csv")
