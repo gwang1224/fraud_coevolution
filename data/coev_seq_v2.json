@@ -1,100 +1,945 @@
-{"id": 0, "label": "fraud", "sequence": ["action(fishmaster, posed as, nina, email, claimed to be a tax officer for an audit)", "action(nina, responded, fishmaster, email, agreed to cooperate with the audit)", "action(fishmaster, requested, nina, email, to provide bank account details for the audit)", "action(nina, disclosed, acc_nina, email, revealed her account details including acc_nina)", "action(fishmaster, requested, nina, email, to transfer money via fast payment to acc_fishmaster)", "transaction(acc_nina, fast payment, acc_fishmaster, 9600.0)"]},
-{"id": 1, "label": "fraud", "sequence": ["action(govco, phishing, james, email, sent fraudulent tax claim link)", "action(james, clicked, govco, email, opened phishing link)", "action(govco, gained_access, acc_james, link, obtained login credentials)", "action(govco, transferred_funds, acc_james, bank, initiated fast payment to acc_govco)", "transaction(acc_james, fast payment, acc_govco, 16000.0)"]},
-{"id": 2, "label": "fraud", "sequence": ["action(govco, posed as, bill, email, claimed to be a government representative requiring urgent action)", "action(bill, provided, govco, personal_information, sent sensitive details including account information)", "action(govco, gained, acc_bill, bank_access, managed to access victim's account through obtained credentials)", "transaction(acc_bill, fast payment, acc_govco, 12000.0)"]},
-{"id": 3, "label": "legit", "sequence": ["action(grace, consultation, bill, phone, provided services for home repair)", "action(bill, payment, grace, app, paid for consultation service)", "transaction(acc_grace, fast payment, acc_bill, 200.00)"]},
-{"id": 4, "label": "legit", "sequence": ["action(sally, rent payment, james, app, paid rent for april)", "transaction(acc_sally, fast payment, acc_james, 1000.00)", "action(james, receipt confirmation, sally, email, confirmed rent received)", "action(james, utility payment, firstfinancial, online platform, paid electricity bill)", "transaction(acc_james, fast payment, acc_conedison, 150.00)"]},
-{"id": 5, "label": "legit", "sequence": ["action(acc_bill, consultation, acc_james, email, legal advice)", "action(acc_james, payment, acc_bill, app, paid legal fee)", "transaction(acc_james, fast payment, acc_bill, 300.00)"]},
-{"id": 6, "label": "legit", "sequence": ["action(acc_sally, consultancy_service, firstfinancial, email, offered graphic design service)", "action(firstfinancial, acceptance, acc_sally, email, accepted the offer for graphic design service)", "action(firstfinancial, payment, acc_sally, bank transfer, paid for agreed graphic design service)", "transaction(acc_sally, fast payment, acc_wellesley, 500.00)"]},
-{"id": 7, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, posed as a bank representative requesting password change)", "action(bill, action, fishmaster, email, provided new account password)", "action(fishmaster, login, acc_bill, email, logged into victim's account successfully)", "action(acc_bill, transfer, fishmaster, bank, initiated unauthorized fund transfer)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 8, "label": "legit", "sequence": ["action(bill, service_purchase, firstfinancial, email, hired financial consultant)", "action(firstfinancial, payment, bill, app, paid for consultation services)", "transaction(acc_bill, fast payment, acc_bill, 300.00)"]},
-{"id": 9, "label": "legit", "sequence": ["action(sally, service rendered, bill, email, confirmed graphic design project)", "action(bill, payment, sally, bank transfer, paid for graphic design project)", "transaction(acc_sally, fast payment, acc_bill, 500.00)"]},
-{"id": 10, "label": "legit", "sequence": ["action(bill, service rendered, james, email, invoice for web design)", "action(james, payment, bill, online platform, paid invoice for web design)", "transaction(acc_james, fast payment, acc_bill, 1500.00)"]},
-{"id": 11, "label": "legit", "sequence": ["action(bill, consultation, james, email, accepted project terms)", "action(james, payment, bill, bank transfer, paid consultation fee)", "transaction(acc_james, fast payment, acc_bill, 500.00)"]},
-{"id": 12, "label": "legit", "sequence": ["action(bill, consulting service, james, email, agreed on terms for seo project)", "action(james, payment, bill, paypal, paid consultation fee for seo project)", "transaction(acc_james, fast payment, acc_bill, 500.00)"]},
-{"id": 13, "label": "fraud", "sequence": ["action(insuranceco, phishing, james, email, sent fake email claiming account issue)", "action(james, clicked, insuranceco, email, opened the phishing email)", "action(insuranceco, requested, james, email, requested login credentials and bank details)", "action(james, provided, insuranceco, email, sent login credentials and account number acc_james)", "action(insuranceco, accessed, acc_james, online, gained access to victim's account)", "transaction(acc_james, fast payment, acc_insuranceco, 16000.0)"]},
-{"id": 14, "label": "legit", "sequence": ["action(bill, service, firstfinancial, email, approved loan application)", "action(firstfinancial, notification, bill, email, loan funds available)", "action(bill, withdrawal, firstfinancial, app, withdrew loan funds)", "transaction(acc_bill, fast payment, acc_conedison, 1200.00)"]},
-{"id": 15, "label": "legit", "sequence": ["action(bill, order, acc_bluediner, website, ordered meal for delivery)", "action(acc_bluediner, confirmation, bill, email, confirmed order details)", "action(bill, payment, acc_bluediner, app, paid for the meal)", "transaction(acc_bill, fast payment, acc_bluediner, 30.00)"]},
-{"id": 16, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, sent a fake bank notification)", "action(bill, clicked, fishmaster, email, opened the fraudulent link)", "action(fishmaster, sent, acc_bill, sms, requested verification code)", "action(bill, entered, fishmaster, sms, provided verification code)", "action(fishmaster, logged, acc_bill, online, accessed the account successfully)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 17, "label": "legit", "sequence": ["action(sally, account_verification, firstfinancial, email, confirmed identity through otp)", "action(firstfinancial, service_activation, sally, email, activated checking account)", "action(sally, deposit, firstfinancial, app, deposited initial funds into the account)", "action(firstfinancial, service_provision, sally, online platform, approved direct deposit for salary)", "transaction(acc_sally, fast payment, acc_govco, 3000.00)"]},
-{"id": 18, "label": "fraud", "sequence": ["action(insuranceco, phishing, bill, email, sent a fake claim confirmation with account update link)", "action(bill, clicked, insuranceco, email, followed the account update link)", "action(bill, updated, acc_bill, website, provided new login credentials to insuranceco under the guise of claim verification update)", "action(insuranceco, logged_in, acc_bill, unauthorized_access, gained access to bill's account)", "transaction(acc_bill, fast payment, acc_insuranceco, 12000.0)"]},
-{"id": 19, "label": "fraud", "sequence": ["action(insuranceco, phishing, olivia, email, sent fraudulent insurance claim form)", "action(olivia, clicked, insuranceco, email, opened and filled out the form)", "action(insuranceco, accessed, acc_olivia, fraudulent_access, gained access to olivia's account details)", "transaction(acc_olivia, fast payment, acc_insuranceco, 6800.0)"]},
-{"id": 20, "label": "legit", "sequence": ["action(sally, consultation, nina, email, hired for tax advice)", "action(nina, invoice, sally, email, sent tax advice invoice)", "transaction(acc_sally, fast payment, acc_nina, 300.00)"]},
-{"id": 21, "label": "fraud", "sequence": ["action(govco, posing, bill, email, posed as tax authority representative)", "action(bill, replying, govco, email, provided personal and financial details under duress)", "action(govco, gaining, acc_bill, email, gained access to victim's bank account information)", "transaction(acc_bill, fast payment, acc_govco, 12000.0)"]},
-{"id": 22, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, sent a fraudulent tax invoice)", "action(bill, clicking, acc_fishmaster, email, clicked the link in the fraudulent email)", "action(fishmaster, communicating, bill, phone, contacted bill pretending to be bank support)", "action(bill, providing, fishmaster, phone, shared verification code for account access)", "action(fishmaster, logging_in, acc_bill, online, gained full access to bill's account)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 23, "label": "legit", "sequence": ["action(bill, service purchase, james, email, purchased web design services)", "action(james, invoice send, bill, email, sent invoice for 500.00)", "transaction(acc_james, fast payment, acc_bill, 500.00)"]},
-{"id": 24, "label": "fraud", "sequence": ["action(fishmaster, phishing, sally, email, sent a fraudulent bank link)", "action(sally, click, fishmaster, email, clicked the fraudulent bank link)", "action(sally, share_credentials, fishmaster, unknown, unknowingly provided account credentials to fishmaster)", "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"]},
-{"id": 25, "label": "legit", "sequence": ["action(bill, account_verification, wellsfargo, email, confirmed identity through otp)", "action(wellsfargo, loan_approval, bill, email, approved for $1000 personal loan)", "transaction(acc_bill, fast payment, acc_wellesley, 1000.00)"]},
-{"id": 26, "label": "legit", "sequence": ["action(bill, consultation, james, email, agreed on terms and rates)", "action(james, payment, bill, bank transfer, payment for consultation services)", "transaction(acc_james, fast payment, acc_bill, 100.00)"]},
-{"id": 27, "label": "fraud", "sequence": ["action(govco, posed_as, sally, email, posed as sally's bank representative)", "action(sally, replied, govco, email, provided account details upon request)", "action(govco, changed_password, acc_sally, online, changed sally's account password without authorization)", "transaction(acc_sally, fast payment, acc_govco, 4800.0)"]},
-{"id": 28, "label": "fraud", "sequence": ["action(insurancenet, phishing, olivia, email, sent fake login link)", "action(olivia, click, insurancenet, email, clicked on the link)", "action(insurancenet, gain_access, olivia, phishing_site, obtained login credentials)", "action(insurancenet, change_password, acc_olivia, online_banking, changed olivia's password)", "transaction(acc_olivia, fast payment, acc_insurancenet, 6800.0)"]},
-{"id": 29, "label": "fraud", "sequence": ["action(fishmaster, phishing, nina, email, sent a fake bank notification with login link)", "action(nina, login, acc_nina, email, clicked on the provided link and entered credentials)", "action(nina, transfer, fishmaster, sms, authorized a fast payment request of 9600.0)", "transaction(acc_nina, fast payment, acc_fishmaster, 9600.0)"]},
-{"id": 30, "label": "fraud", "sequence": ["action(govco, posed as, sally, email, posed as a bank representative)", "action(sally, replied, govco, email, provided account details and login credentials)", "action(govco, logged into, acc_sally, email, gained access to the victim's account)", "transaction(acc_sally, fast payment, acc_govco, 4800.0)"]},
-{"id": 31, "label": "fraud", "sequence": ["action(govco, phishing, james, email, posed as bank representative requesting account details)", "action(james, sharing, acc_james, email, sent account credentials to govco)", "action(govco, logging, acc_james, online, gained access to acc_james)", "transaction(acc_james, fast payment, acc_govco, 16000.0)"]},
-{"id": 32, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, sent a fraudulent tax notification with login link)", "action(bill, access, acc_bill, email, clicked the provided login link)", "action(fishmaster, authentication, bill, email, received bill's account credentials)", "action(fishmaster, transfer, acc_bill, bank's online platform, initiated a transfer to acc_fishmaster)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 33, "label": "legit", "sequence": ["action(bill, consultation, firstfinancial, email, agreed on service terms)", "action(firstfinancial, payment, bill, bank wire, paid for service fee)", "action(bill, product, insurancenet, app, provided insurance services)", "transaction(acc_bill, fast payment, acc_insurancenet, 500.00)"]},
-{"id": 34, "label": "fraud", "sequence": ["action(insuranceco, phishing, grace, email, sent fake email from 'irs tax office'),", "action(grace, clicked, insuranceco, email, opened and clicked the link in the phishing email),", "action(insuranceco, gainedaccess, acc_grace, sms, sent a verification code to grace's phone),", "action(grace, enteredcode, insuranceco, sms, entered the verification code received),", "action(insuranceco, accessedaccount, acc_grace, email, gained access to grace's account),", "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"]},
-{"id": 35, "label": "legit", "sequence": ["action(nina, service_order, firstfinancial, email, ordered account maintenance service)", "action(firstfinancial, confirmation, nina, email, confirmed receipt of service order)", "transaction(acc_nina, fast payment, acc_wellesley, 50.00)"]},
-{"id": 36, "label": "fraud", "sequence": ["action(insurancenet, phishing, bill, email, sent a fraudulent email claiming 'account update required' with a fake link)", "action(bill, clicked, insurancenet, email, followed the provided link to the fake portal)", "action(insurancenet, gained_credentials, bill, web, victim entered account details upon request)", "action(insurancenet, got_access, acc_bill, bank, successfully logged into victim's account using stolen credentials)", "transaction(acc_bill, fast payment, acc_insurancenet, 12000.0)"]},
-{"id": 37, "label": "legit", "sequence": ["action(bill, consultation, james, email, agreed on project terms)", "action(james, payment, bill, paypal, paid for consultation fee)", "transaction(acc_james, fast payment, acc_bill, 100.00)"]},
-{"id": 38, "label": "legit", "sequence": ["action(nina, consultation, firstfinancial, email, provided financial advice)", "action(firstfinancial, payment, nina, email, paid for consultation fees)", "transaction(acc_insurancenet, fast payment, acc_nina, 100.00)"]},
-{"id": 39, "label": "fraud", "sequence": ["action(govco, posed as, sally, email, claimed to be a bank representative)", "action(sally, replied, govco, email, provided account details for acc_sally)", "action(govco, requested, sally, phone, verified account details over call)", "action(govco, gained, acc_sally, online, performed unauthorized login using provided credentials)", "transaction(acc_sally, fast payment, acc_govco, 4800.0)"]},
-{"id": 40, "label": "fraud", "sequence": ["action(fishmaster, phishing, olivia, email, sent a fraudulent bank login link)", "action(olivia, click, fishmaster, email, clicked the fraudulent bank login link)", "action(fishmaster, authentication, olivia, email, asked for verification code)", "action(olivia, sent, fishmaster, sms, sent the verification code)", "action(fishmaster, login, acc_olivia, email, gained access to olivia's account)", "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"]},
-{"id": 41, "label": "fraud", "sequence": ["action(govco, posed_as, nina, email, claimed to be a bank representative)", "action(nina, replied, govco, email, provided account details acc_nina for verification)", "action(govco, sent, acc_nina, sms, requested password reset for 'security reasons')", "action(nina, complied, govco, sms, reset password for acc_nina as requested)", "action(govco, logged_in, acc_nina, email, successfully accessed nina's account)", "transaction(acc_nina, fast payment, acc_govco, 9600.0)"]},
-{"id": 42, "label": "fraud", "sequence": ["action(fishmaster, phishing, sally, email, sent fraudulent bank login link)", "action(sally, clicked, fishmaster, email, opened malicious link)", "action(sally, entered_credentials, fishmaster, unknown, provided account credentials)", "action(fishmaster, accessed_account, acc_sally, unknown, fraudster gained access to account)", "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"]},
-{"id": 43, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, sent fraudulent tax notification)", "action(bill, clicked, fishmaster, email, opened phishing link)", "action(fishmaster, requested, bill, email, asked for account details)", "action(bill, provided, fishmaster, email, sent account information)", "action(fishmaster, accessed, acc_bill, email, gained access to account)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 44, "label": "legit", "sequence": ["action(bill, invoice_sent, james, email, sent invoice for consulting service)", "action(james, payment, bill, bank transfer, paid for consulting service)", "transaction(acc_bill, fast payment, acc_james, 300.00)"]},
-{"id": 45, "label": "legit", "sequence": ["action(bill, consultation, james, email, paid for consulting services)", "transaction(acc_bill, fast payment, acc_james, 200.00)", "action(james, service, bill, email, delivered consulting report)", "action(bill, feedback, chase, app, left positive review)", "transaction(acc_james, fast payment, acc_bill, 300.00)"]},
-{"id": 46, "label": "legit", "sequence": ["action(bill, account_verification, firstfinancial, email, confirmed identity through otp)", "action(firstfinancial, loan_approval, bill, email, approved personal loan for home improvement)", "action(bill, payment, firstfinancial, app, paid monthly installment of the approved loan)", "transaction(acc_bill, fast payment, acc_conedison, 100.00)", "action(bill, account_verification, citibank, email, confirmed identity through otp)", "action(citibank, investment_account_opening, bill, email, opened investment account for mutual funds)", "action(bill, deposit, citibank, app, deposited 5000.00 to start the investment)", "transaction(acc_bill, fast payment, acc_insuranceco, 100.00)"]},
-{"id": 47, "label": "fraud", "sequence": ["action(insuranceco, phishing, grace, email, sent a fraudulent email claiming to be from insurance company)", "action(grace, clicked, insuranceco, email, opened and clicked on the provided link)", "action(insuranceco, malware, grace, email, installed malicious software onto grace's device)", "action(insuranceco, keylogging, acc_grace, device, logged grace's online banking password)", "action(insuranceco, transfer initiation, acc_grace, online banking, initiated a transfer to acc_insuranceco)", "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"]},
-{"id": 48, "label": "fraud", "sequence": ["action(grace, request, insuranceco, email, asked for insurance claim assistance)", "action(insuranceco, respond, grace, email, sent fake claim form with account details)", "action(grace, submit, insuranceco, fax, faxed completed claim form with account number)", "action(insuranceco, transfer, acc_grace, bank, initiated unauthorized transfer of 320000.0)", "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"]},
-{"id": 49, "label": "legit", "sequence": ["action(sally, account_verification, firstfinancial, email, verified identity)", "action(firstfinancial, service_activation, sally, email, bank account activated)", "action(sally, consultation, james, phone, received financial advice)", "action(james, invoice, sally, email, sent invoice for consultation fee)", "action(sally, payment, james, app, paid consultation fee)", "transaction(acc_sally, fast payment, acc_james, 100.00)"]},
-{"id": 50, "label": "legit", "sequence": ["action(james, service_provided, acc_wellesley, email, provided web development services)", "action(acc_wellesley, payment, james, app, paid for web development services)", "transaction(acc_james, fast payment, acc_wellesley, 1000.00)"]},
-{"id": 51, "label": "legit", "sequence": ["action(bill, consultation, james, email, provided consultation services)", "transaction(acc_bill, fast payment, acc_james, 100.00)", "action(james, payment, bankofamerica, app, paid for consultation)", "transaction(acc_james, fast payment, acc_bill, 100.00)"]},
-{"id": 52, "label": "legit", "sequence": ["action(bill, signed contract, wellsfargo, email, agreed to provide web design services)", "action(wellsfargo, payment, bill, bank transfer, paid for consultancy services)", "transaction(acc_bill, fast payment, acc_wellesley, 3000.00)"]},
-{"id": 53, "label": "legit", "sequence": ["action(james, service_request, firstfinancial, email, requested account opening)", "action(firstfinancial, response, james, email, sent account opening kit)", "action(james, submission, firstfinancial, snail_mail, submitted required documents)", "action(firstfinancial, verification, james, email, confirmed document verification)", "action(firstfinancial, approval, james, email, approved account application)", "action(james, payment, firstfinancial, app, paid account opening fee)", "transaction(acc_james, fast payment, acc_wellesley, 50.00)"]},
-{"id": 54, "label": "fraud", "sequence": ["action(insurancenet, posed as, nina, email, claimed to be from nina's bank for account security update)", "action(nina, replied, insurancenet, email, provided updated account details for verification)", "action(insurancenet, sent, acc_nina, email, link to fake 'account security confirmation' page)", "action(nina, clicked, acc_nina, link, accessed the fake page and entered new login credentials)", "action(insurancenet, gained, acc_nina, email, confirmed successful account takeover)", "transaction(acc_nina, fast payment, acc_insurancenet, 9600.0)"]},
-{"id": 55, "label": "legit", "sequence": ["action(sally, consultation, james, email, agreed on project terms)", "action(james, payment, sally, bank transfer, paid for consultation services)", "transaction(acc_james, fast payment, acc_sally, 200.00)"]},
-{"id": 56, "label": "legit", "sequence": ["action(bill, order, firstfinancial, website, purchased computer hardware)", "action(firstfinancial, shipment, bill, email, shipped purchased item)", "action(bill, feedback, firstfinancial, email, provided positive review)", "action(firstfinancial, reward, bill, email, awarded loyalty points)", "transaction(acc_bill, fast payment, acc_insurancenet, 10.00)"]},
-{"id": 57, "label": "legit", "sequence": ["action(sally, order, insurancenet, email, placed an order for insurance policy)", "action(insurancenet, confirmation, sally, email, sent confirmation of order details)", "action(sally, payment, insurancenet, app, approved payment for insurance policy)", "transaction(acc_sally, fast payment, acc_insurancenet, 500.00)"]},
-{"id": 58, "label": "legit", "sequence": ["action(bill, service, firstfinancial, email, received payment for financial advice)", "action(bill, payment, james, bank transfer, paid for financial advice)", "transaction(acc_bill, fast payment, acc_james, 250.00)"]},
-{"id": 59, "label": "legit", "sequence": ["action(sally, consultation, james, email, agreed upon terms for services)", "action(james, payment, sally, bank transfer, paid for consulting services)", "transaction(acc_james, fast payment, acc_sally, 500.00)"]},
-{"id": 60, "label": "fraud", "sequence": ["action(insuranceco, phishing, james, email, sent a fraudulent email with a link to a fake insurance company login page)", "action(james, login, insuranceco, web, entered his login credentials after clicking the malicious link)", "action(insuranceco, access_granted, acc_james, server, gained full access to james' account with stolen credentials)", "action(insuranceco, transfer, acc_james, internal, initiated a fraudulent transaction of 16000.0 to acc_insuranceco)", "transaction(acc_james, fast payment, acc_insuranceco, 16000.0)"]},
-{"id": 61, "label": "legit", "sequence": ["action(sally, consulting fee, james, email, received $500 for consultation services)", "action(james, payment, sally, bank transfer, paid consulting fee)", "transaction(acc_sally, fast payment, acc_james, 500.00)"]},
-{"id": 62, "label": "fraud", "sequence": ["action(fishmaster, phishing, grace, email, sent a fraudulent bank link claiming account issues)", "action(grace, clicked, fishmaster, email, opened the email and clicked on the provided link)", "action(grace, entered, acc_grace, website, entered account details on fraudulent website)", "action(fishmaster, access, acc_grace, website, gained access to grace's bank account details)", "transaction(acc_grace, fast payment, acc_fishmaster, 320000.0)"]},
-{"id": 63, "label": "fraud", "sequence": ["action(insurancenet, posed as, sally, email, claimed to be bank representative)", "action(sally, replied, insurancenet, email, provided account details for acc_sally verification)", "action(insurancenet, gained, acc_sally, email, after successfully verifying identity)", "transaction(acc_sally, fast payment, acc_insurancenet, 4800.0)"]},
-{"id": 64, "label": "fraud", "sequence": ["action(fishmaster, posed as, sally, sms, claimed acc_sally was frozen due to suspicious activity)", "action(sally, replied, fishmaster, phone, provided acc_sally verification code for confirmation)", "action(fishmaster, accessed, acc_sally, email, used provided credentials to log into acc_sally)", "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"]},
-{"id": 65, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, sent a fraudulent bank link)", "action(bill, clicked, fishmaster, email, fell for the phishing attempt)", "action(fishmaster, login, acc_bill, email, gained access to account details using phished credentials)", "action(fishmaster, transfer, acc_bill, fast payment, initiated a fraudulent transfer of 12000.0)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 66, "label": "fraud", "sequence": ["action(grace, shares, acc_grace, email, shares her account details for an online loan application)", "action(insurancenet, impersonates, grace, email, claims to be a loan officer from a reputable bank)", "action(grace, provides, insurancenet, email, sends her updated personal and account information)", "action(insurancenet, gains, acc_grace, fast, gains access to grace's account through the loan application process)", "transaction(acc_grace, fast payment, acc_insurancenet, 320000.0)"]},
-{"id": 67, "label": "fraud", "sequence": ["action(govco, phishing, sally, email, sent a fraudulent email about tax update)", "action(sally, clicked, govco, email, opened the fraudulent email containing malware)", "action(govco, installed_malware, acc_sally, email, installed keylogger on sally's account)", "action(govco, accessed_account, acc_sally, malware, gained access to sally's online banking credentials)", "transaction(acc_sally, fast payment, acc_govco, 4800.0)"]},
-{"id": 68, "label": "fraud", "sequence": ["action(fishmaster, phishing, olivia, email, sent a fraudulent bank statement link)", "action(olivia, click, fishmaster, email, clicked on the fraudulent link)", "action(fishmaster, accessed_account, acc_olivia, email, gained access to olivia's account details)", "action(fishmaster, transferred_own_funds, acc_fishmaster, bank, transferred 6800.0 from his account to cover transaction costs)", "action(fishmaster, changed_account_details, acc_olivia, email, changed olivia's account password and email)", "action(fishmaster, drained_funds, acc_olivia, bank, drained 6800.0 from olivia's account)", "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"]},
-{"id": 69, "label": "legit", "sequence": ["action(sally, hired, firstfinancial, email, agreed on consulting services)", "action(firstfinancial, service delivery, sally, online platform, provided consultation services)", "action(sally, payment, firstfinancial, bank transfer, paid for consultation fees)", "transaction(acc_sally, fast payment, acc_wellesley, 100.00)"]},
-{"id": 70, "label": "legit", "sequence": ["action(sally, service_order, firstfinancial, email, ordered catering for business event)", "action(firstfinancial, service_confirmation, sally, email, confirmed availability for catering)", "action(sally, payment, firstfinancial, app, paid for the catering order)", "transaction(acc_sally, fast payment, acc_bluediner, 800.00)"]},
-{"id": 71, "label": "fraud", "sequence": ["action(insuranceco, phishing, james, email, sent fraudulent tax bill email with malware link)", "action(james, clicked, insuranceco, email_link, opened malicious attachment and revealed credentials)", "action(insuranceco, gained, acc_james, access, hacked into victim's account using stolen credentials)", "transaction(acc_james, fast payment, acc_insuranceco, 16000.0)"]},
-{"id": 72, "label": "legit", "sequence": ["action(acc_james, service_request, sally, email, requested legal consultation)", "action(sally, service_confirmation, acc_james, phone, confirmed availability and provided cost estimation)", "action(acc_james, payment, sally, bank transfer, transferred funds for legal consultation)", "transaction(acc_james, fast payment, acc_sally, 150.00)"]},
-{"id": 73, "label": "fraud", "sequence": ["action(insurancenet, posed, nina, email, claimed to be a representative from nina's insurance company)", "action(nina, replied, insurancenet, email, provided policy number and account details for verification)", "action(insurancenet, accessed, acc_nina, email, used provided details to gain access to acc_nina)", "transaction(acc_nina, fast payment, acc_insurancenet, 9600.0)"]},
-{"id": 74, "label": "legit", "sequence": ["action(james, requested, bankofamerica, email, professional advice on financial planning)", "action(bankofamerica, response, james, email, agreed to provide consultation services)", "action(bankofamerica, consultation, james, video_call, delivered financial advice)", "action(james, payment, bankofamerica, app, paid for the consultation)", "transaction(acc_james, fast payment, acc_wellesley, 150.00)"]},
-{"id": 75, "label": "legit", "sequence": ["action(sally, service_acceptance, acc_conedison, email, accepted electricity service agreement)", "action(acc_conedison, payment, sally, app, paid initial deposit for service)", "transaction(acc_sally, fast payment, acc_conedison, 100.00)", "action(sally, service_confirmation, acc_conedison, phone, confirmed electricity service is active)", "action(acc_conedison, billing, sally, email, sent monthly electricity bill)", "transaction(acc_sally, fast payment, acc_conedison, 50.00)"]},
-{"id": 76, "label": "fraud", "sequence": ["action(govco, posed as, sally, email, claimed to be a representative from the bank)", "action(sally, replied, govco, email, provided login credentials after receiving email)", "action(govco, gained access, acc_sally, email, successfully logged into sally's account)", "action(govco, transferred funds, acc_sally, bank transfer, moved 4800.0 from sally's account to govco's account)", "transaction(acc_sally, fast payment, acc_govco, 4800.0)"]},
-{"id": 77, "label": "legit", "sequence": ["action(bill, consultation, james, email, agreed on service terms)", "action(james, payment, bill, bank transfer, paid for consultation)", "transaction(acc_james, fast payment, acc_bill, 100.00)"]},
-{"id": 78, "label": "fraud", "sequence": ["action(grace, sends_documents, insuranceco, email, shares her latest car accident claim documents)", "action(insuranceco, poses_as_support, grace, phone, claims to be a support agent from the company)", "action(insuranceco, requests_more_info, grace, phone, asks for updated bank account details due to 'system issues')", "action(grace, updates_details, insuranceco, email, sends her updated bank account details via email)", "action(insuranceco, verifies_account, acc_grace, online, logs into grace's account using provided credentials)", "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"]},
-{"id": 79, "label": "legit", "sequence": ["action(acc_insuranceco, insurance policy, james, in-person, issued new car insurance)", "action(james, premium payment, acc_insuranceco, online, paid monthly premium)", "transaction(acc_james, fast payment, acc_insuranceco, 100.00)"]},
-{"id": 80, "label": "legit", "sequence": ["action(james, service_offered, insuranceco, email, agreed on life insurance policy)", "action(insuranceco, payment, james, bank transfer, paid for life insurance policy)", "transaction(acc_james, fast payment, acc_insuranceco, 150.00)"]},
-{"id": 81, "label": "fraud", "sequence": ["action(insuranceco, posed as, olivia, email, claimed to be olivia's insurance representative)", "action(olivia, replied, insuranceco, email, shared policy details including account number acc_olivia)", "action(insuranceco, requested, acc_olivia, email, alleged claim verification via email transfer)", "action(olivia, provided, insuranceco, email, believed it was the insurance company verifying her policy)", "transaction(acc_olivia, fast payment, acc_insuranceco, 6800.0)"]},
-{"id": 82, "label": "fraud", "sequence": ["action(fishmaster, phishing, grace, email, sent a fraudulent tax notification)", "action(grace, clicking, fishmaster, email, opened the phishing email)", "action(grace, providing, fishmaster, website, entered login credentials and ssn on the fake bank site)", "action(fishmaster, gaining, acc_grace, website, successfully accessed grace's account)", "transaction(acc_grace, fast payment, acc_fishmaster, 320000.0)"]},
-{"id": 83, "label": "fraud", "sequence": ["action(insurancenet, phishing, olivia, email, sent fraudulent insurance claim email)", "action(olivia, clicking, insurancenet, email, opened and clicked on malicious link)", "action(insurancenet, gaining_access, acc_olivia, bank_system, obtained login credentials through keylogger)", "action(insurancenet, transferring, acc_olivia, fast_payment, initiated unauthorized funds transfer to acc_insurancenet)", "transaction(acc_olivia, fast_payment, acc_insurancenet, 6800.0)"]},
-{"id": 84, "label": "fraud", "sequence": ["action(insurancenet, phishing, james, email, sent fraudulent insurance claim form)", "action(james, clicking, insurancenet, email, opened and filled out the form with personal details)", "action(insurancenet, updating, acc_james, bank, gained access to victim's account information)", "action(insurancenet, transferring, acc_james, fast payment, initiated a fraudulent payment of 16000.0 to acc_insurancenet)", "transaction(acc_james, fast payment, acc_insurancenet, 16000.0)"]},
-{"id": 85, "label": "fraud", "sequence": ["action(fishmaster, phishing, sally, email, sent a fraudulent banking link disguised as an account statement update)", "action(sally, click, acc_sally, email, clicked on the link exposing account credentials to fishmaster)", "action(fishmaster, unauthorized_access, acc_sally, internet, fishmaster gained access to sally's account details)", "action(fishmaster, transfer_initiation, acc_sally, bank, initiated a transfer request of 4800.0 from acc_sally to acc_fishmaster)", "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"]},
-{"id": 86, "label": "fraud", "sequence": ["action(fishmaster, phishing, olivia, email, sent a fraudulent bank notification)", "action(olivia, click, fishmaster, email, clicked on the malicious link provided)", "action(fishmaster, account_takeover, acc_olivia, link, gained access to olivia's account details)", "action(fishmaster, transfer_initiate, acc_olivia, online_banking, initiated a fast payment transaction of 6800.0 to acc_fishmaster)", "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"]},
-{"id": 87, "label": "legit", "sequence": ["action(bill, consulting service, james, email, agreed to work on a project)", "action(james, payment, bill, online platform, paid for consulting services)", "transaction(acc_james, fast payment, acc_bill, 500.00)"]},
-{"id": 88, "label": "fraud", "sequence": ["action(fishmaster, phishing, olivia, email, sent a fake bank notification)", "action(olivia, click, fishmaster, email, clicked on the provided link)", "action(acc_olivia, login, fishmaster, website, entered account credentials)", "action(fishmaster, transfer, acc_olivia, online_banking, initiated unauthorized transfer)", "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"]},
-{"id": 89, "label": "fraud", "sequence": ["action(insuranceco, poses_as, nina, email, claiming account issues)", "action(nina, responds, insuranceco, email, provides account details for verification)", "action(insuranceco, gains_access, acc_nina, sms, successfully accessed nina's account using provided details)", "transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)"]},
-{"id": 90, "label": "fraud", "sequence": ["action(fishmaster, phishing, grace, email, sent a fraudulent bank link claiming to be grace's bank's customer service)", "action(grace, clicked, fishmaster, email, clicked on the phishing link provided by fishmaster)", "action(grace, entered_credentials, fishmaster, web, entered her account credentials after being redirected to a fake bank site)", "action(fishmaster, gained_access, acc_grace, web, successfully logged into grace's account using the stolen credentials)", "action(acc_grace, transfer_initiated, fishmaster, mobile_app, initiated a transfer of 320000.0 to his own account)", "transaction(acc_grace, fast payment, acc_fishmaster, 320000.0)"]},
-{"id": 91, "label": "legit", "sequence": ["action(bill, order, acc_bluediner, website, ordered dinner for delivery)", "action(acc_bluediner, confirmation, bill, email, confirmed order with estimated delivery time)", "action(bill, payment, acc_bluediner, app, paid for dinner order)", "transaction(acc_bill, fast payment, acc_bluediner, 50.00)"]},
-{"id": 92, "label": "fraud", "sequence": ["action(fishmaster, phishing, bill, email, sent a fraudulent link disguised as a bank notification)", "action(bill, clicked, fishmaster, email, fell for the phishing attempt)", "action(fishmaster, gained, acc_bill, email, obtained bill's account details)", "action(fishmaster, modified, acc_bill, bank, changed bill's password and set up new payee information)", "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"]},
-{"id": 93, "label": "legit", "sequence": ["action(bill, service_payment, firstfinancial, email, paid monthly subscription)", "action(firstfinancial, notification, bill, email, service confirmed)", "transaction(acc_bill, fast payment, acc_wellesley, 50.00)"]},
-{"id": 94, "label": "fraud", "sequence": ["action(insuranceco, phishing, nina, email, sent fraudulent tax bill email)", "action(nina, clicked, insuranceco, email, opened phishing email and clicked link)", "action(nina, entered, acc_nina, email, entered account credentials)", "action(insuranceco, gainedaccess, acc_nina, email, successfully gained access to nina's account)", "transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)"]},
-{"id": 95, "label": "legit", "sequence": ["action(bill, order, acc_bluediner, website, ordered dinner)", "action(acc_bluediner, prepare, bill, kitchen, prepared dinner)", "action(bill, pickup, acc_bluediner, phone, picked up dinner)", "transaction(acc_bill, fast payment, acc_bluediner, 50.00)"]},
-{"id": 96, "label": "legit", "sequence": ["action(nina, application, insurancenet, online_portal, applied for financial advisor position)", "action(insurancenet, application_review, nina, email, reviewed application)", "action(insurancenet, job_offer, nina, phone, offered job as financial advisor)", "action(nina, acceptance, insurancenet, email, accepted the job offer)", "action(insurancenet, onboarding, nina, email, account_creation and terms_acceptance)", "action(nina, service_provision, insurancenet, app, providing financial advice)", "transaction(acc_nina, fast payment, acc_insurancenet, 1500.00)"]},
-{"id": 97, "label": "legit", "sequence": ["action(bill, service, firstfinancial, email, paid monthly subscription)", "action(firstfinancial, notification, bill, email, subscription confirmed)", "transaction(acc_bill, fast payment, acc_wellesley, 30.00)"]},
-{"id": 98, "label": "legit", "sequence": ["action(bill, service_contract, wellsfargo, email, signed agreement for home loan)", "action(wellsfargo, verification, bill, phone, verified identity and credit score)", "action(wellsfargo, account_creation, bill, online platform, created new mortgage account)", "action(bill, funds_transfer, wellsfargo, app, transferred down payment for the home loan)", "transaction(acc_wellesley, fast payment, acc_bill, 100000.00)"]},
-{"id": 99, "label": "legit", "sequence": ["action(bill, consultation, james, email, received it consultation services)", "action(james, payment, bill, bank transfer, paid for it consultation)", "transaction(acc_james, fast payment, acc_bill, 200.00)"]},
+{
+  "0": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, posed as, nina, email, claimed to be a tax officer for an audit)",
+      "action(nina, responded, fishmaster, email, agreed to cooperate with the audit)",
+      "action(fishmaster, requested, nina, email, to provide bank account details for the audit)",
+      "action(nina, disclosed, acc_nina, email, revealed her account details including acc_nina)",
+      "action(fishmaster, requested, nina, email, to transfer money via fast payment to acc_fishmaster)",
+      "transaction(acc_nina, fast payment, acc_fishmaster, 9600.0)"
+    ]
+  },
+  "1": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, phishing, james, email, sent fraudulent tax claim link)",
+      "action(james, clicked, govco, email, opened phishing link)",
+      "action(govco, gained_access, acc_james, link, obtained login credentials)",
+      "action(govco, transferred_funds, acc_james, bank, initiated fast payment to acc_govco)",
+      "transaction(acc_james, fast payment, acc_govco, 16000.0)"
+    ]
+  },
+  "2": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posed as, bill, email, claimed to be a government representative requiring urgent action)",
+      "action(bill, provided, govco, personal_information, sent sensitive details including account information)",
+      "action(govco, gained, acc_bill, bank_access, managed to access victim's account through obtained credentials)",
+      "transaction(acc_bill, fast payment, acc_govco, 12000.0)"
+    ]
+  },
+  "3": {
+    "label": "legit",
+    "sequence": [
+      "action(grace, consultation, bill, phone, provided services for home repair)",
+      "action(bill, payment, grace, app, paid for consultation service)",
+      "transaction(acc_grace, fast payment, acc_bill, 200.00)"
+    ]
+  },
+  "4": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, rent payment, james, app, paid rent for april)",
+      "transaction(acc_sally, fast payment, acc_james, 1000.00)",
+      "action(james, receipt confirmation, sally, email, confirmed rent received)",
+      "action(james, utility payment, firstfinancial, online platform, paid electricity bill)",
+      "transaction(acc_james, fast payment, acc_conedison, 150.00)"
+    ]
+  },
+  "5": {
+    "label": "legit",
+    "sequence": [
+      "action(acc_bill, consultation, acc_james, email, legal advice)",
+      "action(acc_james, payment, acc_bill, app, paid legal fee)",
+      "transaction(acc_james, fast payment, acc_bill, 300.00)"
+    ]
+  },
+  "6": {
+    "label": "legit",
+    "sequence": [
+      "action(acc_sally, consultancy_service, firstfinancial, email, offered graphic design service)",
+      "action(firstfinancial, acceptance, acc_sally, email, accepted the offer for graphic design service)",
+      "action(firstfinancial, payment, acc_sally, bank transfer, paid for agreed graphic design service)",
+      "transaction(acc_sally, fast payment, acc_wellesley, 500.00)"
+    ]
+  },
+  "7": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, posed as a bank representative requesting password change)",
+      "action(bill, action, fishmaster, email, provided new account password)",
+      "action(fishmaster, login, acc_bill, email, logged into victim's account successfully)",
+      "action(acc_bill, transfer, fishmaster, bank, initiated unauthorized fund transfer)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "8": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service_purchase, firstfinancial, email, hired financial consultant)",
+      "action(firstfinancial, payment, bill, app, paid for consultation services)",
+      "transaction(acc_bill, fast payment, acc_bill, 300.00)"
+    ]
+  },
+  "9": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, service rendered, bill, email, confirmed graphic design project)",
+      "action(bill, payment, sally, bank transfer, paid for graphic design project)",
+      "transaction(acc_sally, fast payment, acc_bill, 500.00)"
+    ]
+  },
+  "10": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service rendered, james, email, invoice for web design)",
+      "action(james, payment, bill, online platform, paid invoice for web design)",
+      "transaction(acc_james, fast payment, acc_bill, 1500.00)"
+    ]
+  },
+  "11": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, accepted project terms)",
+      "action(james, payment, bill, bank transfer, paid consultation fee)",
+      "transaction(acc_james, fast payment, acc_bill, 500.00)"
+    ]
+  },
+  "12": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consulting service, james, email, agreed on terms for seo project)",
+      "action(james, payment, bill, paypal, paid consultation fee for seo project)",
+      "transaction(acc_james, fast payment, acc_bill, 500.00)"
+    ]
+  },
+  "13": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, james, email, sent fake email claiming account issue)",
+      "action(james, clicked, insuranceco, email, opened the phishing email)",
+      "action(insuranceco, requested, james, email, requested login credentials and bank details)",
+      "action(james, provided, insuranceco, email, sent login credentials and account number acc_james)",
+      "action(insuranceco, accessed, acc_james, online, gained access to victim's account)",
+      "transaction(acc_james, fast payment, acc_insuranceco, 16000.0)"
+    ]
+  },
+  "14": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service, firstfinancial, email, approved loan application)",
+      "action(firstfinancial, notification, bill, email, loan funds available)",
+      "action(bill, withdrawal, firstfinancial, app, withdrew loan funds)",
+      "transaction(acc_bill, fast payment, acc_conedison, 1200.00)"
+    ]
+  },
+  "15": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, order, acc_bluediner, website, ordered meal for delivery)",
+      "action(acc_bluediner, confirmation, bill, email, confirmed order details)",
+      "action(bill, payment, acc_bluediner, app, paid for the meal)",
+      "transaction(acc_bill, fast payment, acc_bluediner, 30.00)"
+    ]
+  },
+  "16": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, sent a fake bank notification)",
+      "action(bill, clicked, fishmaster, email, opened the fraudulent link)",
+      "action(fishmaster, sent, acc_bill, sms, requested verification code)",
+      "action(bill, entered, fishmaster, sms, provided verification code)",
+      "action(fishmaster, logged, acc_bill, online, accessed the account successfully)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "17": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, account_verification, firstfinancial, email, confirmed identity through otp)",
+      "action(firstfinancial, service_activation, sally, email, activated checking account)",
+      "action(sally, deposit, firstfinancial, app, deposited initial funds into the account)",
+      "action(firstfinancial, service_provision, sally, online platform, approved direct deposit for salary)",
+      "transaction(acc_sally, fast payment, acc_govco, 3000.00)"
+    ]
+  },
+  "18": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, bill, email, sent a fake claim confirmation with account update link)",
+      "action(bill, clicked, insuranceco, email, followed the account update link)",
+      "action(bill, updated, acc_bill, website, provided new login credentials to insuranceco under the guise of claim verification update)",
+      "action(insuranceco, logged_in, acc_bill, unauthorized_access, gained access to bill's account)",
+      "transaction(acc_bill, fast payment, acc_insuranceco, 12000.0)"
+    ]
+  },
+  "19": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, olivia, email, sent fraudulent insurance claim form)",
+      "action(olivia, clicked, insuranceco, email, opened and filled out the form)",
+      "action(insuranceco, accessed, acc_olivia, fraudulent_access, gained access to olivia's account details)",
+      "transaction(acc_olivia, fast payment, acc_insuranceco, 6800.0)"
+    ]
+  },
+  "20": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, consultation, nina, email, hired for tax advice)",
+      "action(nina, invoice, sally, email, sent tax advice invoice)",
+      "transaction(acc_sally, fast payment, acc_nina, 300.00)"
+    ]
+  },
+  "21": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posing, bill, email, posed as tax authority representative)",
+      "action(bill, replying, govco, email, provided personal and financial details under duress)",
+      "action(govco, gaining, acc_bill, email, gained access to victim's bank account information)",
+      "transaction(acc_bill, fast payment, acc_govco, 12000.0)"
+    ]
+  },
+  "22": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, sent a fraudulent tax invoice)",
+      "action(bill, clicking, acc_fishmaster, email, clicked the link in the fraudulent email)",
+      "action(fishmaster, communicating, bill, phone, contacted bill pretending to be bank support)",
+      "action(bill, providing, fishmaster, phone, shared verification code for account access)",
+      "action(fishmaster, logging_in, acc_bill, online, gained full access to bill's account)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "23": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service purchase, james, email, purchased web design services)",
+      "action(james, invoice send, bill, email, sent invoice for 500.00)",
+      "transaction(acc_james, fast payment, acc_bill, 500.00)"
+    ]
+  },
+  "24": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, sally, email, sent a fraudulent bank link)",
+      "action(sally, click, fishmaster, email, clicked the fraudulent bank link)",
+      "action(sally, share_credentials, fishmaster, unknown, unknowingly provided account credentials to fishmaster)",
+      "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"
+    ]
+  },
+  "25": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, account_verification, wellsfargo, email, confirmed identity through otp)",
+      "action(wellsfargo, loan_approval, bill, email, approved for $1000 personal loan)",
+      "transaction(acc_bill, fast payment, acc_wellesley, 1000.00)"
+    ]
+  },
+  "26": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, agreed on terms and rates)",
+      "action(james, payment, bill, bank transfer, payment for consultation services)",
+      "transaction(acc_james, fast payment, acc_bill, 100.00)"
+    ]
+  },
+  "27": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posed_as, sally, email, posed as sally's bank representative)",
+      "action(sally, replied, govco, email, provided account details upon request)",
+      "action(govco, changed_password, acc_sally, online, changed sally's account password without authorization)",
+      "transaction(acc_sally, fast payment, acc_govco, 4800.0)"
+    ]
+  },
+  "28": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, phishing, olivia, email, sent fake login link)",
+      "action(olivia, click, insurancenet, email, clicked on the link)",
+      "action(insurancenet, gain_access, olivia, phishing_site, obtained login credentials)",
+      "action(insurancenet, change_password, acc_olivia, online_banking, changed olivia's password)",
+      "transaction(acc_olivia, fast payment, acc_insurancenet, 6800.0)"
+    ]
+  },
+  "29": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, nina, email, sent a fake bank notification with login link)",
+      "action(nina, login, acc_nina, email, clicked on the provided link and entered credentials)",
+      "action(nina, transfer, fishmaster, sms, authorized a fast payment request of 9600.0)",
+      "transaction(acc_nina, fast payment, acc_fishmaster, 9600.0)"
+    ]
+  },
+  "30": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posed as, sally, email, posed as a bank representative)",
+      "action(sally, replied, govco, email, provided account details and login credentials)",
+      "action(govco, logged into, acc_sally, email, gained access to the victim's account)",
+      "transaction(acc_sally, fast payment, acc_govco, 4800.0)"
+    ]
+  },
+  "31": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, phishing, james, email, posed as bank representative requesting account details)",
+      "action(james, sharing, acc_james, email, sent account credentials to govco)",
+      "action(govco, logging, acc_james, online, gained access to acc_james)",
+      "transaction(acc_james, fast payment, acc_govco, 16000.0)"
+    ]
+  },
+  "32": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, sent a fraudulent tax notification with login link)",
+      "action(bill, access, acc_bill, email, clicked the provided login link)",
+      "action(fishmaster, authentication, bill, email, received bill's account credentials)",
+      "action(fishmaster, transfer, acc_bill, bank's online platform, initiated a transfer to acc_fishmaster)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "33": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, firstfinancial, email, agreed on service terms)",
+      "action(firstfinancial, payment, bill, bank wire, paid for service fee)",
+      "action(bill, product, insurancenet, app, provided insurance services)",
+      "transaction(acc_bill, fast payment, acc_insurancenet, 500.00)"
+    ]
+  },
+  "34": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, grace, email, sent fake email from 'irs tax office'),",
+      "action(grace, clicked, insuranceco, email, opened and clicked the link in the phishing email),",
+      "action(insuranceco, gainedaccess, acc_grace, sms, sent a verification code to grace's phone),",
+      "action(grace, enteredcode, insuranceco, sms, entered the verification code received),",
+      "action(insuranceco, accessedaccount, acc_grace, email, gained access to grace's account),",
+      "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"
+    ]
+  },
+  "35": {
+    "label": "legit",
+    "sequence": [
+      "action(nina, service_order, firstfinancial, email, ordered account maintenance service)",
+      "action(firstfinancial, confirmation, nina, email, confirmed receipt of service order)",
+      "transaction(acc_nina, fast payment, acc_wellesley, 50.00)"
+    ]
+  },
+  "36": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, phishing, bill, email, sent a fraudulent email claiming 'account update required' with a fake link)",
+      "action(bill, clicked, insurancenet, email, followed the provided link to the fake portal)",
+      "action(insurancenet, gained_credentials, bill, web, victim entered account details upon request)",
+      "action(insurancenet, got_access, acc_bill, bank, successfully logged into victim's account using stolen credentials)",
+      "transaction(acc_bill, fast payment, acc_insurancenet, 12000.0)"
+    ]
+  },
+  "37": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, agreed on project terms)",
+      "action(james, payment, bill, paypal, paid for consultation fee)",
+      "transaction(acc_james, fast payment, acc_bill, 100.00)"
+    ]
+  },
+  "38": {
+    "label": "legit",
+    "sequence": [
+      "action(nina, consultation, firstfinancial, email, provided financial advice)",
+      "action(firstfinancial, payment, nina, email, paid for consultation fees)",
+      "transaction(acc_insurancenet, fast payment, acc_nina, 100.00)"
+    ]
+  },
+  "39": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posed as, sally, email, claimed to be a bank representative)",
+      "action(sally, replied, govco, email, provided account details for acc_sally)",
+      "action(govco, requested, sally, phone, verified account details over call)",
+      "action(govco, gained, acc_sally, online, performed unauthorized login using provided credentials)",
+      "transaction(acc_sally, fast payment, acc_govco, 4800.0)"
+    ]
+  },
+  "40": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, olivia, email, sent a fraudulent bank login link)",
+      "action(olivia, click, fishmaster, email, clicked the fraudulent bank login link)",
+      "action(fishmaster, authentication, olivia, email, asked for verification code)",
+      "action(olivia, sent, fishmaster, sms, sent the verification code)",
+      "action(fishmaster, login, acc_olivia, email, gained access to olivia's account)",
+      "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"
+    ]
+  },
+  "41": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posed_as, nina, email, claimed to be a bank representative)",
+      "action(nina, replied, govco, email, provided account details acc_nina for verification)",
+      "action(govco, sent, acc_nina, sms, requested password reset for 'security reasons')",
+      "action(nina, complied, govco, sms, reset password for acc_nina as requested)",
+      "action(govco, logged_in, acc_nina, email, successfully accessed nina's account)",
+      "transaction(acc_nina, fast payment, acc_govco, 9600.0)"
+    ]
+  },
+  "42": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, sally, email, sent fraudulent bank login link)",
+      "action(sally, clicked, fishmaster, email, opened malicious link)",
+      "action(sally, entered_credentials, fishmaster, unknown, provided account credentials)",
+      "action(fishmaster, accessed_account, acc_sally, unknown, fraudster gained access to account)",
+      "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"
+    ]
+  },
+  "43": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, sent fraudulent tax notification)",
+      "action(bill, clicked, fishmaster, email, opened phishing link)",
+      "action(fishmaster, requested, bill, email, asked for account details)",
+      "action(bill, provided, fishmaster, email, sent account information)",
+      "action(fishmaster, accessed, acc_bill, email, gained access to account)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "44": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, invoice_sent, james, email, sent invoice for consulting service)",
+      "action(james, payment, bill, bank transfer, paid for consulting service)",
+      "transaction(acc_bill, fast payment, acc_james, 300.00)"
+    ]
+  },
+  "45": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, paid for consulting services)",
+      "transaction(acc_bill, fast payment, acc_james, 200.00)",
+      "action(james, service, bill, email, delivered consulting report)",
+      "action(bill, feedback, chase, app, left positive review)",
+      "transaction(acc_james, fast payment, acc_bill, 300.00)"
+    ]
+  },
+  "46": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, account_verification, firstfinancial, email, confirmed identity through otp)",
+      "action(firstfinancial, loan_approval, bill, email, approved personal loan for home improvement)",
+      "action(bill, payment, firstfinancial, app, paid monthly installment of the approved loan)",
+      "transaction(acc_bill, fast payment, acc_conedison, 100.00)",
+      "action(bill, account_verification, citibank, email, confirmed identity through otp)",
+      "action(citibank, investment_account_opening, bill, email, opened investment account for mutual funds)",
+      "action(bill, deposit, citibank, app, deposited 5000.00 to start the investment)",
+      "transaction(acc_bill, fast payment, acc_insuranceco, 100.00)"
+    ]
+  },
+  "47": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, grace, email, sent a fraudulent email claiming to be from insurance company)",
+      "action(grace, clicked, insuranceco, email, opened and clicked on the provided link)",
+      "action(insuranceco, malware, grace, email, installed malicious software onto grace's device)",
+      "action(insuranceco, keylogging, acc_grace, device, logged grace's online banking password)",
+      "action(insuranceco, transfer initiation, acc_grace, online banking, initiated a transfer to acc_insuranceco)",
+      "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"
+    ]
+  },
+  "48": {
+    "label": "fraud",
+    "sequence": [
+      "action(grace, request, insuranceco, email, asked for insurance claim assistance)",
+      "action(insuranceco, respond, grace, email, sent fake claim form with account details)",
+      "action(grace, submit, insuranceco, fax, faxed completed claim form with account number)",
+      "action(insuranceco, transfer, acc_grace, bank, initiated unauthorized transfer of 320000.0)",
+      "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"
+    ]
+  },
+  "49": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, account_verification, firstfinancial, email, verified identity)",
+      "action(firstfinancial, service_activation, sally, email, bank account activated)",
+      "action(sally, consultation, james, phone, received financial advice)",
+      "action(james, invoice, sally, email, sent invoice for consultation fee)",
+      "action(sally, payment, james, app, paid consultation fee)",
+      "transaction(acc_sally, fast payment, acc_james, 100.00)"
+    ]
+  },
+  "50": {
+    "label": "legit",
+    "sequence": [
+      "action(james, service_provided, acc_wellesley, email, provided web development services)",
+      "action(acc_wellesley, payment, james, app, paid for web development services)",
+      "transaction(acc_james, fast payment, acc_wellesley, 1000.00)"
+    ]
+  },
+  "51": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, provided consultation services)",
+      "transaction(acc_bill, fast payment, acc_james, 100.00)",
+      "action(james, payment, bankofamerica, app, paid for consultation)",
+      "transaction(acc_james, fast payment, acc_bill, 100.00)"
+    ]
+  },
+  "52": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, signed contract, wellsfargo, email, agreed to provide web design services)",
+      "action(wellsfargo, payment, bill, bank transfer, paid for consultancy services)",
+      "transaction(acc_bill, fast payment, acc_wellesley, 3000.00)"
+    ]
+  },
+  "53": {
+    "label": "legit",
+    "sequence": [
+      "action(james, service_request, firstfinancial, email, requested account opening)",
+      "action(firstfinancial, response, james, email, sent account opening kit)",
+      "action(james, submission, firstfinancial, snail_mail, submitted required documents)",
+      "action(firstfinancial, verification, james, email, confirmed document verification)",
+      "action(firstfinancial, approval, james, email, approved account application)",
+      "action(james, payment, firstfinancial, app, paid account opening fee)",
+      "transaction(acc_james, fast payment, acc_wellesley, 50.00)"
+    ]
+  },
+  "54": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, posed as, nina, email, claimed to be from nina's bank for account security update)",
+      "action(nina, replied, insurancenet, email, provided updated account details for verification)",
+      "action(insurancenet, sent, acc_nina, email, link to fake 'account security confirmation' page)",
+      "action(nina, clicked, acc_nina, link, accessed the fake page and entered new login credentials)",
+      "action(insurancenet, gained, acc_nina, email, confirmed successful account takeover)",
+      "transaction(acc_nina, fast payment, acc_insurancenet, 9600.0)"
+    ]
+  },
+  "55": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, consultation, james, email, agreed on project terms)",
+      "action(james, payment, sally, bank transfer, paid for consultation services)",
+      "transaction(acc_james, fast payment, acc_sally, 200.00)"
+    ]
+  },
+  "56": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, order, firstfinancial, website, purchased computer hardware)",
+      "action(firstfinancial, shipment, bill, email, shipped purchased item)",
+      "action(bill, feedback, firstfinancial, email, provided positive review)",
+      "action(firstfinancial, reward, bill, email, awarded loyalty points)",
+      "transaction(acc_bill, fast payment, acc_insurancenet, 10.00)"
+    ]
+  },
+  "57": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, order, insurancenet, email, placed an order for insurance policy)",
+      "action(insurancenet, confirmation, sally, email, sent confirmation of order details)",
+      "action(sally, payment, insurancenet, app, approved payment for insurance policy)",
+      "transaction(acc_sally, fast payment, acc_insurancenet, 500.00)"
+    ]
+  },
+  "58": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service, firstfinancial, email, received payment for financial advice)",
+      "action(bill, payment, james, bank transfer, paid for financial advice)",
+      "transaction(acc_bill, fast payment, acc_james, 250.00)"
+    ]
+  },
+  "59": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, consultation, james, email, agreed upon terms for services)",
+      "action(james, payment, sally, bank transfer, paid for consulting services)",
+      "transaction(acc_james, fast payment, acc_sally, 500.00)"
+    ]
+  },
+  "60": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, james, email, sent a fraudulent email with a link to a fake insurance company login page)",
+      "action(james, login, insuranceco, web, entered his login credentials after clicking the malicious link)",
+      "action(insuranceco, access_granted, acc_james, server, gained full access to james' account with stolen credentials)",
+      "action(insuranceco, transfer, acc_james, internal, initiated a fraudulent transaction of 16000.0 to acc_insuranceco)",
+      "transaction(acc_james, fast payment, acc_insuranceco, 16000.0)"
+    ]
+  },
+  "61": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, consulting fee, james, email, received $500 for consultation services)",
+      "action(james, payment, sally, bank transfer, paid consulting fee)",
+      "transaction(acc_sally, fast payment, acc_james, 500.00)"
+    ]
+  },
+  "62": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, grace, email, sent a fraudulent bank link claiming account issues)",
+      "action(grace, clicked, fishmaster, email, opened the email and clicked on the provided link)",
+      "action(grace, entered, acc_grace, website, entered account details on fraudulent website)",
+      "action(fishmaster, access, acc_grace, website, gained access to grace's bank account details)",
+      "transaction(acc_grace, fast payment, acc_fishmaster, 320000.0)"
+    ]
+  },
+  "63": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, posed as, sally, email, claimed to be bank representative)",
+      "action(sally, replied, insurancenet, email, provided account details for acc_sally verification)",
+      "action(insurancenet, gained, acc_sally, email, after successfully verifying identity)",
+      "transaction(acc_sally, fast payment, acc_insurancenet, 4800.0)"
+    ]
+  },
+  "64": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, posed as, sally, sms, claimed acc_sally was frozen due to suspicious activity)",
+      "action(sally, replied, fishmaster, phone, provided acc_sally verification code for confirmation)",
+      "action(fishmaster, accessed, acc_sally, email, used provided credentials to log into acc_sally)",
+      "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"
+    ]
+  },
+  "65": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, sent a fraudulent bank link)",
+      "action(bill, clicked, fishmaster, email, fell for the phishing attempt)",
+      "action(fishmaster, login, acc_bill, email, gained access to account details using phished credentials)",
+      "action(fishmaster, transfer, acc_bill, fast payment, initiated a fraudulent transfer of 12000.0)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "66": {
+    "label": "fraud",
+    "sequence": [
+      "action(grace, shares, acc_grace, email, shares her account details for an online loan application)",
+      "action(insurancenet, impersonates, grace, email, claims to be a loan officer from a reputable bank)",
+      "action(grace, provides, insurancenet, email, sends her updated personal and account information)",
+      "action(insurancenet, gains, acc_grace, fast, gains access to grace's account through the loan application process)",
+      "transaction(acc_grace, fast payment, acc_insurancenet, 320000.0)"
+    ]
+  },
+  "67": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, phishing, sally, email, sent a fraudulent email about tax update)",
+      "action(sally, clicked, govco, email, opened the fraudulent email containing malware)",
+      "action(govco, installed_malware, acc_sally, email, installed keylogger on sally's account)",
+      "action(govco, accessed_account, acc_sally, malware, gained access to sally's online banking credentials)",
+      "transaction(acc_sally, fast payment, acc_govco, 4800.0)"
+    ]
+  },
+  "68": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, olivia, email, sent a fraudulent bank statement link)",
+      "action(olivia, click, fishmaster, email, clicked on the fraudulent link)",
+      "action(fishmaster, accessed_account, acc_olivia, email, gained access to olivia's account details)",
+      "action(fishmaster, transferred_own_funds, acc_fishmaster, bank, transferred 6800.0 from his account to cover transaction costs)",
+      "action(fishmaster, changed_account_details, acc_olivia, email, changed olivia's account password and email)",
+      "action(fishmaster, drained_funds, acc_olivia, bank, drained 6800.0 from olivia's account)",
+      "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"
+    ]
+  },
+  "69": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, hired, firstfinancial, email, agreed on consulting services)",
+      "action(firstfinancial, service delivery, sally, online platform, provided consultation services)",
+      "action(sally, payment, firstfinancial, bank transfer, paid for consultation fees)",
+      "transaction(acc_sally, fast payment, acc_wellesley, 100.00)"
+    ]
+  },
+  "70": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, service_order, firstfinancial, email, ordered catering for business event)",
+      "action(firstfinancial, service_confirmation, sally, email, confirmed availability for catering)",
+      "action(sally, payment, firstfinancial, app, paid for the catering order)",
+      "transaction(acc_sally, fast payment, acc_bluediner, 800.00)"
+    ]
+  },
+  "71": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, james, email, sent fraudulent tax bill email with malware link)",
+      "action(james, clicked, insuranceco, email_link, opened malicious attachment and revealed credentials)",
+      "action(insuranceco, gained, acc_james, access, hacked into victim's account using stolen credentials)",
+      "transaction(acc_james, fast payment, acc_insuranceco, 16000.0)"
+    ]
+  },
+  "72": {
+    "label": "legit",
+    "sequence": [
+      "action(acc_james, service_request, sally, email, requested legal consultation)",
+      "action(sally, service_confirmation, acc_james, phone, confirmed availability and provided cost estimation)",
+      "action(acc_james, payment, sally, bank transfer, transferred funds for legal consultation)",
+      "transaction(acc_james, fast payment, acc_sally, 150.00)"
+    ]
+  },
+  "73": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, posed, nina, email, claimed to be a representative from nina's insurance company)",
+      "action(nina, replied, insurancenet, email, provided policy number and account details for verification)",
+      "action(insurancenet, accessed, acc_nina, email, used provided details to gain access to acc_nina)",
+      "transaction(acc_nina, fast payment, acc_insurancenet, 9600.0)"
+    ]
+  },
+  "74": {
+    "label": "legit",
+    "sequence": [
+      "action(james, requested, bankofamerica, email, professional advice on financial planning)",
+      "action(bankofamerica, response, james, email, agreed to provide consultation services)",
+      "action(bankofamerica, consultation, james, video_call, delivered financial advice)",
+      "action(james, payment, bankofamerica, app, paid for the consultation)",
+      "transaction(acc_james, fast payment, acc_wellesley, 150.00)"
+    ]
+  },
+  "75": {
+    "label": "legit",
+    "sequence": [
+      "action(sally, service_acceptance, acc_conedison, email, accepted electricity service agreement)",
+      "action(acc_conedison, payment, sally, app, paid initial deposit for service)",
+      "transaction(acc_sally, fast payment, acc_conedison, 100.00)",
+      "action(sally, service_confirmation, acc_conedison, phone, confirmed electricity service is active)",
+      "action(acc_conedison, billing, sally, email, sent monthly electricity bill)",
+      "transaction(acc_sally, fast payment, acc_conedison, 50.00)"
+    ]
+  },
+  "76": {
+    "label": "fraud",
+    "sequence": [
+      "action(govco, posed as, sally, email, claimed to be a representative from the bank)",
+      "action(sally, replied, govco, email, provided login credentials after receiving email)",
+      "action(govco, gained access, acc_sally, email, successfully logged into sally's account)",
+      "action(govco, transferred funds, acc_sally, bank transfer, moved 4800.0 from sally's account to govco's account)",
+      "transaction(acc_sally, fast payment, acc_govco, 4800.0)"
+    ]
+  },
+  "77": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, agreed on service terms)",
+      "action(james, payment, bill, bank transfer, paid for consultation)",
+      "transaction(acc_james, fast payment, acc_bill, 100.00)"
+    ]
+  },
+  "78": {
+    "label": "fraud",
+    "sequence": [
+      "action(grace, sends_documents, insuranceco, email, shares her latest car accident claim documents)",
+      "action(insuranceco, poses_as_support, grace, phone, claims to be a support agent from the company)",
+      "action(insuranceco, requests_more_info, grace, phone, asks for updated bank account details due to 'system issues')",
+      "action(grace, updates_details, insuranceco, email, sends her updated bank account details via email)",
+      "action(insuranceco, verifies_account, acc_grace, online, logs into grace's account using provided credentials)",
+      "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"
+    ]
+  },
+  "79": {
+    "label": "legit",
+    "sequence": [
+      "action(acc_insuranceco, insurance policy, james, in-person, issued new car insurance)",
+      "action(james, premium payment, acc_insuranceco, online, paid monthly premium)",
+      "transaction(acc_james, fast payment, acc_insuranceco, 100.00)"
+    ]
+  },
+  "80": {
+    "label": "legit",
+    "sequence": [
+      "action(james, service_offered, insuranceco, email, agreed on life insurance policy)",
+      "action(insuranceco, payment, james, bank transfer, paid for life insurance policy)",
+      "transaction(acc_james, fast payment, acc_insuranceco, 150.00)"
+    ]
+  },
+  "81": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, posed as, olivia, email, claimed to be olivia's insurance representative)",
+      "action(olivia, replied, insuranceco, email, shared policy details including account number acc_olivia)",
+      "action(insuranceco, requested, acc_olivia, email, alleged claim verification via email transfer)",
+      "action(olivia, provided, insuranceco, email, believed it was the insurance company verifying her policy)",
+      "transaction(acc_olivia, fast payment, acc_insuranceco, 6800.0)"
+    ]
+  },
+  "82": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, grace, email, sent a fraudulent tax notification)",
+      "action(grace, clicking, fishmaster, email, opened the phishing email)",
+      "action(grace, providing, fishmaster, website, entered login credentials and ssn on the fake bank site)",
+      "action(fishmaster, gaining, acc_grace, website, successfully accessed grace's account)",
+      "transaction(acc_grace, fast payment, acc_fishmaster, 320000.0)"
+    ]
+  },
+  "83": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, phishing, olivia, email, sent fraudulent insurance claim email)",
+      "action(olivia, clicking, insurancenet, email, opened and clicked on malicious link)",
+      "action(insurancenet, gaining_access, acc_olivia, bank_system, obtained login credentials through keylogger)",
+      "action(insurancenet, transferring, acc_olivia, fast_payment, initiated unauthorized funds transfer to acc_insurancenet)",
+      "transaction(acc_olivia, fast_payment, acc_insurancenet, 6800.0)"
+    ]
+  },
+  "84": {
+    "label": "fraud",
+    "sequence": [
+      "action(insurancenet, phishing, james, email, sent fraudulent insurance claim form)",
+      "action(james, clicking, insurancenet, email, opened and filled out the form with personal details)",
+      "action(insurancenet, updating, acc_james, bank, gained access to victim's account information)",
+      "action(insurancenet, transferring, acc_james, fast payment, initiated a fraudulent payment of 16000.0 to acc_insurancenet)",
+      "transaction(acc_james, fast payment, acc_insurancenet, 16000.0)"
+    ]
+  },
+  "85": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, sally, email, sent a fraudulent banking link disguised as an account statement update)",
+      "action(sally, click, acc_sally, email, clicked on the link exposing account credentials to fishmaster)",
+      "action(fishmaster, unauthorized_access, acc_sally, internet, fishmaster gained access to sally's account details)",
+      "action(fishmaster, transfer_initiation, acc_sally, bank, initiated a transfer request of 4800.0 from acc_sally to acc_fishmaster)",
+      "transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)"
+    ]
+  },
+  "86": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, olivia, email, sent a fraudulent bank notification)",
+      "action(olivia, click, fishmaster, email, clicked on the malicious link provided)",
+      "action(fishmaster, account_takeover, acc_olivia, link, gained access to olivia's account details)",
+      "action(fishmaster, transfer_initiate, acc_olivia, online_banking, initiated a fast payment transaction of 6800.0 to acc_fishmaster)",
+      "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"
+    ]
+  },
+  "87": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consulting service, james, email, agreed to work on a project)",
+      "action(james, payment, bill, online platform, paid for consulting services)",
+      "transaction(acc_james, fast payment, acc_bill, 500.00)"
+    ]
+  },
+  "88": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, olivia, email, sent a fake bank notification)",
+      "action(olivia, click, fishmaster, email, clicked on the provided link)",
+      "action(acc_olivia, login, fishmaster, website, entered account credentials)",
+      "action(fishmaster, transfer, acc_olivia, online_banking, initiated unauthorized transfer)",
+      "transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)"
+    ]
+  },
+  "89": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, poses_as, nina, email, claiming account issues)",
+      "action(nina, responds, insuranceco, email, provides account details for verification)",
+      "action(insuranceco, gains_access, acc_nina, sms, successfully accessed nina's account using provided details)",
+      "transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)"
+    ]
+  },
+  "90": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, grace, email, sent a fraudulent bank link claiming to be grace's bank's customer service)",
+      "action(grace, clicked, fishmaster, email, clicked on the phishing link provided by fishmaster)",
+      "action(grace, entered_credentials, fishmaster, web, entered her account credentials after being redirected to a fake bank site)",
+      "action(fishmaster, gained_access, acc_grace, web, successfully logged into grace's account using the stolen credentials)",
+      "action(acc_grace, transfer_initiated, fishmaster, mobile_app, initiated a transfer of 320000.0 to his own account)",
+      "transaction(acc_grace, fast payment, acc_fishmaster, 320000.0)"
+    ]
+  },
+  "91": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, order, acc_bluediner, website, ordered dinner for delivery)",
+      "action(acc_bluediner, confirmation, bill, email, confirmed order with estimated delivery time)",
+      "action(bill, payment, acc_bluediner, app, paid for dinner order)",
+      "transaction(acc_bill, fast payment, acc_bluediner, 50.00)"
+    ]
+  },
+  "92": {
+    "label": "fraud",
+    "sequence": [
+      "action(fishmaster, phishing, bill, email, sent a fraudulent link disguised as a bank notification)",
+      "action(bill, clicked, fishmaster, email, fell for the phishing attempt)",
+      "action(fishmaster, gained, acc_bill, email, obtained bill's account details)",
+      "action(fishmaster, modified, acc_bill, bank, changed bill's password and set up new payee information)",
+      "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+    ]
+  },
+  "93": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service_payment, firstfinancial, email, paid monthly subscription)",
+      "action(firstfinancial, notification, bill, email, service confirmed)",
+      "transaction(acc_bill, fast payment, acc_wellesley, 50.00)"
+    ]
+  },
+  "94": {
+    "label": "fraud",
+    "sequence": [
+      "action(insuranceco, phishing, nina, email, sent fraudulent tax bill email)",
+      "action(nina, clicked, insuranceco, email, opened phishing email and clicked link)",
+      "action(nina, entered, acc_nina, email, entered account credentials)",
+      "action(insuranceco, gainedaccess, acc_nina, email, successfully gained access to nina's account)",
+      "transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)"
+    ]
+  },
+  "95": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, order, acc_bluediner, website, ordered dinner)",
+      "action(acc_bluediner, prepare, bill, kitchen, prepared dinner)",
+      "action(bill, pickup, acc_bluediner, phone, picked up dinner)",
+      "transaction(acc_bill, fast payment, acc_bluediner, 50.00)"
+    ]
+  },
+  "96": {
+    "label": "legit",
+    "sequence": [
+      "action(nina, application, insurancenet, online_portal, applied for financial advisor position)",
+      "action(insurancenet, application_review, nina, email, reviewed application)",
+      "action(insurancenet, job_offer, nina, phone, offered job as financial advisor)",
+      "action(nina, acceptance, insurancenet, email, accepted the job offer)",
+      "action(insurancenet, onboarding, nina, email, account_creation and terms_acceptance)",
+      "action(nina, service_provision, insurancenet, app, providing financial advice)",
+      "transaction(acc_nina, fast payment, acc_insurancenet, 1500.00)"
+    ]
+  },
+  "97": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service, firstfinancial, email, paid monthly subscription)",
+      "action(firstfinancial, notification, bill, email, subscription confirmed)",
+      "transaction(acc_bill, fast payment, acc_wellesley, 30.00)"
+    ]
+  },
+  "98": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, service_contract, wellsfargo, email, signed agreement for home loan)",
+      "action(wellsfargo, verification, bill, phone, verified identity and credit score)",
+      "action(wellsfargo, account_creation, bill, online platform, created new mortgage account)",
+      "action(bill, funds_transfer, wellsfargo, app, transferred down payment for the home loan)",
+      "transaction(acc_wellesley, fast payment, acc_bill, 100000.00)"
+    ]
+  },
+  "99": {
+    "label": "legit",
+    "sequence": [
+      "action(bill, consultation, james, email, received it consultation services)",
+      "action(james, payment, bill, bank transfer, paid for it consultation)",
+      "transaction(acc_james, fast payment, acc_bill, 200.00)"
+    ]
+  }
+}
