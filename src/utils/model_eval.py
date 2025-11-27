@@ -1,6 +1,8 @@
 """
 Model Evaluation Script
 
+Which model should we use? Decided on llama3.2
+
 Description:
 -------------
 Evaluates multiple LLMs for their ability to generate valid FAST payment fraud sequences
@@ -37,7 +39,7 @@ Example:
 """
 
 import pandas as pd
-import llmplanner as gen
+import src.planner.llmplanner as gen
 import time
 
 # Models to test

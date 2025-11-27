@@ -1,9 +1,7 @@
 import json
-import llmdetector as detector
+import src.detector.llmdetector as detector
 import pandas as pd
 import time
-
-# Question 1: Is llama3.2 able to accurately classify legit and fraudulent sequences?
 
 error_seq = []
 res = []
@@ -24,7 +22,7 @@ with open("data/coev_seq_v2.json", "r") as f:
         label = data[id]['label']
         sequence = data[id]['sequence']
 
-        classification = detector.classify_sequence(sequence)
+        classification, ___ = detector.ensemble_classify_sequence(sequence)
 
         if classification == label:
             num_correct += 1
@@ -44,7 +42,7 @@ with open("data/coev_seq_v2.json", "r") as f:
     
     df_error = pd.DataFrame(error_seq)
     print(df_error)
-    df_error.to_csv("data/detector_vx_errors.csv")
+    df_error.to_csv("data/detector_errors_v2_2.csv")
 
 res.append({
     'Accuracy': num_correct/total_seq,
@@ -54,4 +52,4 @@ res.append({
 })
 df_res = pd.DataFrame(res)
 print(df_res)
-df_res.to_csv("data/detector_res_v2.csv")
+df_res.to_csv("data/detector_res_v2_2.csv")

@@ -1,5 +1,5 @@
 """
-Data Collection llmplanner
+llmplanner data collection
 
 Evaluation Metrics:
 -------------------
@@ -12,11 +12,11 @@ Evaluation Metrics:
     - % of steps that failed syntax validation
 (6) Logical Coherence - recorded manually
 
-Planner given 10 maximum attempts
+Returns csv- see fraud_planner_v2.csv as an example
 """
 
-import llmplanner_v3
-import fraud_env
+import src.planner.llmplanner_v3 as llmplanner_v3
+import src.env.fraud_env as fraud_env
 import csv
 import json
 import time

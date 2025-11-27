@@ -96,10 +96,6 @@ class FraudEnv():
     def update_balance(self, acc_from, acc_to, amount):
         self.G.nodes[acc_from]["balance"] -= amount
         self.G.nodes[acc_to]["balance"] += amount
-
-    
-    # MAYBE IMPLEMENT LATER
-    # def get_acc_balances(self):
     
     def reset(self):
         self.G.clear()
