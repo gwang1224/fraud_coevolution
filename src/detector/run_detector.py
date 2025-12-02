@@ -1,7 +1,6 @@
 import json
 import src.detector.llmdetector as detector
 import pandas as pd
-import time
 
 error_seq = []
 res = []
