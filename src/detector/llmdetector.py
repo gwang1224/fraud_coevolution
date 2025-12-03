@@ -54,11 +54,12 @@ def explain_classification(seq: str) -> str:
         res = response.json().get('response', '').strip().strip("'").lower()
         return res
     
-def ensemble_classify_sequence(seq:str) -> str:
-    labels = [classify_sequence(seq) for _ in range(5)]
+def ensemble_classify_sequence(seq:str, num_calls:int=5) -> str:
+    labels = [classify_sequence(seq) for _ in range(num_calls)]
 
     winner, count = Counter(labels).most_common(1)[0]
-    return winner, labels
+    stable = count/num_calls
+    return winner, labels, stable
         
 
 def main():

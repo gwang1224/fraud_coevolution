@@ -1,21 +1,31 @@
 import requests
-import re
 import json
 import src.env.fraud_env as fraud_env
 import src.utils.pydantic_validator as pv
 from json_repair import repair_json
 import random
-import time
 
 
 class LLMPlanner():
+    """
+    Planner that uses a local LLM to generate fraud/legit FAST-payment
+    sequences and validates them with a Pydantic-based rules engine.
+    """
 
     def __init__(self, env):
         self.env = env
         self.pv = pv.UniversalRulesValidator(self.build_entity_registry())
 
-    def select_characters(self) -> dict:
 
+    def select_characters(self) -> dict:
+        """
+        Selects values for sequence generation. Selects victim, fraudster, transfer amount.
+
+        Args: 
+            env: fraud env defined by fraud_env.py
+        Returns:
+            dict: {"victim": victim, "victim account": victim_acc, "bank": bank... etc}
+        """
         # Random victim
         victim = random.choice(self.env.get_individuals())
         victim_acc = next((n for n, d in self.env.G.nodes(data=True) if d.get("owner") == victim), None)
@@ -25,12 +35,13 @@ class LLMPlanner():
         fraudster = random.choice(self.env.get_fraudsters())
         fraudster_acc = next((n for n, d in self.env.G.nodes(data=True) if d.get("owner") == fraudster), None)
 
-        # Assume fraudster is taking 0.8 of balance
+        # Assume transfer amount is 0.8x balance
         transfer_amount = self.env.G.nodes[victim_acc]["balance"] * 0.8
 
         return {"victim": victim, "victim account": victim_acc, "bank": bank, "fraudster": fraudster, "fraudster account": fraudster_acc, "transfer amount": transfer_amount}
         
-    def fraud_prompt(self):
+
+    def fraud_prompt(self) -> str:
         """
         Generates fraudulent prompt using input of entities from graph
 
@@ -109,12 +120,10 @@ class LLMPlanner():
 
         return PROMPT_TEMPLATE.format(victim = v, victim_acc = v_acc, fraudster = f, fraudster_acc = f_acc, transfer_amount = amount)
     
-    def legit_prompt(self):
+    def legit_prompt(self) -> str:
         """
         Generates fraudulent prompt using input of entities from graph
 
-        Args: 
-            env: fraud env defined by fraud_env.py
         Returns:
             prompt as string
         """
@@ -188,11 +197,18 @@ class LLMPlanner():
 
         return PROMPT_TEMPLATE.format(ind=i, bank=b, acc=a)
 
+
     def call_model(self, prompt):
+        """
+        Generates fraudulent prompt using input of entities from graph
+
+        Returns:
+            prompt as string
+        """
         response = requests.post(
             'http://localhost:11434/api/generate',
             json={
-                'model': "mistral",
+                'model': "llama3.2",
                 'prompt': prompt,
                 'stream': False
             }
@@ -200,7 +216,12 @@ class LLMPlanner():
         raw = response.json().get('response', '').strip()
         return raw
             
+
     def build_entity_registry(self):
+        """
+        Builds registry of entities and entity types for pydantic validation
+
+        """
         ROLE_TO_ENTITYTYPE = {
             "individual": pv.EntityType.INDIVIDUAL,
             "fraudster": pv.EntityType.FRAUDSTER,
@@ -222,6 +243,7 @@ class LLMPlanner():
 
         return registry
     
+
     def generate_valid_fraud_seq(self, max_attempts=15) -> dict:
         """
         Generates a valid fraud sequence through GEPA-stype prompting the LLM
@@ -229,6 +251,8 @@ class LLMPlanner():
         """
 
         prompt = self.fraud_prompt()
+        error_msg = ""
+
         attempts = 0
         valid_seq = False
 
@@ -236,10 +260,17 @@ class LLMPlanner():
         num_semantic_errors = 0
 
         while not valid_seq and attempts < max_attempts:
-            attempts += 1
-            raw = self.call_model(prompt)
 
-            # Stage 1: Validate JSON format
+            print(f"=== ATTEMPT {attempts+1}/{max_attempts} ===")
+            attempts += 1
+            print("-----------------------start prompt-----------------------")
+            print(prompt + error_msg)
+            print("-----------------------end prompt-----------------------")
+
+
+            raw = self.call_model(prompt + error_msg)
+
+            # Validate JSON format
             json_text = raw[raw.find("{"):]
             json_text = repair_json(json_text).lower()
 
@@ -254,13 +285,12 @@ class LLMPlanner():
                 )
                 num_syntax_errors += 1
                 print(error_msg)
-
-                prompt += error_msg
                 continue
 
             if "sequence" not in sequence:
-                prompt += "\n Error. The JSON you produced did not contain 'sequence' key."
+                error_msg = "\n Error. The JSON you produced did not contain 'sequence' key."
                 num_syntax_errors += 1
+                print(error_msg)
                 continue
 
             # Detect broken / multiline / incomplete steps
@@ -271,7 +301,7 @@ class LLMPlanner():
 
             if broken:
                 num_syntax_errors += 1
-                err_block = (
+                error_msg = (
                     "\nYour previous output was invalid because at least one action or transaction "
                     "was split across multiple lines or is missing parentheses.\n"
                     "Each step MUST be exactly one line of the form:\n"
@@ -281,20 +311,7 @@ class LLMPlanner():
                     f"{json.dumps(sequence, indent=2)}\n"
                     "Regenerate a NEW JSON dictionary following the rules."
                 )
-                print(err_block)
-                prompt += err_block
-                continue
-
-            # Check if 'sequence' is present
-            if 'sequence' not in sequence:
-                num_syntax_errors += 1
-                error_msg = (
-                    "\nYour JSON did not include a valid 'sequence' list.\n"
-                    f"You returned:\n{json_text}\n"
-                    "Return ONLY: {\"sequence\": [ ... ]}"
-                )
                 print(error_msg)
-                prompt += error_msg
                 continue
 
             # Stage 2: SYNTAX CHECK
@@ -303,14 +320,13 @@ class LLMPlanner():
 
             if not syntax_ok:
                 num_syntax_errors += 1
-                err_block = (
+                error_msg = (
                     "\nYour previous sequence had SYNTAX ERRORS:\n"
                     + "\n".join(syntax_errors)
                     + f"\nThis was the sequence you returned:\n{json.dumps(sequence, indent=2)}\n"
                     "Fix the syntax and regenerate a new valid JSON dictionary."
                 )
-                print(err_block)
-                prompt += err_block
+                print(error_msg)
                 continue
 
             # Stage 3: Semantic check
@@ -319,14 +335,13 @@ class LLMPlanner():
 
             if not semantic_ok:
                 num_semantic_errors += 1
-                err_block = (
+                error_msg = (
                     "\nYour previous sequence had SEMANTIC ERRORS:\n"
                     + "\n".join(semantic_errors)
                     + f"\nThis was the sequence you returned:\n{json.dumps(sequence, indent=2)}\n"
                     "Fix the logical errors and regenerate."
                 )
-                print(err_block)
-                prompt += err_block
+                print(error_msg)
                 continue
             
             valid_seq = True
@@ -335,14 +350,24 @@ class LLMPlanner():
         
         return None, attempts, num_syntax_errors, num_semantic_errors
     
+
     def generate_valid_legit_seq(self, max_attempts=10) -> dict:
+
         prompt = self.legit_prompt()
+        error_msg = ""
+
         attempts = 0
         valid_seq = False
 
         while not valid_seq and attempts < max_attempts:
+            print(f"=== ATTEMPT {attempts+1}/{max_attempts} ===")
             attempts += 1
-            raw = self.call_model(prompt)
+            print("-----------------------start prompt-----------------------")
+            print(prompt + error_msg)
+            print("-----------------------end prompt-----------------------")
+
+            attempts += 1
+            raw = self.call_model(prompt + error_msg)
 
             # Stage 1: Validate JSON format
             json_text = raw[raw.find("{"):]
@@ -358,12 +383,9 @@ class LLMPlanner():
                     "Fix the JSON formatting and return ONLY valid JSON."
                 )
                 print(error_msg)
-
-                prompt += error_msg
                 continue
 
             if "sequence" not in sequence:
-                prompt += "\n Error. The JSON you produced did not contain 'sequence' key."
                 continue
 
             # Detect broken / multiline / incomplete steps
@@ -373,7 +395,7 @@ class LLMPlanner():
             )
 
             if broken:
-                err_block = (
+                error_msg = (
                     "\nYour previous output was invalid because at least one action or transaction "
                     "was split across multiple lines or is missing parentheses.\n"
                     "Each step MUST be exactly one line of the form:\n"
@@ -383,8 +405,7 @@ class LLMPlanner():
                     f"{json.dumps(sequence, indent=2)}\n"
                     "Regenerate a NEW JSON dictionary following the rules."
                 )
-                print(err_block)
-                prompt += err_block
+                print(error_msg)
                 continue
 
             # Check if 'sequence' is present
@@ -395,7 +416,6 @@ class LLMPlanner():
                     "Return ONLY: {\"sequence\": [ ... ]}"
                 )
                 print(error_msg)
-                prompt += error_msg
                 continue
 
             # Stage 2: SYNTAX CHECK
@@ -403,22 +423,18 @@ class LLMPlanner():
             print("Syntax OK:", syntax_ok)
 
             if not syntax_ok:
-                err_block = (
+                error_msg = (
                     "\nYour previous sequence had SYNTAX ERRORS:\n"
                     + "\n".join(syntax_errors)
                     + f"\nThis was the sequence you returned:\n{json.dumps(sequence, indent=2)}\n"
                     "Fix the syntax and regenerate a new valid JSON dictionary."
                 )
-                print(err_block)
-                prompt += err_block
+                print(error_msg)
                 continue
         
             return sequence
         return None
         
-
-
-
 
 
 def main():
@@ -428,8 +444,8 @@ def main():
     
     # Generate fraud sequence
     planner = LLMPlanner(env)
-    # print(planner.generate_valid_legit_seq())
-    print(planner.call_model("hi"))
+    print(planner.generate_valid_fraud_seq(5))
+    # print(planner.call_model("hi"))
     
     
 

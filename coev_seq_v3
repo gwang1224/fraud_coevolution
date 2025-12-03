@@ -1,0 +1,97 @@
+{
+    "0": {
+        "label": "legit",
+        "sequence": [
+            "action(bill, hire, james, email, hired as web developer)",
+            "action(james, invoice, bill, invoicing_system, sent invoice for first month's work)",
+            "action(bill, payment, james, online bank, paid the invoice)",
+            "transaction(acc_bill, fast payment, acc_james, 2000.00)"
+        ]
+    },
+    "1": {
+        "label": "fraud",
+        "sequence": [
+            "action(insurancenet, posed as, bill, email, claimed to be from bill's insurance company)",
+            "action(bill, responded, insurancenet, email, provided insurance details for 'review')",
+            "action(insurancenet, sent, acc_bill, sms, request for account verification code)",
+            "action(bill, sent, acc_bill, sms, sent the verification code)",
+            "action(insurancenet, gained access, acc_bill, online, used the provided verification code to gain access)",
+            "transaction(acc_bill, fast payment, acc_insurancenet, 12000.0)"
+        ]
+    },
+    "2": {
+        "label": "fraud",
+        "sequence": [
+            "action(insuranceco, poses_as, sally, email, claiming account compromise)",
+            "action(sally, replies, insuranceco, email, sharing account details with 'tax office')",
+            "action(insuranceco, contacts, sally, phone, simulating a call about account issues)",
+            "action(sally, provides, insuranceco, phone, sharing verification code for account)",
+            "action(insuranceco, gains_access, acc_sally, sms, successfully logging in with code)",
+            "transaction(acc_sally, fast payment, acc_insuranceco, 4800.0)"
+        ]
+    },
+    "3": {
+        "label": "legit",
+        "sequence": [
+            "action(bill, consultation, james, email, billing_details_discussion)",
+            "action(james, payment, bill, paypal, paid_for_consultation)",
+            "transaction(acc_bill, fast payment, acc_james, 150.00)"
+        ]
+    },
+    "4": {
+        "label": "fraud",
+        "sequence": [
+            "action(insuranceco, phishing, grace, email, sent fraudulent tax invoice with link to malicious site)",
+            "action(grace, click, insuranceco, web, navigated to phishing site and entered account credentials)",
+            "action(insuranceco, login, acc_grace, web, gained access to grace's account)",
+            "action(insuranceco, transfer, acc_grace, internal, initiated unauthorized transfer of 320000.0 to acc_insuranceco)",
+            "transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)"
+        ]
+    },
+    "5": {
+        "label": "legit",
+        "sequence": [
+            "action(bill, consultation, james, email, bill provides freelance coding services)",
+            "action(james, payment, bill, online platform, paid for freelance services)",
+            "transaction(acc_bill, fast payment, acc_james, 500.00)"
+        ]
+    },
+    "6": {
+        "label": "fraud",
+        "sequence": [
+            "action(govco, posing, sally, email, claimed to be a bank representative)",
+            "action(sally, replying, govco, email, provided account details for verification)",
+            "action(govco, modifying, acc_sally, internal, changed password without victim's knowledge)",
+            "transaction(acc_sally, fast payment, acc_govco, 4800.0)"
+        ]
+    },
+    "7": {
+        "label": "legit",
+        "sequence": [
+            "action(bill, service received confirmation, james, email, confirmed graphic design work)",
+            "transaction(acc_james, fast payment, acc_bill, 400.00)",
+            "action(bill, payment, bankofamerica, app, paid electricity bill)",
+            "transaction(acc_bill, fast payment, acc_conedison, 150.00)"
+        ]
+    },
+    "8": {
+        "label": "fraud",
+        "sequence": [
+            "action(fishmaster, phishing, bill, email, sent a malicious link disguised as bank update)",
+            "action(bill, clicked, fishmaster, email, opened the phishing link)",
+            "action(fishmaster, harvested, bill, email, collected login credentials)",
+            "action(bill, logged_in, fishmaster, sms, entered collected credentials to verify)",
+            "action(fishmaster, gained_access, acc_bill, online_banking, successfully accessed account)",
+            "transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)"
+        ]
+    },
+    "9": {
+        "label": "legit",
+        "sequence": [
+            "action(bill, order, acc_bluediner, online platform, ordered food delivery)",
+            "action(acc_bluediner, delivery confirmation, bill, sms, confirmed food delivery to acc_bill)",
+            "action(bill, payment, acc_bluediner, app, paid for food delivery)",
+            "transaction(acc_bill, fast payment, acc_bluediner, 45.00)"
+        ]
+    }
+}

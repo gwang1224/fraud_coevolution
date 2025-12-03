@@ -11,7 +11,7 @@ false_neg = 0
 total_seq = 0
 unclassifiable = 0
 
-with open("data/coev_seq_v2.json", "r") as f:
+with open("data/coev/coev_seq_v2.json", "r") as f:
     data = json.load(f)
 
     for id in data:
@@ -21,7 +21,7 @@ with open("data/coev_seq_v2.json", "r") as f:
         label = data[id]['label']
         sequence = data[id]['sequence']
 
-        classification, ___ = detector.ensemble_classify_sequence(sequence)
+        classification, __, stability = detector.ensemble_classify_sequence(sequence)
 
         if classification == label:
             num_correct += 1
@@ -36,19 +36,20 @@ with open("data/coev_seq_v2.json", "r") as f:
                 'Sequence id': id,
                 'Sequence': sequence,
                 'Label': label,
-                'LLM Generated Label': classification
+                'LLM Generated Label': classification,
+                'Stability': stability
             })
     
     df_error = pd.DataFrame(error_seq)
     print(df_error)
-    df_error.to_csv("data/detector_errors_v2_2.csv")
+    df_error.to_csv("data/detector/v2/detector_errors_v2_3.csv")
 
 res.append({
     'Accuracy': num_correct/total_seq,
     'False positive': false_pos/total_seq,
     'False negative': false_neg/total_seq,
-    'Unclassifiable': unclassifiable
+    'Unclassifiable': unclassifiable/total_seq
 })
 df_res = pd.DataFrame(res)
 print(df_res)
-df_res.to_csv("data/detector_res_v2_2.csv")
+df_res.to_csv("data/detector/v2/detector_res_v2_3.csv")
