@@ -1,7 +1,7 @@
 import requests
 import re
 import json
-import src.env.fraud_env as fraud_env
+import planner.fraud_env as fraud_env
 import src.utils.pydantic_validator as pv
 from json_repair import repair_json
 

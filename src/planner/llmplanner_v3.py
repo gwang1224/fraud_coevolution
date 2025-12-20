@@ -1,6 +1,6 @@
 import requests
 import json
-import src.env.fraud_env as fraud_env
+import planner.fraud_env as fraud_env
 import src.utils.pydantic_validator as pv
 from json_repair import repair_json
 import random
@@ -108,6 +108,13 @@ class LLMPlanner():
             "transaction(...)"
         ]
         }}
+
+        However, you may NOT use the followint patterns:
+        1;Multiple Account Takeovers
+        2;Phishing Emails with Malicious Links
+        3;Insurer's Access to Victim's Accounts
+        4;Suspicious Transfers to Insurer's Accounts
+        5;Multiple Fast Payment Transactions
         """
 
         characters = self.select_characters()

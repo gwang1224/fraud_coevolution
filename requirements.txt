@@ -4,3 +4,4 @@ transformers
 torch
 pydantic
 json-repair
+sentence_transformers
