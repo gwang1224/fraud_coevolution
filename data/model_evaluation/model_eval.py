@@ -1,15 +1,9 @@
 """
 Model Evaluation Script
 
-Which model should we use? Decided on llama3.2
+Which model should we use? llama3.2
 
-Description:
--------------
-Evaluates multiple LLMs for their ability to generate valid FAST payment fraud sequences
-using the LLMPlanner class from llmplanner.py. It runs multiple samples for each model,
-validates the output, and logs performance statistics.
-
-Evaluation Metrics:
+Metrics:
 -------------------
 (1) Valid Sequences - number of sequences that pass regex/entity validation.
 (2) Average Steps - average number of steps per valid sequence.
@@ -30,16 +24,10 @@ Outputs:
 --------
 - Prints progress and model statistics to console.
 - Saves summary table to "model_eval_results.csv" in the working directory.
-
-Usage:
-------
-Run this script after ensuring llmplanner.py is functional.
-Example:
-    $ python model_eval.py
 """
 
 import pandas as pd
-import src.planner.llmplanner as gen
+import llmplanner as gen
 import time
 
 # Models to test

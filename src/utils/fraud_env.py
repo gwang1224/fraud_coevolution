@@ -28,20 +28,14 @@ class FraudEnv():
         Adds a node to the fraud environment graph using predefined templates.
 
         Args:
-        node_id (str): 
-            Unique identifier for the node (e.g., "Alice", "acc_alice", "Chase").
-        node_type (str): 
-            Type of node to add (must exist in `NODE_TEMPLATES`, e.g., "participant", "bank", "account").
-        custom_attrs (dict, optional): 
-            Dictionary of custom attributes to update the default template values 
+            node_id (str): Unique identifier for the node (e.g., "Alice", "acc_alice", "Chase").
+            node_type (str): Type of node to add (must exist in `NODE_TEMPLATES`, e.g., "participant", "bank", "account").
+            custom_attrs (dict, optional): Dictionary of custom attributes to update the default template values 
 
         Raises:
             ValueError: 
                 If the specified `node_type` is not found in `NODE_TEMPLATES`, 
                 or if any key in `custom_attrs` does not exist in the template.
-
-        Returns:
-            None  
         """
         # Must add node with template
         if node_type not in self.NODE_TEMPLATES:

@@ -1,5 +1,5 @@
 """
-llmplanner data collection
+LLMPlanner data collection- 
 
 Evaluation Metrics:
 -------------------
@@ -10,20 +10,20 @@ Evaluation Metrics:
     - % of steps that failed syntax validation
 (5) Semantic Validity Score
     - % of steps that failed syntax validation
-(6) Logical Coherence - recorded manually
+(6) Logical Coherence - (to be recorded manually)
 
-Returns csv- see fraud_planner_v2.csv as an example
+Result: planner_res_v2.csv
 """
 
-import llmplanner_v3
-import fraud_env
+from ...src.utils import llmplanner
+import utils.fraud_env as fraud_env
 import csv
 import json
 import time
 
 env_generator = fraud_env.FraudEnv()
 env = env_generator.create_environment()
-planner = llmplanner_v3.LLMPlanner(env)
+planner = llmplanner.LLMPlanner(env)
 
 num_seq = 10
 
@@ -41,7 +41,6 @@ for i in range(num_seq):
 
     data = [[json.dumps(sequence), attempts, elapsed_time, syn_err_per, sem_err_per]]
     print(data)
-    time.sleep(60)
 
 
     with open('fraud_planner_v4.csv', 'a', newline='') as file:
