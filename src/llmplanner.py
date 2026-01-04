@@ -1,6 +1,6 @@
 import requests
 import json
-import utils.fraud_env as fraud_env
+import src.utils.fraud_env as fraud_env
 import src.utils.pydantic_validator as pv
 from json_repair import repair_json
 import random
