@@ -1,20 +1,196 @@
 ,Sequence id,Sequence,Label,LLM Generated Label,Stability
-0,1,"['action(govco, phishing, james, email, sent fraudulent tax claim link)', 'action(james, clicked, govco, email, opened phishing link)', 'action(govco, gained_access, acc_james, link, obtained login credentials)', 'action(govco, transferred_funds, acc_james, bank, initiated fast payment to acc_govco)', 'transaction(acc_james, fast payment, acc_govco, 16000.0)']",fraud,legit,1.0
-1,16,"['action(fishmaster, phishing, bill, email, sent a fake bank notification)', 'action(bill, clicked, fishmaster, email, opened the fraudulent link)', 'action(fishmaster, sent, acc_bill, sms, requested verification code)', 'action(bill, entered, fishmaster, sms, provided verification code)', 'action(fishmaster, logged, acc_bill, online, accessed the account successfully)', 'transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)']",fraud,legit,1.0
-2,28,"['action(insurancenet, phishing, olivia, email, sent fake login link)', 'action(olivia, click, insurancenet, email, clicked on the link)', 'action(insurancenet, gain_access, olivia, phishing_site, obtained login credentials)', ""action(insurancenet, change_password, acc_olivia, online_banking, changed olivia's password)"", 'transaction(acc_olivia, fast payment, acc_insurancenet, 6800.0)']",fraud,legit,1.0
-3,31,"['action(govco, phishing, james, email, posed as bank representative requesting account details)', 'action(james, sharing, acc_james, email, sent account credentials to govco)', 'action(govco, logging, acc_james, online, gained access to acc_james)', 'transaction(acc_james, fast payment, acc_govco, 16000.0)']",fraud,legit,1.0
-4,34,"[""action(insuranceco, phishing, grace, email, sent fake email from 'irs tax office'),"", 'action(grace, clicked, insuranceco, email, opened and clicked the link in the phishing email),', ""action(insuranceco, gainedaccess, acc_grace, sms, sent a verification code to grace's phone),"", 'action(grace, enteredcode, insuranceco, sms, entered the verification code received),', ""action(insuranceco, accessedaccount, acc_grace, email, gained access to grace's account),"", 'transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)']",fraud,legit,1.0
-5,41,"['action(govco, posed_as, nina, email, claimed to be a bank representative)', 'action(nina, replied, govco, email, provided account details acc_nina for verification)', ""action(govco, sent, acc_nina, sms, requested password reset for 'security reasons')"", 'action(nina, complied, govco, sms, reset password for acc_nina as requested)', ""action(govco, logged_in, acc_nina, email, successfully accessed nina's account)"", 'transaction(acc_nina, fast payment, acc_govco, 9600.0)']",fraud,legit,1.0
-6,42,"['action(fishmaster, phishing, sally, email, sent fraudulent bank login link)', 'action(sally, clicked, fishmaster, email, opened malicious link)', 'action(sally, entered_credentials, fishmaster, unknown, provided account credentials)', 'action(fishmaster, accessed_account, acc_sally, unknown, fraudster gained access to account)', 'transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)']",fraud,,1.0
-7,43,"['action(fishmaster, phishing, bill, email, sent fraudulent tax notification)', 'action(bill, clicked, fishmaster, email, opened phishing link)', 'action(fishmaster, requested, bill, email, asked for account details)', 'action(bill, provided, fishmaster, email, sent account information)', 'action(fishmaster, accessed, acc_bill, email, gained access to account)', 'transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)']",fraud,legit,1.0
-8,47,"['action(insuranceco, phishing, grace, email, sent a fraudulent email claiming to be from insurance company)', 'action(grace, clicked, insuranceco, email, opened and clicked on the provided link)', ""action(insuranceco, malware, grace, email, installed malicious software onto grace's device)"", ""action(insuranceco, keylogging, acc_grace, device, logged grace's online banking password)"", 'action(insuranceco, transfer initiation, acc_grace, online banking, initiated a transfer to acc_insuranceco)', 'transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)']",fraud,,1.0
-9,63,"['action(insurancenet, posed as, sally, email, claimed to be bank representative)', 'action(sally, replied, insurancenet, email, provided account details for acc_sally verification)', 'action(insurancenet, gained, acc_sally, email, after successfully verifying identity)', 'transaction(acc_sally, fast payment, acc_insurancenet, 4800.0)']",fraud,legit,1.0
-10,64,"['action(fishmaster, posed as, sally, sms, claimed acc_sally was frozen due to suspicious activity)', 'action(sally, replied, fishmaster, phone, provided acc_sally verification code for confirmation)', 'action(fishmaster, accessed, acc_sally, email, used provided credentials to log into acc_sally)', 'transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)']",fraud,legit,1.0
-11,66,"['action(grace, shares, acc_grace, email, shares her account details for an online loan application)', 'action(insurancenet, impersonates, grace, email, claims to be a loan officer from a reputable bank)', 'action(grace, provides, insurancenet, email, sends her updated personal and account information)', ""action(insurancenet, gains, acc_grace, fast, gains access to grace's account through the loan application process)"", 'transaction(acc_grace, fast payment, acc_insurancenet, 320000.0)']",fraud,,1.0
-12,73,"[""action(insurancenet, posed, nina, email, claimed to be a representative from nina's insurance company)"", 'action(nina, replied, insurancenet, email, provided policy number and account details for verification)', 'action(insurancenet, accessed, acc_nina, email, used provided details to gain access to acc_nina)', 'transaction(acc_nina, fast payment, acc_insurancenet, 9600.0)']",fraud,legit,1.0
-13,76,"['action(govco, posed as, sally, email, claimed to be a representative from the bank)', 'action(sally, replied, govco, email, provided login credentials after receiving email)', ""action(govco, gained access, acc_sally, email, successfully logged into sally's account)"", ""action(govco, transferred funds, acc_sally, bank transfer, moved 4800.0 from sally's account to govco's account)"", 'transaction(acc_sally, fast payment, acc_govco, 4800.0)']",fraud,legit,1.0
-14,78,"['action(grace, sends_documents, insuranceco, email, shares her latest car accident claim documents)', 'action(insuranceco, poses_as_support, grace, phone, claims to be a support agent from the company)', ""action(insuranceco, requests_more_info, grace, phone, asks for updated bank account details due to 'system issues')"", 'action(grace, updates_details, insuranceco, email, sends her updated bank account details via email)', ""action(insuranceco, verifies_account, acc_grace, online, logs into grace's account using provided credentials)"", 'transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)']",fraud,legit,1.0
-15,81,"[""action(insuranceco, posed as, olivia, email, claimed to be olivia's insurance representative)"", 'action(olivia, replied, insuranceco, email, shared policy details including account number acc_olivia)', 'action(insuranceco, requested, acc_olivia, email, alleged claim verification via email transfer)', 'action(olivia, provided, insuranceco, email, believed it was the insurance company verifying her policy)', 'transaction(acc_olivia, fast payment, acc_insuranceco, 6800.0)']",fraud,legit,1.0
-16,86,"['action(fishmaster, phishing, olivia, email, sent a fraudulent bank notification)', 'action(olivia, click, fishmaster, email, clicked on the malicious link provided)', ""action(fishmaster, account_takeover, acc_olivia, link, gained access to olivia's account details)"", 'action(fishmaster, transfer_initiate, acc_olivia, online_banking, initiated a fast payment transaction of 6800.0 to acc_fishmaster)', 'transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)']",fraud,legit,1.0
-17,89,"['action(insuranceco, poses_as, nina, email, claiming account issues)', 'action(nina, responds, insuranceco, email, provides account details for verification)', ""action(insuranceco, gains_access, acc_nina, sms, successfully accessed nina's account using provided details)"", 'transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)']",fraud,legit,1.0
-18,94,"['action(insuranceco, phishing, nina, email, sent fraudulent tax bill email)', 'action(nina, clicked, insuranceco, email, opened phishing email and clicked link)', 'action(nina, entered, acc_nina, email, entered account credentials)', ""action(insuranceco, gainedaccess, acc_nina, email, successfully gained access to nina's account)"", 'transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)']",fraud,legit,1.0
+0,3,"action(grace, consultation, bill, phone, provided services for home repair)
+action(bill, payment, grace, app, paid for consultation service)
+transaction(acc_grace, fast payment, acc_bill, 200.00)",legit,fraud,1.0
+1,4,"action(sally, rent payment, james, app, paid rent for april)
+transaction(acc_sally, fast payment, acc_james, 1000.00)
+action(james, receipt confirmation, sally, email, confirmed rent received)
+action(james, utility payment, firstfinancial, online platform, paid electricity bill)
+transaction(acc_james, fast payment, acc_conedison, 150.00)",legit,fraud,1.0
+2,5,"action(acc_bill, consultation, acc_james, email, legal advice)
+action(acc_james, payment, acc_bill, app, paid legal fee)
+transaction(acc_james, fast payment, acc_bill, 300.00)",legit,fraud,1.0
+3,13,"action(insuranceco, phishing, james, email, sent fake email claiming account issue)
+action(james, clicked, insuranceco, email, opened the phishing email)
+action(insuranceco, requested, james, email, requested login credentials and bank details)
+action(james, provided, insuranceco, email, sent login credentials and account number acc_james)
+action(insuranceco, accessed, acc_james, online, gained access to victim's account)
+transaction(acc_james, fast payment, acc_insuranceco, 16000.0)",fraud,legit,1.0
+4,14,"action(bill, service, firstfinancial, email, approved loan application)
+action(firstfinancial, notification, bill, email, loan funds available)
+action(bill, withdrawal, firstfinancial, app, withdrew loan funds)
+transaction(acc_bill, fast payment, acc_conedison, 1200.00)",legit,fraud,1.0
+5,15,"action(bill, order, acc_bluediner, website, ordered meal for delivery)
+action(acc_bluediner, confirmation, bill, email, confirmed order details)
+action(bill, payment, acc_bluediner, app, paid for the meal)
+transaction(acc_bill, fast payment, acc_bluediner, 30.00)",legit,fraud,1.0
+6,16,"action(fishmaster, phishing, bill, email, sent a fake bank notification)
+action(bill, clicked, fishmaster, email, opened the fraudulent link)
+action(fishmaster, sent, acc_bill, sms, requested verification code)
+action(bill, entered, fishmaster, sms, provided verification code)
+action(fishmaster, logged, acc_bill, online, accessed the account successfully)
+transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)",fraud,,0.0
+7,17,"action(sally, account_verification, firstfinancial, email, confirmed identity through otp)
+action(firstfinancial, service_activation, sally, email, activated checking account)
+action(sally, deposit, firstfinancial, app, deposited initial funds into the account)
+action(firstfinancial, service_provision, sally, online platform, approved direct deposit for salary)
+transaction(acc_sally, fast payment, acc_govco, 3000.00)",legit,fraud,1.0
+8,19,"action(insuranceco, phishing, olivia, email, sent fraudulent insurance claim form)
+action(olivia, clicked, insuranceco, email, opened and filled out the form)
+action(insuranceco, accessed, acc_olivia, fraudulent_access, gained access to olivia's account details)
+transaction(acc_olivia, fast payment, acc_insuranceco, 6800.0)",fraud,legit,1.0
+9,20,"action(sally, consultation, nina, email, hired for tax advice)
+action(nina, invoice, sally, email, sent tax advice invoice)
+transaction(acc_sally, fast payment, acc_nina, 300.00)",legit,fraud,1.0
+10,24,"action(fishmaster, phishing, sally, email, sent a fraudulent bank link)
+action(sally, click, fishmaster, email, clicked the fraudulent bank link)
+action(sally, share_credentials, fishmaster, unknown, unknowingly provided account credentials to fishmaster)
+transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)",fraud,legit,1.0
+11,28,"action(insurancenet, phishing, olivia, email, sent fake login link)
+action(olivia, click, insurancenet, email, clicked on the link)
+action(insurancenet, gain_access, olivia, phishing_site, obtained login credentials)
+action(insurancenet, change_password, acc_olivia, online_banking, changed olivia's password)
+transaction(acc_olivia, fast payment, acc_insurancenet, 6800.0)",fraud,,0.0
+12,30,"action(govco, posed as, sally, email, posed as a bank representative)
+action(sally, replied, govco, email, provided account details and login credentials)
+action(govco, logged into, acc_sally, email, gained access to the victim's account)
+transaction(acc_sally, fast payment, acc_govco, 4800.0)",fraud,legit,1.0
+13,32,"action(fishmaster, phishing, bill, email, sent a fraudulent tax notification with login link)
+action(bill, access, acc_bill, email, clicked the provided login link)
+action(fishmaster, authentication, bill, email, received bill's account credentials)
+action(fishmaster, transfer, acc_bill, bank's online platform, initiated a transfer to acc_fishmaster)
+transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)",fraud,legit,1.0
+14,33,"action(bill, consultation, firstfinancial, email, agreed on service terms)
+action(firstfinancial, payment, bill, bank wire, paid for service fee)
+action(bill, product, insurancenet, app, provided insurance services)
+transaction(acc_bill, fast payment, acc_insurancenet, 500.00)",legit,fraud,1.0
+15,34,"action(insuranceco, phishing, grace, email, sent fake email from 'irs tax office'),
+action(grace, clicked, insuranceco, email, opened and clicked the link in the phishing email),
+action(insuranceco, gainedaccess, acc_grace, sms, sent a verification code to grace's phone),
+action(grace, enteredcode, insuranceco, sms, entered the verification code received),
+action(insuranceco, accessedaccount, acc_grace, email, gained access to grace's account),
+transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)",fraud,legit,1.0
+16,38,"action(nina, consultation, firstfinancial, email, provided financial advice)
+action(firstfinancial, payment, nina, email, paid for consultation fees)
+transaction(acc_insurancenet, fast payment, acc_nina, 100.00)",legit,fraud,1.0
+17,43,"action(fishmaster, phishing, bill, email, sent fraudulent tax notification)
+action(bill, clicked, fishmaster, email, opened phishing link)
+action(fishmaster, requested, bill, email, asked for account details)
+action(bill, provided, fishmaster, email, sent account information)
+action(fishmaster, accessed, acc_bill, email, gained access to account)
+transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)",fraud,,0.0
+18,46,"action(bill, account_verification, firstfinancial, email, confirmed identity through otp)
+action(firstfinancial, loan_approval, bill, email, approved personal loan for home improvement)
+action(bill, payment, firstfinancial, app, paid monthly installment of the approved loan)
+transaction(acc_bill, fast payment, acc_conedison, 100.00)
+action(bill, account_verification, citibank, email, confirmed identity through otp)
+action(citibank, investment_account_opening, bill, email, opened investment account for mutual funds)
+action(bill, deposit, citibank, app, deposited 5000.00 to start the investment)
+transaction(acc_bill, fast payment, acc_insuranceco, 100.00)",legit,,0.0
+19,48,"action(grace, request, insuranceco, email, asked for insurance claim assistance)
+action(insuranceco, respond, grace, email, sent fake claim form with account details)
+action(grace, submit, insuranceco, fax, faxed completed claim form with account number)
+action(insuranceco, transfer, acc_grace, bank, initiated unauthorized transfer of 320000.0)
+transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)",fraud,,0.0
+20,49,"action(sally, account_verification, firstfinancial, email, verified identity)
+action(firstfinancial, service_activation, sally, email, bank account activated)
+action(sally, consultation, james, phone, received financial advice)
+action(james, invoice, sally, email, sent invoice for consultation fee)
+action(sally, payment, james, app, paid consultation fee)
+transaction(acc_sally, fast payment, acc_james, 100.00)",legit,fraud,1.0
+21,53,"action(james, service_request, firstfinancial, email, requested account opening)
+action(firstfinancial, response, james, email, sent account opening kit)
+action(james, submission, firstfinancial, snail_mail, submitted required documents)
+action(firstfinancial, verification, james, email, confirmed document verification)
+action(firstfinancial, approval, james, email, approved account application)
+action(james, payment, firstfinancial, app, paid account opening fee)
+transaction(acc_james, fast payment, acc_wellesley, 50.00)",legit,,0.0
+22,56,"action(bill, order, firstfinancial, website, purchased computer hardware)
+action(firstfinancial, shipment, bill, email, shipped purchased item)
+action(bill, feedback, firstfinancial, email, provided positive review)
+action(firstfinancial, reward, bill, email, awarded loyalty points)
+transaction(acc_bill, fast payment, acc_insurancenet, 10.00)",legit,fraud,1.0
+23,57,"action(sally, order, insurancenet, email, placed an order for insurance policy)
+action(insurancenet, confirmation, sally, email, sent confirmation of order details)
+action(sally, payment, insurancenet, app, approved payment for insurance policy)
+transaction(acc_sally, fast payment, acc_insurancenet, 500.00)",legit,fraud,1.0
+24,63,"action(insurancenet, posed as, sally, email, claimed to be bank representative)
+action(sally, replied, insurancenet, email, provided account details for acc_sally verification)
+action(insurancenet, gained, acc_sally, email, after successfully verifying identity)
+transaction(acc_sally, fast payment, acc_insurancenet, 4800.0)",fraud,legit,1.0
+25,65,"action(fishmaster, phishing, bill, email, sent a fraudulent bank link)
+action(bill, clicked, fishmaster, email, fell for the phishing attempt)
+action(fishmaster, login, acc_bill, email, gained access to account details using phished credentials)
+action(fishmaster, transfer, acc_bill, fast payment, initiated a fraudulent transfer of 12000.0)
+transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)",fraud,legit,1.0
+26,68,"action(fishmaster, phishing, olivia, email, sent a fraudulent bank statement link)
+action(olivia, click, fishmaster, email, clicked on the fraudulent link)
+action(fishmaster, accessed_account, acc_olivia, email, gained access to olivia's account details)
+action(fishmaster, transferred_own_funds, acc_fishmaster, bank, transferred 6800.0 from his account to cover transaction costs)
+action(fishmaster, changed_account_details, acc_olivia, email, changed olivia's account password and email)
+action(fishmaster, drained_funds, acc_olivia, bank, drained 6800.0 from olivia's account)
+transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)",fraud,legit,1.0
+27,69,"action(sally, hired, firstfinancial, email, agreed on consulting services)
+action(firstfinancial, service delivery, sally, online platform, provided consultation services)
+action(sally, payment, firstfinancial, bank transfer, paid for consultation fees)
+transaction(acc_sally, fast payment, acc_wellesley, 100.00)",legit,fraud,1.0
+28,70,"action(sally, service_order, firstfinancial, email, ordered catering for business event)
+action(firstfinancial, service_confirmation, sally, email, confirmed availability for catering)
+action(sally, payment, firstfinancial, app, paid for the catering order)
+transaction(acc_sally, fast payment, acc_bluediner, 800.00)",legit,fraud,1.0
+29,74,"action(james, requested, bankofamerica, email, professional advice on financial planning)
+action(bankofamerica, response, james, email, agreed to provide consultation services)
+action(bankofamerica, consultation, james, video_call, delivered financial advice)
+action(james, payment, bankofamerica, app, paid for the consultation)
+transaction(acc_james, fast payment, acc_wellesley, 150.00)",legit,fraud,1.0
+30,75,"action(sally, service_acceptance, acc_conedison, email, accepted electricity service agreement)
+action(acc_conedison, payment, sally, app, paid initial deposit for service)
+transaction(acc_sally, fast payment, acc_conedison, 100.00)
+action(sally, service_confirmation, acc_conedison, phone, confirmed electricity service is active)
+action(acc_conedison, billing, sally, email, sent monthly electricity bill)
+transaction(acc_sally, fast payment, acc_conedison, 50.00)",legit,fraud,1.0
+31,84,"action(insurancenet, phishing, james, email, sent fraudulent insurance claim form)
+action(james, clicking, insurancenet, email, opened and filled out the form with personal details)
+action(insurancenet, updating, acc_james, bank, gained access to victim's account information)
+action(insurancenet, transferring, acc_james, fast payment, initiated a fraudulent payment of 16000.0 to acc_insurancenet)
+transaction(acc_james, fast payment, acc_insurancenet, 16000.0)",fraud,,0.0
+32,85,"action(fishmaster, phishing, sally, email, sent a fraudulent banking link disguised as an account statement update)
+action(sally, click, acc_sally, email, clicked on the link exposing account credentials to fishmaster)
+action(fishmaster, unauthorized_access, acc_sally, internet, fishmaster gained access to sally's account details)
+action(fishmaster, transfer_initiation, acc_sally, bank, initiated a transfer request of 4800.0 from acc_sally to acc_fishmaster)
+transaction(acc_sally, fast payment, acc_fishmaster, 4800.0)",fraud,legit,1.0
+33,86,"action(fishmaster, phishing, olivia, email, sent a fraudulent bank notification)
+action(olivia, click, fishmaster, email, clicked on the malicious link provided)
+action(fishmaster, account_takeover, acc_olivia, link, gained access to olivia's account details)
+action(fishmaster, transfer_initiate, acc_olivia, online_banking, initiated a fast payment transaction of 6800.0 to acc_fishmaster)
+transaction(acc_olivia, fast payment, acc_fishmaster, 6800.0)",fraud,legit,1.0
+34,89,"action(insuranceco, poses_as, nina, email, claiming account issues)
+action(nina, responds, insuranceco, email, provides account details for verification)
+action(insuranceco, gains_access, acc_nina, sms, successfully accessed nina's account using provided details)
+transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)",fraud,legit,1.0
+35,91,"action(bill, order, acc_bluediner, website, ordered dinner for delivery)
+action(acc_bluediner, confirmation, bill, email, confirmed order with estimated delivery time)
+action(bill, payment, acc_bluediner, app, paid for dinner order)
+transaction(acc_bill, fast payment, acc_bluediner, 50.00)",legit,fraud,1.0
+36,92,"action(fishmaster, phishing, bill, email, sent a fraudulent link disguised as a bank notification)
+action(bill, clicked, fishmaster, email, fell for the phishing attempt)
+action(fishmaster, gained, acc_bill, email, obtained bill's account details)
+action(fishmaster, modified, acc_bill, bank, changed bill's password and set up new payee information)
+transaction(acc_bill, fast payment, acc_fishmaster, 12000.0)",fraud,legit,1.0
+37,94,"action(insuranceco, phishing, nina, email, sent fraudulent tax bill email)
+action(nina, clicked, insuranceco, email, opened phishing email and clicked link)
+action(nina, entered, acc_nina, email, entered account credentials)
+action(insuranceco, gainedaccess, acc_nina, email, successfully gained access to nina's account)
+transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)",fraud,legit,1.0
+38,96,"action(nina, application, insurancenet, online_portal, applied for financial advisor position)
+action(insurancenet, application_review, nina, email, reviewed application)
+action(insurancenet, job_offer, nina, phone, offered job as financial advisor)
+action(nina, acceptance, insurancenet, email, accepted the job offer)
+action(insurancenet, onboarding, nina, email, account_creation and terms_acceptance)
+action(nina, service_provision, insurancenet, app, providing financial advice)
+transaction(acc_nina, fast payment, acc_insurancenet, 1500.00)",legit,fraud,1.0
+39,98,"action(bill, service_contract, wellsfargo, email, signed agreement for home loan)
+action(wellsfargo, verification, bill, phone, verified identity and credit score)
+action(wellsfargo, account_creation, bill, online platform, created new mortgage account)
+action(bill, funds_transfer, wellsfargo, app, transferred down payment for the home loan)
+transaction(acc_wellesley, fast payment, acc_bill, 100000.00)",legit,fraud,1.0

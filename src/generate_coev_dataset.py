@@ -29,7 +29,7 @@ def generate_sequences(env, planner, data_len=4, num_fraud_seq=2):
             "sequence": seq['sequence']
         }
     
-        with open("coev_seq_v3", 'w') as json_file:
+        with open("/data/coev/coev_gen1.csv", 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
 

@@ -1,0 +1,33 @@
+Sequence id,Sequence,Label,LLM Generated Label,Stability,Valid rate,Votes
+27,"action(govco, posed_as, sally, email, posed as sally's bank representative)
+action(sally, replied, govco, email, provided account details upon request)
+action(govco, changed_password, acc_sally, online, changed sally's account password without authorization)
+transaction(acc_sally, fast payment, acc_govco, 4800.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
+48,"action(grace, request, insuranceco, email, asked for insurance claim assistance)
+action(insuranceco, respond, grace, email, sent fake claim form with account details)
+action(grace, submit, insuranceco, fax, faxed completed claim form with account number)
+action(insuranceco, transfer, acc_grace, bank, initiated unauthorized transfer of 320000.0)
+transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
+63,"action(insurancenet, posed as, sally, email, claimed to be bank representative)
+action(sally, replied, insurancenet, email, provided account details for acc_sally verification)
+action(insurancenet, gained, acc_sally, email, after successfully verifying identity)
+transaction(acc_sally, fast payment, acc_insurancenet, 4800.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
+66,"action(grace, shares, acc_grace, email, shares her account details for an online loan application)
+action(insurancenet, impersonates, grace, email, claims to be a loan officer from a reputable bank)
+action(grace, provides, insurancenet, email, sends her updated personal and account information)
+action(insurancenet, gains, acc_grace, fast, gains access to grace's account through the loan application process)
+transaction(acc_grace, fast payment, acc_insurancenet, 320000.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
+73,"action(insurancenet, posed, nina, email, claimed to be a representative from nina's insurance company)
+action(nina, replied, insurancenet, email, provided policy number and account details for verification)
+action(insurancenet, accessed, acc_nina, email, used provided details to gain access to acc_nina)
+transaction(acc_nina, fast payment, acc_insurancenet, 9600.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
+78,"action(grace, sends_documents, insuranceco, email, shares her latest car accident claim documents)
+action(insuranceco, poses_as_support, grace, phone, claims to be a support agent from the company)
+action(insuranceco, requests_more_info, grace, phone, asks for updated bank account details due to 'system issues')
+action(grace, updates_details, insuranceco, email, sends her updated bank account details via email)
+action(insuranceco, verifies_account, acc_grace, online, logs into grace's account using provided credentials)
+transaction(acc_grace, fast payment, acc_insuranceco, 320000.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
+89,"action(insuranceco, poses_as, nina, email, claiming account issues)
+action(nina, responds, insuranceco, email, provides account details for verification)
+action(insuranceco, gains_access, acc_nina, sms, successfully accessed nina's account using provided details)
+transaction(acc_nina, fast payment, acc_insuranceco, 9600.0)",fraud,legit,1.0,1.0,"['legit', 'legit', 'legit', 'legit', 'legit']"
